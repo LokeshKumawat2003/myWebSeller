@@ -31,7 +31,7 @@ const ProductSchema = new mongoose.Schema(
     subcategory: String,
     clothingType: {
       type: String,
-      enum: ["men", "women", "kids", null],
+      // enum: ["men", "women", "kids", null],
       default: null
     },
     basePrice: { type: Number, required: true }, // default price
