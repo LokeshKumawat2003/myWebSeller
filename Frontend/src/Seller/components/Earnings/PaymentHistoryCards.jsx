@@ -4,26 +4,26 @@ import { Clock, CheckCircle, AlertCircle, Calendar, Eye, EyeOff } from 'lucide-r
 const PaymentHistoryCards = ({ paymentHistory, onOpenModal }) => {
   const getStatusBadge = (status) => {
     const configs = {
-      pending: { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: Clock },
-      approved: { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: CheckCircle },
-      paid: { color: 'bg-green-100 text-green-800 border-green-200', icon: CheckCircle },
-      rejected: { color: 'bg-red-100 text-red-800 border-red-200', icon: AlertCircle },
+      pending: { color: 'bg-[#e6ddd2] text-[#3b3b3b] border-[#9c7c3a]', icon: Clock },
+      approved: { color: 'bg-[#f5f0e8] text-[#9c7c3a] border-[#e6ddd2]', icon: CheckCircle },
+      paid: { color: 'bg-[#9c7c3a] text-white', icon: CheckCircle },
+      rejected: { color: 'bg-[#e6ddd2] text-[#666] border-[#9c7c3a]', icon: AlertCircle },
     };
-    const config = configs[status] || { color: 'bg-gray-100 text-gray-800 border-gray-200', icon: AlertCircle };
+    const config = configs[status] || { color: 'bg-[#e6ddd2] text-[#666] border-[#e6ddd2]', icon: AlertCircle };
     const IconComponent = config.icon;
 
-    return `px-2 py-1 rounded-full text-xs font-semibold border ${config.color} flex items-center gap-1 w-fit`;
+    return `px-2 py-1 rounded-full text-xs font-semibold border ${config.color} flex items-center gap-1 w-fit font-sans`;
   };
 
   return (
     <div className="md:hidden">
       {paymentHistory.map(payment => (
-        <div key={payment._id} className="border-b border-gray-100 p-4 hover:bg-gray-50 transition-colors">
+        <div key={payment._id} className="border-b border-[#e6ddd2] p-4 hover:bg-[#fbf7f2] transition-colors">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-lg font-semibold text-gray-900">₹{payment.amount.toFixed(2)}</p>
-              <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                <Calendar className="w-4 h-4" />
+              <p className="text-lg font-light italic text-[#9c7c3a] font-serif">₹{payment.amount.toFixed(2)}</p>
+              <p className="text-sm italic text-[#666] flex items-center gap-1 mt-1 font-serif">
+                <Calendar className="w-4 h-4 text-[#9c7c3a]" />
                 {new Date(payment.createdAt).toLocaleDateString()}
               </p>
             </div>
@@ -40,18 +40,18 @@ const PaymentHistoryCards = ({ paymentHistory, onOpenModal }) => {
 
           <div className="grid grid-cols-2 gap-4 mb-3 text-sm">
             <div>
-              <p className="text-gray-600 text-xs">Total Sales</p>
-              <p className="font-medium">₹{payment.breakdown?.totalSales.toFixed(2) || '0.00'}</p>
+              <p className="text-[#666] text-xs italic font-serif">Total Sales</p>
+              <p className="font-light italic text-[#3b3b3b] font-serif">₹{payment.breakdown?.totalSales.toFixed(2) || '0.00'}</p>
             </div>
             <div>
-              <p className="text-gray-600 text-xs">Platform Fee</p>
-              <p className="font-medium">₹{payment.breakdown?.platformFee.toFixed(2) || '0.00'}</p>
+              <p className="text-[#666] text-xs italic font-serif">Platform Fee</p>
+              <p className="font-light italic text-[#3b3b3b] font-serif">₹{payment.breakdown?.platformFee.toFixed(2) || '0.00'}</p>
             </div>
           </div>
 
           <button
             onClick={() => onOpenModal(payment._id)}
-            className="text-blue-600 hover:text-blue-800 font-medium transition-colors flex items-center gap-1 text-sm"
+            className="text-[#9c7c3a] hover:text-[#8a6a2f] font-light italic transition-colors flex items-center gap-1 text-sm font-serif"
           >
             <Eye className="w-4 h-4" />
             View Details

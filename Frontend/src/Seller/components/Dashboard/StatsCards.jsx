@@ -22,15 +22,15 @@ const StatsCards = ({ stats }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
       {stats.map((stat, idx) => (
-        <div key={idx} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-4 md:p-6 border border-gray-100">
+        <div key={idx} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-4 md:p-6 border border-[#e6ddd2]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium mb-1">{stat.label}</p>
-              <div className={`${stat.color} text-white font-bold text-lg md:text-xl px-3 py-1 rounded-full inline-block`}>
+              <p className="text-[#666] text-sm italic mb-1 font-serif">{stat.label}</p>
+              <div className={`${stat.color} text-white font-light italic text-lg md:text-xl px-3 py-1 rounded-full inline-block font-serif`}>
                 {stat.value}
               </div>
             </div>
-            <div className="text-gray-300">
+            <div className="text-[#9c7c3a]">
               {getIcon(stat.label, stat.value)}
             </div>
           </div>

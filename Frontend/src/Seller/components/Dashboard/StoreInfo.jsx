@@ -5,24 +5,24 @@ const StoreInfo = ({ sellerData, earningsData }) => {
   const infoItems = [
     { label: 'Store Name', value: sellerData?.storeName || 'Not set' },
     { label: 'Email', value: typeof sellerData?.user === 'object' && sellerData?.user?.email ? sellerData.user.email : '-' },
-    { label: 'Account Status', value: sellerData?.blocked ? '❌ Blocked' : sellerData?.approved ? '✓ Approved' : '⏳ Pending', color: sellerData?.blocked ? 'text-red-600 bg-red-50' : sellerData?.approved ? 'text-green-600 bg-green-50' : 'text-yellow-600 bg-yellow-50' },
+    { label: 'Account Status', value: sellerData?.blocked ? '❌ Blocked' : sellerData?.approved ? '✓ Approved' : '⏳ Pending', color: sellerData?.blocked ? 'text-[#666] bg-[#e6ddd2]' : sellerData?.approved ? 'text-white bg-[#9c7c3a]' : 'text-[#666] bg-[#fbf7f2] border border-[#e6ddd2]' },
     { label: 'Total Sales', value: `₹${(earningsData?.totalSales || 0).toFixed(2)}` },
-    { label: 'Total Earned', value: `₹${(earningsData?.totalEarned || 0).toFixed(2)}`, color: 'text-green-600' },
-    { label: 'Pending Payout', value: `₹${(earningsData?.totalPending || 0).toFixed(2)}`, color: 'text-yellow-600' },
-    { label: 'Approved Not Paid', value: `₹${(earningsData?.totalApproved || 0).toFixed(2)}`, color: 'text-blue-600' },
+    { label: 'Total Earned', value: `₹${(earningsData?.totalEarned || 0).toFixed(2)}`, color: 'text-[#9c7c3a]' },
+    { label: 'Pending Payout', value: `₹${(earningsData?.totalPending || 0).toFixed(2)}`, color: 'text-[#666]' },
+    { label: 'Approved Not Paid', value: `₹${(earningsData?.totalApproved || 0).toFixed(2)}`, color: 'text-[#9c7c3a]' },
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 md:p-6 mb-6 border border-gray-100">
-      <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <Store className="mr-2 w-6 h-6" />
+    <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6 border border-[#e6ddd2]">
+      <h2 className="text-xl md:text-2xl font-light italic text-[#3b3b3b] mb-4 flex items-center font-serif">
+        <Store className="mr-2 w-6 h-6 text-[#9c7c3a]" />
         Store Information
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {infoItems.map((item, idx) => (
-          <div key={idx} className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-gray-700 font-medium text-sm md:text-base mb-1 sm:mb-0">{item.label}:</span>
-            <span className={`font-semibold text-sm md:text-base ${item.color || 'text-gray-800'}`}>
+          <div key={idx} className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 bg-[#fbf7f2] rounded-lg border border-[#e6ddd2]">
+            <span className="text-[#666] italic text-sm md:text-base mb-1 sm:mb-0 font-serif">{item.label}:</span>
+            <span className={`font-light italic text-sm md:text-base ${item.color || 'text-[#3b3b3b]'} font-serif`}>
               {item.value}
             </span>
           </div>

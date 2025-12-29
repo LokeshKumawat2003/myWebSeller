@@ -5,11 +5,11 @@ import { Package } from 'lucide-react';
 const ProductList = ({ products, onEdit, onDelete, accountBlocked, getProductMatrix, findProductVariant }) => {
   if (!products || products.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e6ddd2] p-8">
         <div className="text-center">
-          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
-          <p className="text-gray-500">Start by adding your first product to showcase your collection.</p>
+          <Package className="w-16 h-16 text-[#9c7c3a] mx-auto mb-4" />
+          <h3 className="text-lg font-light italic text-[#3b3b3b] mb-2 font-serif">No products yet</h3>
+          <p className="text-[#666] italic font-serif">Start by adding your first product to showcase your collection.</p>
         </div>
       </div>
     );

@@ -75,7 +75,7 @@ export default function SellerDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-[#fbf7f2]">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div

@@ -63,14 +63,14 @@ export default function StoreSettings({ seller }) {
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-6 lg:p-8 bg-[#fbf7f2] min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <SettingsIcon className="w-8 h-8 text-indigo-600" />
+          <h1 className="text-2xl md:text-3xl font-light italic text-[#3b3b3b] flex items-center gap-3 font-serif">
+            <SettingsIcon className="w-8 h-8 text-[#9c7c3a]" />
             Store Settings
           </h1>
-          <p className="text-sm md:text-base text-gray-600 mt-2">Manage your store information and account settings</p>
+          <p className="text-sm md:text-base text-[#666] mt-2 font-sans">Manage your store information and account settings</p>
         </div>
 
         <div className="space-y-6 md:space-y-8">

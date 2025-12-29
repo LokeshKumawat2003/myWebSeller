@@ -42,18 +42,18 @@ const ProductForm = ({
 }) => {
   
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-sm border border-[#e6ddd2]">
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Quick Stock Update Section - Only show when editing */}
         {editingId && formData.variants && formData.variants.length > 0 && (
-          <div className="border-b border-gray-200 pb-6 mb-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <div className="border-b border-[#e6ddd2] pb-6 mb-6">
+            <h3 className="text-xl font-light italic text-[#3b3b3b] mb-6 flex items-center gap-2 font-serif">
+              <div className="w-2 h-2 bg-[#9c7c3a] rounded-full"></div>
               Quick Stock Update
             </h3>
             
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-sm text-green-800 mb-4">
+            <div className="bg-[#fbf7f2] border border-[#e6ddd2] rounded-lg p-4">
+              <p className="text-sm text-[#666] mb-4">
                 Use the "Edit Stock" buttons in the variant tables below to quickly update stock levels for existing sizes.
                 Changes will be saved when you submit the form.
               </p>
@@ -83,15 +83,15 @@ const ProductForm = ({
         )}
 
         {/* Basic Info */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+        <div className="border-b border-[#e6ddd2] pb-6">
+          <h3 className="text-xl font-light italic text-[#3b3b3b] mb-6 flex items-center gap-2 font-serif">
+            <div className="w-2 h-2 bg-[#9c7c3a] rounded-full"></div>
             Basic Information
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Product Title</label>
+              <label className="block text-sm italic text-[#666] font-serif">Product Title</label>
               <input
                 type="text"
                 name="title"
@@ -99,13 +99,13 @@ const ProductForm = ({
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
                 disabled={accountBlocked || !seller}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Base Price</label>
+              <label className="block text-sm italic text-[#666] font-serif">Base Price</label>
               <input
                 type="number"
                 name="basePrice"
@@ -114,13 +114,13 @@ const ProductForm = ({
                 onChange={handleInputChange}
                 step="0.01"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
                 disabled={accountBlocked || !seller}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Base Discount (%)</label>
+              <label className="block text-sm italic text-[#666] font-serif">Base Discount (%)</label>
               <input
                 type="number"
                 name="discount"
@@ -130,19 +130,19 @@ const ProductForm = ({
                 step="0.01"
                 min="0"
                 max="100"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
                 disabled={accountBlocked || !seller}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm italic text-[#666] font-serif">Category</label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white transition-all"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent bg-white transition-all italic font-serif text-[#3b3b3b]"
                 disabled={accountBlocked || !seller}
               >
                 <option value="">Select category</option>
@@ -153,12 +153,12 @@ const ProductForm = ({
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Clothing Type (Optional)</label>
+              <label className="block text-sm italic text-[#666] font-serif">Clothing Type (Optional)</label>
               <select
                 name="clothingType"
                 value={formData.clothingType}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white transition-all"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent bg-white transition-all italic font-serif text-[#3b3b3b]"
                 disabled={accountBlocked || !seller}
               >
                 <option value="">Not clothing</option>
@@ -169,14 +169,14 @@ const ProductForm = ({
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <label className="block text-sm italic text-[#666] font-serif">Description</label>
               <textarea
                 name="description"
                 placeholder="Enter product description"
                 value={formData.description}
                 onChange={handleInputChange}
                 rows="4"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all resize-none bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
                 disabled={accountBlocked || !seller}
               />
             </div>
@@ -184,9 +184,9 @@ const ProductForm = ({
         </div>
 
         {/* Images Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+        <div className="border-b border-[#e6ddd2] pb-6">
+          <h3 className="text-xl font-light italic text-[#3b3b3b] mb-6 flex items-center gap-2 font-serif">
+            <div className="w-2 h-2 bg-[#9c7c3a] rounded-full"></div>
             Product Images
           </h3>
           
@@ -196,13 +196,13 @@ const ProductForm = ({
               placeholder="Enter image URL"
               value={imageInput}
               onChange={(e) => setImageInput(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="flex-1 px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
               disabled={accountBlocked || !seller}
             />
             <button
               type="button"
               onClick={handleAddImage}
-              className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white rounded-lg font-medium transition-all disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all disabled:cursor-not-allowed font-serif"
               disabled={accountBlocked || !seller}
             >
               Add Image
@@ -221,7 +221,7 @@ const ProductForm = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(idx)}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     ×
                   </button>
@@ -237,14 +237,14 @@ const ProductForm = ({
         </div>
 
         {/* Variants Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+        <div className="border-b border-[#e6ddd2] pb-6">
+          <h3 className="text-xl font-light italic text-[#3b3b3b] mb-6 flex items-center gap-2 font-serif">
+            <div className="w-2 h-2 bg-[#9c7c3a] rounded-full"></div>
             Variants (Colors & Sizes)
           </h3>
 
           {/* Add Color Section */}
-          <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-8 p-4 bg-[#fbf7f2] rounded-lg border border-[#e6ddd2]">
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Add Color Variant</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -320,7 +320,7 @@ const ProductForm = ({
                 <button
                   type="button"
                   onClick={handleAddColorImage}
-                  className="mt-2 px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg font-medium transition-all disabled:cursor-not-allowed"
+                  className="mt-2 px-4 py-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-medium transition-all disabled:cursor-not-allowed font-sans"
                   disabled={!colorInput.colorImageInput.trim() || accountBlocked || !seller}
                 >
                   Add Images
@@ -341,7 +341,7 @@ const ProductForm = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveColorImage(idx)}
-                        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                        className="absolute -top-2 -right-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
                       >
                         ×
                       </button>
@@ -434,7 +434,7 @@ const ProductForm = ({
               <button
                 type="button"
                 onClick={handleAddSize}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white rounded-lg font-medium transition-all disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-medium transition-all disabled:cursor-not-allowed font-sans"
                 disabled={accountBlocked || !seller}
               >
                 + Add Size
@@ -443,16 +443,16 @@ const ProductForm = ({
               {colorInput.sizes && colorInput.sizes.length > 0 && (
                 <div className="mt-4">
                   <h6 className="text-sm font-semibold text-gray-900 mb-2">Sizes for {colorInput.color || 'this color'}:</h6>
-                  <div className="overflow-x-auto bg-white rounded-lg border border-gray-200">
+                  <div className="overflow-x-auto bg-white rounded-lg border border-[#e6ddd2]">
                     <table className="w-full">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-[#fbf7f2]">
                         <tr>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Size</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Price</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Discount</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Stock</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">SKU</th>
-                          <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900">Action</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Size</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Price</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Discount</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Stock</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">SKU</th>
+                          <th className="px-3 py-2 text-center text-xs italic text-[#666] font-serif">Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -467,7 +467,7 @@ const ProductForm = ({
                               <button
                                 type="button"
                                 onClick={() => handleRemoveSize(idx)}
-                                className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs transition-colors"
+                                className="px-2 py-1 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded text-xs transition-colors font-sans"
                                 disabled={accountBlocked || !seller}
                               >
                                 Remove
@@ -485,7 +485,7 @@ const ProductForm = ({
             <button
               type="button"
               onClick={handleAddColor}
-              className="mt-4 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg font-medium transition-all disabled:cursor-not-allowed"
+              className="mt-4 px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-medium transition-all disabled:cursor-not-allowed font-sans"
               disabled={accountBlocked || !seller}
             >
               + Add Color Variant
@@ -502,7 +502,7 @@ const ProductForm = ({
                     <button
                       type="button"
                       onClick={() => handleRemoveColor(colorIdx)}
-                      className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition-colors"
+                      className="px-3 py-1 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded text-sm transition-colors font-sans"
                       disabled={accountBlocked || !seller}
                     >
                       Remove Color
@@ -542,16 +542,16 @@ const ProductForm = ({
                     </div>
                   )}
 
-                  <div className="overflow-x-auto bg-white rounded-lg border border-gray-200">
+                  <div className="overflow-x-auto bg-white rounded-lg border border-[#e6ddd2]">
                     <table className="w-full">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-[#fbf7f2]">
                         <tr>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Size</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Price</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Discount</th>
-                          <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Stock</th>
-                          <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900">SKU</th>
-                          <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900">Actions</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Size</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Price</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Discount</th>
+                          <th className="border-r border-[#e6ddd2] px-3 py-2 text-left text-xs italic text-[#666] font-serif">Stock</th>
+                          <th className="px-3 py-2 text-left text-xs italic text-[#666] font-serif">SKU</th>
+                          <th className="px-3 py-2 text-center text-xs italic text-[#666] font-serif">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -575,27 +575,27 @@ const ProductForm = ({
                                     />
                                     <button
                                       onClick={handleSaveStock}
-                                      className="px-2 py-1 bg-green-500 hover:bg-green-600 text-white text-xs rounded"
+                                      className="px-2 py-1 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white text-xs rounded font-sans"
                                     >
                                       Save
                                     </button>
                                     <button
                                       onClick={handleCancelStockEdit}
-                                      className="px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded"
+                                      className="px-2 py-1 bg-[#e6ddd2] hover:bg-[#d4c4b5] text-[#666] text-xs rounded font-sans"
                                     >
                                       Cancel
                                     </button>
                                   </div>
                                 ) : (
                                   <div className="flex items-center gap-2">
-                                    <span className={`font-semibold ${size.stock === 0 ? 'text-red-600' : size.stock < 10 ? 'text-orange-600' : 'text-green-600'}`}>
+                                    <span className={`font-semibold ${size.stock === 0 ? 'text-[#666]' : size.stock < 10 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'}`}>
                                       {size.stock}
                                     </span>
                                     {size.stock === 0 && (
-                                      <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Out of Stock</span>
+                                      <span className="text-xs bg-[#e6ddd2] text-[#666] px-2 py-1 rounded-full">Out of Stock</span>
                                     )}
                                     {size.stock > 0 && size.stock < 10 && (
-                                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Low Stock</span>
+                                      <span className="text-xs bg-[#fbf7f2] text-[#9c7c3a] border border-[#e6ddd2] px-2 py-1 rounded-full">Low Stock</span>
                                     )}
                                   </div>
                                 )}
@@ -606,7 +606,7 @@ const ProductForm = ({
                                   <button
                                     type="button"
                                     onClick={() => handleEditStock(colorIdx, sizeIdx, size.stock)}
-                                    className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs transition-colors mr-1"
+                                    className="px-2 py-1 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded text-xs transition-colors mr-1 font-sans"
                                     disabled={accountBlocked || !seller}
                                   >
                                     Edit Stock
@@ -628,7 +628,7 @@ const ProductForm = ({
         {/* Tags Section */}
         <div className="border-b border-gray-200 pb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+            <div className="w-2 h-2 bg-[#9c7c3a] rounded-full"></div>
             Product Tags
           </h3>
           
@@ -654,19 +654,19 @@ const ProductForm = ({
                 className="w-4 h-4 text-orange-500 focus:ring-orange-500"
                 disabled={accountBlocked || !seller}
               />
-              <span className="text-sm font-medium text-gray-700">Trending</span>
+              <span className="text-sm italic text-[#666] font-serif">Trending</span>
             </label>
 
-            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-gray-200 hover:border-orange-300 transition-colors">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-[#e6ddd2] hover:border-[#9c7c3a] transition-colors">
               <input
                 type="checkbox"
                 name="isFeatured"
                 checked={formData.isFeatured}
                 onChange={(e) => setFormData(prev => ({ ...prev, isFeatured: e.target.checked }))}
-                className="w-4 h-4 text-orange-500 focus:ring-orange-500"
+                className="w-4 h-4 text-[#9c7c3a] focus:ring-[#9c7c3a] border-[#e6ddd2]"
                 disabled={accountBlocked || !seller}
               />
-              <span className="text-sm font-medium text-gray-700">Featured</span>
+              <span className="text-sm italic text-[#666] font-serif">Featured</span>
             </label>
           </div>
         </div>
@@ -676,7 +676,7 @@ const ProductForm = ({
           <button
             type="submit"
             disabled={loading || accountBlocked || !seller}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-purple-300 disabled:to-purple-400 text-white rounded-lg font-semibold transition-all disabled:cursor-not-allowed shadow-lg"
+            className="flex-1 px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all disabled:cursor-not-allowed shadow-sm font-serif"
           >
             {loading ? 'Saving...' : editingId ? 'Update Product' : 'Create Product'}
           </button>
@@ -684,7 +684,7 @@ const ProductForm = ({
           <button
             type="button"
             onClick={resetForm}
-            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
+            className="px-6 py-3 bg-[#fbf7f2] hover:bg-[#e6ddd2] text-[#3b3b3b] rounded-lg font-light italic transition-colors border border-[#e6ddd2] font-serif"
           >
             Reset
           </button>

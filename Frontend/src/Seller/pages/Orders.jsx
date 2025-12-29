@@ -47,21 +47,21 @@ export default function Orders() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'packed': return 'bg-orange-100 text-orange-800';
-      case 'shipped': return 'bg-blue-100 text-blue-800';
-      case 'out_for_delivery': return 'bg-indigo-100 text-indigo-800';
-      case 'delivered': return 'bg-purple-100 text-purple-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'bg-[#e6ddd2] text-[#3b3b3b]';
+      case 'packed': return 'bg-[#fbf7f2] text-[#666] border border-[#e6ddd2]';
+      case 'shipped': return 'bg-[#9c7c3a] text-white';
+      case 'out_for_delivery': return 'bg-[#8a6a2f] text-white';
+      case 'delivered': return 'bg-[#9c7c3a] text-white';
+      case 'cancelled': return 'bg-[#e6ddd2] text-[#666]';
+      default: return 'bg-[#fbf7f2] text-[#666] border border-[#e6ddd2]';
     }
   };
 
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-center gap-3 mb-6">
-        <ShoppingBag className="w-8 h-8 text-indigo-600" />
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Your Orders</h1>
+        <ShoppingBag className="w-8 h-8 text-[#9c7c3a]" />
+        <h1 className="text-2xl md:text-3xl font-light italic text-[#3b3b3b] font-serif">Your Orders</h1>
       </div>
 
       <OrderTable

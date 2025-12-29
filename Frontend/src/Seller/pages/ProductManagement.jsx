@@ -406,35 +406,35 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     <div className="space-y-6">
       {/* Seller account status banner */}
       {!seller && (
-        <div className="p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-800 rounded-xl border border-yellow-200 shadow-sm">
+        <div className="p-6 bg-[#fbf7f2] text-[#3b3b3b] rounded-lg border border-[#e6ddd2] shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <p className="font-medium">You don't have a seller profile yet. Request a seller account to list products.</p>
+            <div className="w-3 h-3 bg-[#9c7c3a] rounded-full"></div>
+            <p className="font-light italic font-serif">You don't have a seller profile yet. Request a seller account to list products.</p>
           </div>
         </div>
       )}
       {seller && accountBlocked && (
-        <div className="p-6 bg-gradient-to-r from-red-50 to-red-100 text-red-800 rounded-xl border border-red-200 shadow-sm">
+        <div className="p-6 bg-[#fbf7f2] text-[#3b3b3b] rounded-lg border border-[#e6ddd2] shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <p className="font-medium">Your seller account has been blocked by the admin. You cannot create or edit products.</p>
+            <div className="w-3 h-3 bg-[#9c7c3a] rounded-full"></div>
+            <p className="font-light italic font-serif">Your seller account has been blocked by the admin. You cannot create or edit products.</p>
           </div>
         </div>
       )}
       {seller && !accountBlocked && !accountApproved && (
-        <div className="p-6 bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-800 rounded-xl border border-yellow-200 shadow-sm">
+        <div className="p-6 bg-[#fbf7f2] text-[#3b3b3b] rounded-lg border border-[#e6ddd2] shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <p className="font-medium">Your seller account is pending approval. Products you create will be submitted as pending and visible after admin approval.</p>
+            <div className="w-3 h-3 bg-[#9c7c3a] rounded-full"></div>
+            <p className="font-light italic font-serif">Your seller account is pending approval. Products you create will be submitted as pending and visible after admin approval.</p>
           </div>
         </div>
       )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+        <h1 className="text-3xl font-light italic text-[#3b3b3b] font-serif">Product Management</h1>
         <button
           onClick={handleToggleForm}
-          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 disabled:from-purple-300 disabled:to-purple-400 text-white rounded-lg font-semibold transition-all disabled:cursor-not-allowed shadow-lg flex items-center gap-2"
+          className="px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all disabled:cursor-not-allowed shadow-sm flex items-center gap-2 font-serif"
           disabled={accountBlocked || !seller}
         >
           <span>{showForm ? 'Cancel' : '+ Add New Product'}</span>

@@ -5,24 +5,24 @@ const PaymentRequestCard = ({ earnings, requesting, onRequestPayment }) => {
   if (!earnings) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-200 p-4 md:p-6">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div className="bg-white rounded-lg shadow-sm border border-[#e6ddd2] p-6 md:p-8">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-gray-600" />
+          <h3 className="text-lg font-light italic text-[#3b3b3b] mb-3 flex items-center gap-2 font-serif">
+            <Receipt className="w-5 h-5 text-[#9c7c3a]" />
             Request Payment
           </h3>
-          <p className="text-sm text-gray-600 mb-2">Request payment for all pending sales</p>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <p className="text-sm font-medium text-gray-900">Amount: <span className="text-lg font-bold text-green-600">₹{earnings.totalPending.toFixed(2)}</span></p>
-            <span className="hidden sm:block text-gray-300">•</span>
-            <p className="text-xs text-gray-500">{earnings.paymentCount || 0} products pending</p>
+          <p className="text-sm italic text-[#666] mb-4 font-serif">Request payment for all pending sales</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="text-sm italic text-[#3b3b3b] font-serif">Amount: <span className="text-xl font-light italic text-[#9c7c3a] font-serif">₹{earnings.totalPending.toFixed(2)}</span></p>
+            <span className="hidden sm:block text-[#e6ddd2] text-xl">•</span>
+            <p className="text-xs italic text-[#999] font-serif">{earnings.paymentCount || 0} products pending</p>
           </div>
         </div>
         <button
           onClick={onRequestPayment}
           disabled={requesting || earnings.totalPending === 0}
-          className="px-4 md:px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white rounded-lg font-semibold transition-colors disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px] lg:min-w-[160px]"
+          className="px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all duration-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px] lg:min-w-[160px] font-serif hover:shadow-lg"
         >
           {requesting ? (
             <>

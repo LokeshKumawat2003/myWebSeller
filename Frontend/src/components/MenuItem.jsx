@@ -8,16 +8,21 @@ const MenuItem = ({
   hasNotification,
   notificationCount,
   onClick,
-  isDark
+  isDark,
+  isLuxury
 }) => {
   const { icon: IconComponent, label, id } = item
 
   const baseStyle = isDark
     ? "text-slate-400 hover:bg-slate-800/70"
+    : isLuxury
+    ? "text-[#666] hover:bg-[#e6ddd2]/70"
     : "text-slate-600 hover:bg-slate-100"
 
   const activeStyle = isDark
     ? "bg-gradient-to-r from-blue-600/25 to-cyan-600/20 text-white border-l-4 border-blue-400 shadow-blue-500/20"
+    : isLuxury
+    ? "bg-gradient-to-r from-[#9c7c3a]/20 to-[#b8914a]/20 text-[#9c7c3a] border-l-4 border-[#9c7c3a] shadow-[#9c7c3a]/20"
     : "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-500 shadow-blue-500/10"
 
   return (
@@ -41,6 +46,8 @@ const MenuItem = ({
             ${isActive
               ? isDark
                 ? "text-blue-400"
+                : isLuxury
+                ? "text-[#9c7c3a]"
                 : "text-blue-600"
               : "group-hover:text-blue-500"}
           `}

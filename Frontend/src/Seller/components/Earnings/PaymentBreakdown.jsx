@@ -9,36 +9,36 @@ const PaymentBreakdownModal = ({ paymentHistory, selectedPaymentId, isOpen, onCl
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl border border-gray-200 w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e6ddd2] w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200">
-          <h3 className="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
-            <Receipt className="w-5 h-5 md:w-6 md:h-6 text-gray-600" />
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-[#e6ddd2]">
+          <h3 className="text-lg md:text-xl font-light italic text-[#3b3b3b] flex items-center gap-2 font-serif">
+            <Receipt className="w-5 h-5 md:w-6 md:h-6 text-[#9c7c3a]" />
             Payment Breakdown
           </h3>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#fbf7f2] rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-[#666]" />
           </button>
         </div>
 
         {/* Modal Body */}
         <div className="p-4 md:p-6">
           {/* Payment Info */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-6 p-4 bg-[#fbf7f2] rounded-lg border border-[#e6ddd2]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Payment Amount</span>
-              <span className="text-lg font-bold text-gray-900">₹{payment.amount.toFixed(2)}</span>
+              <span className="text-sm italic text-[#666] font-serif">Payment Amount</span>
+              <span className="text-lg font-light italic text-[#9c7c3a] font-serif">₹{payment.amount.toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Status</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                payment.status === 'paid' ? 'bg-green-100 text-green-800' :
-                payment.status === 'approved' ? 'bg-blue-100 text-blue-800' :
-                payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-red-100 text-red-800'
+              <span className="text-sm italic text-[#666] font-serif">Status</span>
+              <span className={`px-2 py-1 rounded-full text-xs font-light italic font-serif ${
+                payment.status === 'paid' ? 'bg-[#9c7c3a] text-white' :
+                payment.status === 'approved' ? 'bg-[#fbf7f2] text-[#9c7c3a] border border-[#e6ddd2]' :
+                payment.status === 'pending' ? 'bg-[#e6ddd2] text-[#3b3b3b]' :
+                'bg-[#e6ddd2] text-[#666]'
               }`}>
                 {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
               </span>
@@ -47,23 +47,23 @@ const PaymentBreakdownModal = ({ paymentHistory, selectedPaymentId, isOpen, onCl
 
           {/* Breakdown Details */}
           <div className="space-y-4">
-            <div className="flex justify-between items-center py-3 border-b border-gray-100">
-              <span className="text-gray-700 font-medium">Total Sales:</span>
-              <span className="font-semibold text-gray-900">₹{payment.breakdown.totalSales.toFixed(2)}</span>
+            <div className="flex justify-between items-center py-3 border-b border-[#e6ddd2]">
+              <span className="text-[#666] font-light italic font-serif">Total Sales:</span>
+              <span className="font-light italic text-[#3b3b3b] font-serif">₹{payment.breakdown.totalSales.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between items-center py-3 border-b border-gray-100">
-              <span className="text-gray-700 font-medium">Platform Fee (10%):</span>
-              <span className="font-semibold text-red-600">- ₹{payment.breakdown.platformFee.toFixed(2)}</span>
+            <div className="flex justify-between items-center py-3 border-b border-[#e6ddd2]">
+              <span className="text-[#666] font-light italic font-serif">Platform Fee (10%):</span>
+              <span className="font-light italic text-red-600 font-serif">- ₹{payment.breakdown.platformFee.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between items-center py-3 text-lg border-t border-gray-200 pt-4">
-              <span className="font-bold text-gray-900">Net Amount:</span>
-              <span className="font-bold text-green-600">₹{payment.breakdown.netAmount.toFixed(2)}</span>
+            <div className="flex justify-between items-center py-3 text-lg border-t border-[#e6ddd2] pt-4">
+              <span className="font-light italic text-[#3b3b3b] font-serif">Net Amount:</span>
+              <span className="font-light italic text-[#9c7c3a] font-serif">₹{payment.breakdown.netAmount.toFixed(2)}</span>
             </div>
           </div>
 
           {/* Additional Info */}
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <div className="text-xs text-gray-500 text-center">
+          <div className="mt-6 pt-4 border-t border-[#e6ddd2]">
+            <div className="text-xs italic text-[#666] text-center font-serif">
               Requested on {new Date(payment.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -74,10 +74,10 @@ const PaymentBreakdownModal = ({ paymentHistory, selectedPaymentId, isOpen, onCl
         </div>
 
         {/* Modal Footer */}
-        <div className="flex justify-end gap-3 p-4 md:p-6 border-t border-gray-200 bg-gray-50">
+        <div className="flex justify-end gap-3 p-4 md:p-6 border-t border-[#e6ddd2] bg-[#fbf7f2]">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="px-4 py-2 text-[#666] bg-white border border-[#e6ddd2] rounded-lg hover:bg-[#fbf7f2] transition-colors font-light italic font-serif"
           >
             Close
           </button>

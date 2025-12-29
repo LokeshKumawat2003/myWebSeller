@@ -35,10 +35,10 @@ export default function DashboardHome({ seller, products }) {
   };
 
   const stats = [
-    { label: 'Total Products', value: products?.length || 0, color: 'bg-blue-500' },
-    { label: 'Total Earnings', value: `₹${(earningsData?.totalEarned || 0).toFixed(2)}`, color: 'bg-green-500' },
-    { label: 'Pending Payout', value: `₹${(earningsData?.totalPending || 0).toFixed(2)}`, color: 'bg-yellow-500' },
-    { label: 'Status', value: sellerData?.blocked ? 'Blocked' : sellerData?.approved ? 'Approved' : 'Pending', color: sellerData?.blocked ? 'bg-red-600' : sellerData?.approved ? 'bg-green-600' : 'bg-orange-500' },
+    { label: 'Total Products', value: products?.length || 0, color: 'bg-[#9c7c3a]' },
+    { label: 'Total Earnings', value: `₹${(earningsData?.totalEarned || 0).toFixed(2)}`, color: 'bg-[#9c7c3a]' },
+    { label: 'Pending Payout', value: `₹${(earningsData?.totalPending || 0).toFixed(2)}`, color: 'bg-[#e6ddd2] text-[#3b3b3b]' },
+    { label: 'Status', value: sellerData?.blocked ? 'Blocked' : sellerData?.approved ? 'Approved' : 'Pending', color: sellerData?.blocked ? 'bg-[#e6ddd2] text-[#3b3b3b]' : sellerData?.approved ? 'bg-[#9c7c3a]' : 'bg-[#e6ddd2] text-[#3b3b3b]' },
   ];
 
   return (

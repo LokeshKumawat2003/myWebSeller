@@ -7,7 +7,8 @@ const MenuItems = ({
   activeItem,
   isCollapsed,
   onMenuItemClick,
-  isDark
+  isDark,
+  isLuxury
 }) => {
   return (
     <div className="space-y-1">
@@ -21,6 +22,7 @@ const MenuItems = ({
           notificationCount={notifications[item.id]}
           onClick={onMenuItemClick}
           isDark={isDark}
+          isLuxury={isLuxury}
         />
       ))}
     </div>
