@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "Clothing Backend - Complete API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "clothing-ecommerce-api"
+  },
+  "item": [
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Alice Buyer\",\"email\":\"alice@example.com\",\"password\":\"Password123\"}" },
+            "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"alice@example.com\",\"password\":\"Password123\"}" },
+            "url": { "raw": "http://localhost:5000/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","login"] }
+          }
+        },
+        {
+          "name": "Register Seller",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Bob Seller\",\"email\":\"bob@example.com\",\"password\":\"SellerPass123\"}" },
+            "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
+          }
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Admin User\",\"email\":\"admin@example.com\",\"password\":\"AdminPass123\",\"role\":\"admin\"}" },
+            "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PRODUCTS",
+      "item": [
+        {
+          "name": "List Products (Public)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/products?page=1&limit=10&category=Men&minPrice=0&maxPrice=1000&sort=-createdAt", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products"] }
+          }
+        },
+        {
+          "name": "Get Product Details",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/products/{{productId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products","{{productId}}"] }
+          }
+        },
+        {
+          "name": "Create Product (Seller)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Premium Cotton Tee\",\"description\":\"100% organic cotton, comfortable fit\",\"category\":\"Men\",\"subcategory\":\"T-Shirts\",\"basePrice\":599,\"discount\":10,\"variants\":[{\"size\":\"S\",\"color\":\"Black\",\"material\":\"Cotton\",\"fit\":\"Slim\",\"price\":599,\"stock\":20},{\"size\":\"M\",\"color\":\"Black\",\"material\":\"Cotton\",\"fit\":\"Slim\",\"price\":599,\"stock\":50},{\"size\":\"L\",\"color\":\"Black\",\"material\":\"Cotton\",\"fit\":\"Regular\",\"price\":599,\"stock\":40}],\"images\":[\"https://example.com/tee-black-1.jpg\"],\"isFeatured\":false,\"seasonalTag\":\"Summer\"}"
+            },
+            "url": { "raw": "http://localhost:5000/products", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products"] }
+          }
+        },
+        {
+          "name": "Update Product (Seller)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Updated Tee\",\"basePrice\":649,\"discount\":15}" },
+            "url": { "raw": "http://localhost:5000/products/{{productId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products","{{productId}}"] }
+          }
+        },
+        {
+          "name": "Delete Product (Seller)",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/products/{{productId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products","{{productId}}"] }
+          }
+        },
+        {
+          "name": "My Products (Seller Only)",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/products/seller/my-products", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["products","seller","my-products"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CATEGORIES",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/categories", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["categories"] }
+          }
+        },
+        {
+          "name": "Get Category Details",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/categories/{{categoryId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["categories","{{categoryId}}"] }
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Men\",\"slug\":\"men\",\"attributes\":[{\"name\":\"Size\",\"values\":[\"S\",\"M\",\"L\",\"XL\",\"XXL\"]},{\"name\":\"Color\",\"values\":[\"Black\",\"White\",\"Blue\",\"Red\"]},{\"name\":\"Material\",\"values\":[\"Cotton\",\"Polyester\",\"Denim\"]}]}" },
+            "url": { "raw": "http://localhost:5000/categories", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["categories"] }
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Men Updated\",\"attributes\":[{\"name\":\"Size\",\"values\":[\"XS\",\"S\",\"M\",\"L\",\"XL\",\"XXL\"]}]}" },
+            "url": { "raw": "http://localhost:5000/categories/{{categoryId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["categories","{{categoryId}}"] }
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/categories/{{categoryId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["categories","{{categoryId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/cart", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["cart"] }
+          }
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"product\":\"{{productId}}\",\"variant\":{\"size\":\"M\",\"color\":\"Black\",\"material\":\"Cotton\",\"fit\":\"Regular\"},\"qty\":1,\"price\":599}" },
+            "url": { "raw": "http://localhost:5000/cart/items", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["cart","items"] }
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"qty\":2}" },
+            "url": { "raw": "http://localhost:5000/cart/items/{{itemId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["cart","items","{{itemId}}"] }
+          }
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/cart/items/{{itemId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["cart","items","{{itemId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "REVIEWS",
+      "item": [
+        {
+          "name": "Create Review (User)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"product\":\"{{productId}}\",\"rating\":5,\"comment\":\"Excellent quality and fit!\",\"order\":\"{{orderId}}\"}" },
+            "url": { "raw": "http://localhost:5000/reviews", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["reviews"] }
+          }
+        },
+        {
+          "name": "Get Product Reviews",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/reviews/product/{{productId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["reviews","product","{{productId}}"] }
+          }
+        },
+        {
+          "name": "Delete Review (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/reviews/{{reviewId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["reviews","{{reviewId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ORDERS",
+      "item": [
+        {
+          "name": "Place Order (Checkout)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"items\":[{\"product\":\"{{productId}}\",\"variant\":{\"size\":\"M\",\"color\":\"Black\",\"material\":\"Cotton\",\"fit\":\"Regular\"},\"seller\":\"{{sellerId}}\",\"qty\":2,\"price\":599}],\"shippingAddress\":{\"name\":\"Alice Buyer\",\"phone\":\"9876543210\",\"line1\":\"123 Market Street\",\"line2\":\"Apt 5\",\"city\":\"Mumbai\",\"state\":\"Maharashtra\",\"country\":\"India\",\"pincode\":\"400001\"},\"payment\":{\"method\":\"COD\"}}"
+            },
+            "url": { "raw": "http://localhost:5000/orders/checkout", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders","checkout"] }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/orders", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders"] }
+          }
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/orders/{{orderId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders","{{orderId}}"] }
+          }
+        },
+        {
+          "name": "Update Order Status (Admin/Seller)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"status\":\"shipped\"}" },
+            "url": { "raw": "http://localhost:5000/orders/{{orderId}}/status", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders","{{orderId}}","status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BANNERS",
+      "item": [
+        {
+          "name": "List Banners (Public)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "http://localhost:5000/banners", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["banners"] }
+          }
+        },
+        {
+          "name": "Create Banner (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Summer Sale 2025\",\"imageUrl\":\"https://example.com/summer-banner.jpg\",\"linkType\":\"category\",\"targetId\":\"{{categoryId}}\",\"active\":true,\"position\":0}" },
+            "url": { "raw": "http://localhost:5000/banners", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["banners"] }
+          }
+        },
+        {
+          "name": "Update Banner (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Updated Summer Sale\",\"active\":true,\"position\":1}" },
+            "url": { "raw": "http://localhost:5000/banners/{{bannerId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["banners","{{bannerId}}"] }
+          }
+        },
+        {
+          "name": "Delete Banner (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/banners/{{bannerId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["banners","{{bannerId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SELLER",
+      "item": [
+        {
+          "name": "Request Seller Account",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"storeName\":\"Cool Threads Store\",\"logoUrl\":\"https://example.com/logo.jpg\",\"bannerUrl\":\"https://example.com/banner.jpg\"}" },
+            "url": { "raw": "http://localhost:5000/seller/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["seller","register"] }
+          }
+        },
+        {
+          "name": "Get My Seller Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/seller/me", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["seller","me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ADMIN",
+      "item": [
+        {
+          "name": "List All Sellers",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/admin/sellers", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["admin","sellers"] }
+          }
+        },
+        {
+          "name": "Approve Seller Account",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/admin/sellers/{{sellerId}}/approve", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["admin","sellers","{{sellerId}}","approve"] }
+          }
+        },
+        {
+          "name": "Seed Basic Categories (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Authorization","value":"Bearer {{adminToken}}"}],
+            "url": { "raw": "http://localhost:5000/admin/seed-categories", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["admin","seed-categories"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SUPPORT",
+      "item": [
+        {
+          "name": "Create Support Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"subject\":\"Product arrived damaged\",\"message\":\"I received the item but it has a defect\",\"orderId\":\"{{orderId}}\"}" },
+            "url": { "raw": "http://localhost:5000/support", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["support"] }
+          }
+        },
+        {
+          "name": "List My Support Tickets",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/support", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["support"] }
+          }
+        },
+        {
+          "name": "Post Message on Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"message\":\"Please expedite the replacement process\"}" },
+            "url": { "raw": "http://localhost:5000/support/{{ticketId}}/message", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["support","{{ticketId}}","message"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PAYMENTS",
+      "item": [
+        {
+          "name": "Create Payment Intent (Stub)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "body": { "mode": "raw", "raw": "{\"amount\":1198,\"currency\":\"INR\",\"method\":\"online\",\"orderId\":\"{{orderId}}\"}" },
+            "url": { "raw": "http://localhost:5000/payments/create", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["payments","create"] }
+          }
+        },
+        {
+          "name": "Payment Webhook (Stub)",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "body": { "mode": "raw", "raw": "{\"event\":\"payment.authorized\",\"paymentId\":\"pay_123456\",\"orderId\":\"{{orderId}}\",\"status\":\"paid\"}" },
+            "url": { "raw": "http://localhost:5000/payments/webhook", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["payments","webhook"] }
+          }
+        }
+      ]
+    }
+  ]
+}
