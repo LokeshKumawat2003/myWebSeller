@@ -86,8 +86,14 @@ exports.listProducts = async (req, res) => {
         const cat = categoryIdsMap && categoryIdsMap[cid];
         if (cat) p.category = { _id: cat._id, name: cat.name };
       }
+      // Filter variants to only include those with available stock
+      if (p.variants && p.variants.length > 0) {
+        p.variants = p.variants.filter(variant => 
+          variant.sizes && variant.sizes.some(size => size.stock > 0)
+        );
+      }
       return p;
-    }).filter(p => p.seller && p.seller.approved && !p.seller.blocked);
+    }).filter(p => p.seller && p.seller.approved && !p.seller.blocked && p.variants && p.variants.length > 0);
 
     const total = await Product.countDocuments(filter);
     res.json({ products: visibleProducts, total, page, pages: Math.ceil(total / limit) });
@@ -116,7 +122,18 @@ exports.getFeaturedProducts = async (req, res) => {
       .limit(Number(limit))
       .lean();
 
-    res.json({ products });
+    // Filter products to only include those with available stock variants
+    const filteredProducts = products.filter(p => {
+      if (p.variants && p.variants.length > 0) {
+        p.variants = p.variants.filter(variant => 
+          variant.sizes && variant.sizes.some(size => size.stock > 0)
+        );
+        return p.variants.length > 0;
+      }
+      return false;
+    });
+
+    res.json({ products: filteredProducts });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching featured products', error: err.message });
   }
@@ -136,7 +153,18 @@ exports.getNewArrivals = async (req, res) => {
       .limit(Number(limit))
       .lean();
 
-    res.json({ products });
+    // Filter products to only include those with available stock variants
+    const filteredProducts = products.filter(p => {
+      if (p.variants && p.variants.length > 0) {
+        p.variants = p.variants.filter(variant => 
+          variant.sizes && variant.sizes.some(size => size.stock > 0)
+        );
+        return p.variants.length > 0;
+      }
+      return false;
+    });
+
+    res.json({ products: filteredProducts });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching new arrivals', error: err.message });
   }
@@ -162,6 +190,17 @@ exports.getProduct = async (req, res) => {
         const cat = await Category.findById(product.category).select('name');
         if (cat) product.category = { _id: cat._id, name: cat.name };
       } catch (e) {}
+    }
+    // Filter variants to only include those with available stock
+    if (product.variants && product.variants.length > 0) {
+      product.variants = product.variants.filter(variant => 
+        variant.sizes && variant.sizes.some(size => size.stock > 0)
+      );
+      if (product.variants.length === 0) {
+        return res.status(404).json({ message: 'Product not available' });
+      }
+    } else {
+      return res.status(404).json({ message: 'Product not available' });
     }
     // Transform _id to id for frontend compatibility
     product.id = product._id.toString();

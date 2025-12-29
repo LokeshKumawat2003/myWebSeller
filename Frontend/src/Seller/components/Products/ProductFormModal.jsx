@@ -26,6 +26,12 @@ const ProductFormModal = ({
   handleSizeInputChange,
   handleAddSize,
   handleRemoveSize,
+  handleEditStock,
+  handleSaveStock,
+  handleCancelStockEdit,
+  editingStock,
+  stockInputValue,
+  setStockInputValue,
   handleAddColor,
   handleRemoveColor,
   getUniqueSizesAndColors,
@@ -82,6 +88,12 @@ const ProductFormModal = ({
             handleSizeInputChange={handleSizeInputChange}
             handleAddSize={handleAddSize}
             handleRemoveSize={handleRemoveSize}
+            handleEditStock={handleEditStock}
+            handleSaveStock={handleSaveStock}
+            handleCancelStockEdit={handleCancelStockEdit}
+            editingStock={editingStock}
+            stockInputValue={stockInputValue}
+            setStockInputValue={setStockInputValue}
             handleAddColor={handleAddColor}
             handleRemoveColor={handleRemoveColor}
             getUniqueSizesAndColors={getUniqueSizesAndColors}

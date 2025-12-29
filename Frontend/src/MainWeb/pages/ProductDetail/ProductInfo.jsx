@@ -140,12 +140,15 @@ const ProductInfo = ({
           </div>
           <div className="flex flex-wrap gap-2">
             {allSizes.map((size) => {
-              const isAvailable = uniqueSizes.includes(size);
+              const sizeObj = selectedColorVariant?.sizes.find(s => s.size === size);
+              const isAvailable = sizeObj && sizeObj.stock > 0;
+              const isOutOfStock = sizeObj && sizeObj.stock === 0;
+              
               return (
                 <button
                   key={size}
                   disabled={!isAvailable}
-                  className={`px-4 py-2 border rounded text-sm font-sans font-medium transition-all ${
+                  className={`px-4 py-2 border rounded text-sm font-sans font-medium transition-all relative ${
                     selectedSize?.size === size
                       ? 'border-[#9c7c3a] bg-[#9c7c3a] text-[#fbf7f2]'
                       : isAvailable
@@ -154,12 +157,18 @@ const ProductInfo = ({
                   }`}
                   onClick={() => {
                     if (isAvailable) {
-                      const sizeObj = selectedColorVariant.sizes.find(s => s.size === size);
                       setSelectedSize(sizeObj);
+                      // Reset quantity to 1 when changing sizes, as stock limits may differ
+                      setQuantity(1);
                     }
                   }}
                 >
                   {size}
+                  {isOutOfStock && (
+                    <span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+                      ×
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -183,7 +192,11 @@ const ProductInfo = ({
                 onClick={() => {
                   const colorVariant = product.variants.find(v => v.color === color);
                   setSelectedColorVariant(colorVariant);
-                  setSelectedSize(colorVariant.sizes[0]);
+                  // Select first available size (with stock > 0)
+                  const availableSize = colorVariant.sizes.find(s => s.stock > 0);
+                  setSelectedSize(availableSize || null);
+                  // Reset quantity when changing colors
+                  setQuantity(1);
                   setSelectedImage(0);
                 }}
                 title={color}
@@ -207,31 +220,49 @@ const ProductInfo = ({
 
       {/* Quantity */}
       <div>
-        <h3 className="text-sm font-serif font-medium text-[#9c7c3a] mb-3">Quantity</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-serif font-medium text-[#9c7c3a]">Quantity</h3>
+          {selectedSize && (
+            <span className="text-xs text-[#3b3b3b] font-sans">
+              Max {Math.min(3, selectedSize.stock)} per order • {selectedSize.stock} available
+            </span>
+          )}
+        </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center border border-[#e6ddd2] rounded">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="px-3 py-2 hover:bg-[#e6ddd2] font-sans text-[#3b3b3b]"
+              disabled={quantity <= 1}
+              className="px-3 py-2 hover:bg-[#e6ddd2] disabled:hover:bg-transparent disabled:opacity-50 font-sans text-[#3b3b3b] disabled:cursor-not-allowed"
             >
               -
             </button>
             <span className="px-4 py-2 border-x border-[#e6ddd2] font-sans text-[#3b3b3b]">{quantity}</span>
             <button
-              onClick={() => setQuantity(quantity + 1)}
-              className="px-3 py-2 hover:bg-[#e6ddd2] font-sans text-[#3b3b3b]"
+              onClick={() => setQuantity(Math.min(3, selectedSize?.stock || 1, quantity + 1))}
+              disabled={!selectedSize || quantity >= Math.min(3, selectedSize.stock)}
+              className="px-3 py-2 hover:bg-[#e6ddd2] disabled:hover:bg-transparent disabled:opacity-50 font-sans text-[#3b3b3b] disabled:cursor-not-allowed"
             >
               +
             </button>
           </div>
+          {selectedSize && quantity >= Math.min(3, selectedSize.stock) && (
+            <span className="text-xs text-red-600 font-sans">
+              Maximum quantity limit reached ({Math.min(3, selectedSize.stock)} per order)
+            </span>
+          )}
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="space-y-4">
-        <button onClick={onAddToCart} className="w-full bg-[#9c7c3a] hover:bg-[#8a6a2f] text-[#fbf7f2] py-4 px-6 rounded font-serif font-medium transition-colors flex items-center justify-center space-x-2 tracking-[0.5px]">
+        <button 
+          onClick={onAddToCart} 
+          disabled={!selectedSize || selectedSize.stock === 0}
+          className="w-full bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] disabled:text-[#3b3b3b] text-[#fbf7f2] py-4 px-6 rounded font-serif font-medium transition-colors flex items-center justify-center space-x-2 tracking-[0.5px] disabled:cursor-not-allowed"
+        >
           <ShoppingCart className="w-5 h-5" />
-          <span>Add to Bag</span>
+          <span>{!selectedSize ? 'Select Size' : selectedSize.stock === 0 ? 'Out of Stock' : 'Add to Bag'}</span>
         </button>
         <button
           onClick={handleWishlistToggle}

@@ -24,6 +24,8 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     isFeatured: false,
     variants: [], // Now array of color variants
   });
+  const [editingStock, setEditingStock] = useState(null); // {variantIdx, sizeIdx, value}
+  const [stockInputValue, setStockInputValue] = useState('');
   const [imageInput, setImageInput] = useState('');
   const [colorInput, setColorInput] = useState({
     color: '',
@@ -187,6 +189,34 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     }));
   };
 
+  const handleEditStock = (variantIdx, sizeIdx, currentStock) => {
+    setEditingStock({ variantIdx, sizeIdx });
+    setStockInputValue(currentStock.toString());
+  };
+
+  const handleSaveStock = () => {
+    if (editingStock) {
+      const { variantIdx, sizeIdx } = editingStock;
+      const newStock = parseInt(stockInputValue) || 0;
+      
+      setFormData(prev => {
+        const updatedVariants = [...prev.variants];
+        if (updatedVariants[variantIdx] && updatedVariants[variantIdx].sizes[sizeIdx]) {
+          updatedVariants[variantIdx].sizes[sizeIdx].stock = newStock;
+        }
+        return { ...prev, variants: updatedVariants };
+      });
+      
+      setEditingStock(null);
+      setStockInputValue('');
+    }
+  };
+
+  const handleCancelStockEdit = () => {
+    setEditingStock(null);
+    setStockInputValue('');
+  };
+
   const handleAddColor = () => {
     if (colorInput.color && colorInput.sizes.length > 0) {
       setFormData(prev => ({
@@ -242,13 +272,19 @@ export default function ProductManagement({ seller, products, onRefresh }) {
   const getProductMatrix = (product) => {
     const sizes = new Set();
     const colors = new Set();
+    let totalStock = 0;
     if (product.variants) {
       product.variants.forEach(v => {
-        if (v.size) sizes.add(v.size);
         if (v.color) colors.add(v.color);
+        if (v.sizes && Array.isArray(v.sizes)) {
+          v.sizes.forEach(s => {
+            if (s.size) sizes.add(s.size);
+            if (s.stock) totalStock += s.stock;
+          });
+        }
       });
     }
-    return { sizes: Array.from(sizes).sort(), colors: Array.from(colors).sort() };
+    return { sizes: Array.from(sizes).sort(), colors: Array.from(colors).sort(), totalStock };
   };
 
   const findProductVariant = (product, size, color) => {
@@ -358,6 +394,8 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     });
     setImageInput('');
     setEditingId(null);
+    setEditingStock(null);
+    setStockInputValue('');
     setShowForm(false);
   };
 
@@ -428,6 +466,12 @@ export default function ProductManagement({ seller, products, onRefresh }) {
         handleSizeInputChange={handleSizeInputChange}
         handleAddSize={handleAddSize}
         handleRemoveSize={handleRemoveSize}
+        handleEditStock={handleEditStock}
+        handleSaveStock={handleSaveStock}
+        handleCancelStockEdit={handleCancelStockEdit}
+        editingStock={editingStock}
+        stockInputValue={stockInputValue}
+        setStockInputValue={setStockInputValue}
         handleAddColor={handleAddColor}
         handleRemoveColor={handleRemoveColor}
         getUniqueSizesAndColors={getUniqueSizesAndColors}

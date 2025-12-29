@@ -23,6 +23,12 @@ const ProductForm = ({
   handleSizeInputChange, 
   handleAddSize, 
   handleRemoveSize, 
+  handleEditStock,
+  handleSaveStock,
+  handleCancelStockEdit,
+  editingStock,
+  stockInputValue,
+  setStockInputValue,
   handleAddColor, 
   handleRemoveColor, 
   getUniqueSizesAndColors, 
@@ -38,6 +44,44 @@ const ProductForm = ({
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Quick Stock Update Section - Only show when editing */}
+        {editingId && formData.variants && formData.variants.length > 0 && (
+          <div className="border-b border-gray-200 pb-6 mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              Quick Stock Update
+            </h3>
+            
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <p className="text-sm text-green-800 mb-4">
+                Use the "Edit Stock" buttons in the variant tables below to quickly update stock levels for existing sizes.
+                Changes will be saved when you submit the form.
+              </p>
+              
+              {/* Summary of current stock status */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-semibold text-gray-900">
+                    Total Variants: {formData.variants.length}
+                  </div>
+                </div>
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-semibold text-gray-900">
+                    Total Sizes: {formData.variants.reduce((sum, v) => sum + (v.sizes?.length || 0), 0)}
+                  </div>
+                </div>
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-semibold text-gray-900">
+                    Total Stock: {formData.variants.reduce((sum, v) => 
+                      sum + (v.sizes?.reduce((sizeSum, s) => sizeSum + (s.stock || 0), 0) || 0), 0
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Basic Info */}
         <div className="border-b border-gray-200 pb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -507,18 +551,71 @@ const ProductForm = ({
                           <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Discount</th>
                           <th className="border-r border-gray-200 px-3 py-2 text-left text-xs font-semibold text-gray-900">Stock</th>
                           <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900">SKU</th>
+                          <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {colorVariant.sizes.map((size, sizeIdx) => (
-                          <tr key={sizeIdx} className="border-t border-gray-200">
-                            <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">{size.size}</td>
-                            <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">${size.price}</td>
-                            <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">{size.discount}%</td>
-                            <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm font-semibold">{size.stock}</td>
-                            <td className="px-3 py-2 text-gray-900 text-sm">{size.sku}</td>
-                          </tr>
-                        ))}
+                        {colorVariant.sizes.map((size, sizeIdx) => {
+                          const isEditing = editingStock && editingStock.variantIdx === colorIdx && editingStock.sizeIdx === sizeIdx;
+                          return (
+                            <tr key={sizeIdx} className="border-t border-gray-200">
+                              <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">{size.size}</td>
+                              <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">${size.price}</td>
+                              <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">{size.discount}%</td>
+                              <td className="border-r border-gray-200 px-3 py-2 text-gray-900 text-sm">
+                                {isEditing ? (
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="number"
+                                      value={stockInputValue}
+                                      onChange={(e) => setStockInputValue(e.target.value)}
+                                      className="w-16 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                      min="0"
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={handleSaveStock}
+                                      className="px-2 py-1 bg-green-500 hover:bg-green-600 text-white text-xs rounded"
+                                    >
+                                      Save
+                                    </button>
+                                    <button
+                                      onClick={handleCancelStockEdit}
+                                      className="px-2 py-1 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-2">
+                                    <span className={`font-semibold ${size.stock === 0 ? 'text-red-600' : size.stock < 10 ? 'text-orange-600' : 'text-green-600'}`}>
+                                      {size.stock}
+                                    </span>
+                                    {size.stock === 0 && (
+                                      <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Out of Stock</span>
+                                    )}
+                                    {size.stock > 0 && size.stock < 10 && (
+                                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">Low Stock</span>
+                                    )}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-3 py-2 text-gray-900 text-sm">{size.sku}</td>
+                              <td className="px-3 py-2 text-center">
+                                {!isEditing && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleEditStock(colorIdx, sizeIdx, size.stock)}
+                                    className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs transition-colors mr-1"
+                                    disabled={accountBlocked || !seller}
+                                  >
+                                    Edit Stock
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

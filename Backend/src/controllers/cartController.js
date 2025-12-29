@@ -2,13 +2,28 @@ const Cart = require('../models/Cart');
 
 exports.getCart = async (req, res) => {
   try {
-    let cart = await Cart.findOne({ user: req.user._id }).populate('items.product', 'title basePrice discount images seller');
+    let cart = await Cart.findOne({ user: req.user._id }).populate('items.product', 'title basePrice discount images seller variants');
     if (!cart) {
       cart = new Cart({ user: req.user._id, items: [] });
       await cart.save();
     }
     // Populate seller info for each product
     await cart.populate('items.product.seller', 'storeName');
+    
+    // Add current stock information to each cart item
+    cart.items = cart.items.map(item => {
+      if (item.product && item.variant) {
+        const colorVariant = item.product.variants?.find(v => v.color === item.variant.color);
+        if (colorVariant) {
+          const sizeInfo = colorVariant.sizes?.find(s => s.size === item.variant.size);
+          if (sizeInfo) {
+            item.variant.stock = sizeInfo.stock;
+          }
+        }
+      }
+      return item;
+    });
+    
     res.json(cart);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching cart' });
@@ -23,15 +38,30 @@ exports.addItem = async (req, res) => {
     let cart = await Cart.findOne({ user: req.user._id });
     if (!cart) cart = new Cart({ user: req.user._id, items: [] });
     
-    // Fetch product to get seller info
+    // Fetch product to get seller info and check stock
     const Product = require('../models/Product');
     const productDoc = await Product.findById(product);
     console.log('Product Doc found:', !!productDoc);
     if (productDoc) {
       console.log('Product status:', productDoc.status, 'isBlocked:', productDoc.isBlocked);
     }
-    if (!productDoc) {
-      return res.status(404).json({ message: 'Product not found' });
+    if (!productDoc || productDoc.status !== 'approved' || productDoc.isBlocked) {
+      return res.status(404).json({ message: 'Product not found or not available' });
+    }
+    
+    // Check stock for the variant
+    let hasStock = false;
+    if (variant && variant.color && variant.size) {
+      const colorVariant = productDoc.variants.find(v => v.color === variant.color);
+      if (colorVariant) {
+        const sizeInfo = colorVariant.sizes.find(s => s.size === variant.size);
+        if (sizeInfo && sizeInfo.stock > 0) {
+          hasStock = true;
+        }
+      }
+    }
+    if (!hasStock) {
+      return res.status(400).json({ message: 'Variant out of stock' });
     }
     
     const existing = cart.items.find(i => i.product.toString() === product && JSON.stringify(i.variant) === JSON.stringify(variant));

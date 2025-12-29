@@ -1,9 +1,27 @@
 const Order = require('../models/Order');
+const Product = require('../models/Product');
+const Cart = require('../models/Cart');
 
 exports.checkout = async (req, res) => {
   try {
     const { items, shippingAddress, payment } = req.body;
     if (!items || items.length === 0) return res.status(400).json({ message: 'Cart is empty' });
+    
+    // Validate stock availability
+    for (const item of items) {
+      const product = await Product.findById(item.product);
+      if (!product || product.status !== 'approved' || product.isBlocked) {
+        return res.status(400).json({ message: `Product ${item.product} not available` });
+      }
+      const variant = product.variants.find(v => v.color === item.variant.color);
+      if (!variant) {
+        return res.status(400).json({ message: `Variant not found for product ${item.product}` });
+      }
+      const size = variant.sizes.find(s => s.size === item.variant.size);
+      if (!size || size.stock < item.qty) {
+        return res.status(400).json({ message: `Insufficient stock for ${item.variant.color} ${item.variant.size}` });
+      }
+    }
     
     // Calculate totals
     let subtotal = 0;
@@ -23,7 +41,6 @@ exports.checkout = async (req, res) => {
       if (!sellerId) {
         // try to resolve from product if possible
         if (item.product) {
-          const Product = require('../models/Product');
           const pd = await Product.findById(item.product).lean();
           if (pd && pd.seller) sellerId = pd.seller;
         }
@@ -51,6 +68,28 @@ exports.checkout = async (req, res) => {
       totals: { subtotal, tax, shipping, total }
     });
     await order.save();
+
+    // Deduct stock from products
+    for (const item of normalizedItems) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        const variant = product.variants.find(v => v.color === item.variant.color);
+        if (variant) {
+          const size = variant.sizes.find(s => s.size === item.variant.size);
+          if (size && size.stock >= item.qty) {
+            size.stock -= item.qty;
+            await product.save();
+          } else {
+            // If stock insufficient, perhaps cancel order or handle error
+            // For now, assume stock is checked before
+          }
+        }
+      }
+    }
+
+    // Clear the user's cart after successful purchase
+    await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
+
     res.status(201).json({ message: 'Order placed', order });
   } catch (err) {
     res.status(500).json({ message: 'Error placing order', error: err.message });
@@ -75,6 +114,32 @@ exports.getOrder = async (req, res) => {
         const s = await Seller.findOne({ $or: [ { _id: item.seller }, { user: item.seller } ] }).select('storeName approved blocked');
         if (s) item.seller = { _id: s._id, storeName: s.storeName, approved: s.approved, blocked: s.blocked };
         else item.seller = null;
+      }
+    }
+
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching order' });
+  }
+};
+
+exports.getOrder = async (req, res) => {
+  try {
+    const order = await Order.findOne({ _id: req.params.id, user: req.user._id })
+      .populate('user', 'name email phone addresses')
+      .populate('items.product', 'title basePrice discount images')
+      .lean();
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Populate seller information for each item
+    const Seller = require('../models/Seller');
+    for (const item of order.items) {
+      if (item.seller) {
+        const s = await Seller.findOne({ $or: [ { _id: item.seller }, { user: item.seller } ] }).select('storeName approved blocked');
+        if (s) item.seller = { _id: s._id, storeName: s.storeName, approved: s.approved, blocked: s.blocked };
       }
     }
 

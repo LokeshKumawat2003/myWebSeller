@@ -4,7 +4,7 @@ import { authLogin, getSellerProfile } from '../services/api';
 import { useSeller } from './SellerContext';
 
 export default function SellerLogin() {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +17,7 @@ export default function SellerLogin() {
     setLoading(true);
 
     try {
-      const response = await authLogin({ email, password });
+      const response = await authLogin({ phone, password });
       
       if (response.token) {
         // Load seller profile if available and store full seller object in context
@@ -69,13 +69,13 @@ export default function SellerLogin() {
             {/* Email */}
             <div>
               <label className="block text-black text-sm font-semibold mb-2">
-                Email Address
+                Phone Number
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter your phone number"
                 required
                 autoComplete="username"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"

@@ -48,9 +48,26 @@ const ProductDetail = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
+  // Adjust quantity when selected size changes to respect stock limits and max 3 limit
+  useEffect(() => {
+    if (selectedSize && quantity > Math.min(3, selectedSize.stock)) {
+      setQuantity(Math.min(quantity, Math.min(3, selectedSize.stock)));
+    }
+  }, [selectedSize]);
+
   const handleAddToCart = async () => {
     if (!selectedSize) {
       alert('Please select a size');
+      return;
+    }
+
+    if (selectedSize.stock === 0) {
+      alert('This size is currently out of stock');
+      return;
+    }
+
+    if (quantity > Math.min(3, selectedSize.stock)) {
+      alert(`Maximum quantity per order is ${Math.min(3, selectedSize.stock)} items`);
       return;
     }
 
@@ -61,7 +78,7 @@ const ProductDetail = () => {
         return;
       }
 
-const payload = {
+      const payload = {
         product: product._id || product.id,
         variant: {
           color: selectedColorVariant.color,
@@ -109,7 +126,9 @@ const payload = {
       setProduct(productData);
       const colorVariant = productData.variants?.[0];
       setSelectedColorVariant(colorVariant || null);
-      setSelectedSize(colorVariant?.sizes?.[0] || null);
+      // Select first available size (with stock > 0)
+      const availableSize = colorVariant?.sizes?.find(s => s.stock > 0);
+      setSelectedSize(availableSize || null);
       setSelectedImage(0);
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -168,7 +187,9 @@ const payload = {
       setProduct(sampleProduct);
       const colorVariant = sampleProduct.variants[0];
       setSelectedColorVariant(colorVariant);
-      setSelectedSize(colorVariant.sizes[0]);
+      // Select first available size (with stock > 0)
+      const availableSize = colorVariant.sizes.find(s => s.stock > 0);
+      setSelectedSize(availableSize || null);
       setSelectedImage(0);
     } finally {
       setLoading(false);

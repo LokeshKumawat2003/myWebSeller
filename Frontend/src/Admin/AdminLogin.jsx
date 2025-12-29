@@ -4,7 +4,7 @@ import { authLogin } from '../services/api';
 import { useAdmin } from './AdminContext';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,7 +17,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await authLogin({ email, password });
+      const response = await authLogin({ phone, password });
       
       if (response.token && response.user?.role === 'admin') {
         const adminData = {
@@ -59,13 +59,13 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-black text-sm font-semibold mb-2">
-                Email Address
+                Phone Number
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter admin email"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter admin phone number"
                 required
                 autoComplete="username"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"

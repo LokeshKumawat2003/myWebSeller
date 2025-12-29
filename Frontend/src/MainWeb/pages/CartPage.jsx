@@ -29,67 +29,15 @@ export default function CartPage() {
             cartData = data.items;
           }
         } catch (apiErr) {
-          console.log('API call failed, using dummy data');
+          console.log('API call failed, no cart data available');
         }
       }
 
-      // Always show dummy data if no real cart items
-      if (cartData.length === 0) {
-        setCartItems([
-          {
-            _id: '1',
-            product: {
-              _id: 'prod1',
-              title: 'Nike Air Max 270',
-              images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300']
-            },
-            seller: 'seller1',
-            qty: 2,
-            price: 150.00
-          },
-          {
-            _id: '2',
-            product: {
-              _id: 'prod2',
-              title: 'Adidas Ultraboost 22',
-              images: ['https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=300']
-            },
-            seller: 'seller2',
-            qty: 1,
-            price: 180.00
-          },
-          {
-            _id: '3',
-            product: {
-              _id: 'prod3',
-              title: 'Puma RS-X3',
-              images: ['https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=300']
-            },
-            seller: 'seller1',
-            qty: 3,
-            price: 120.00
-          }
-        ]);
-      } else {
-        setCartItems(cartData);
-      }
+      setCartItems(cartData);
     } catch (err) {
       setError('Failed to load cart');
       console.error(err);
-      // Fallback to dummy data on error
-      setCartItems([
-        {
-          _id: '1',
-          product: {
-            _id: 'prod1',
-            title: 'Nike Air Max 270',
-            images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300']
-          },
-          seller: 'seller1',
-          qty: 2,
-          price: 150.00
-        }
-      ]);
+      setCartItems([]);
     } finally {
       setLoading(false);
     }
@@ -103,17 +51,7 @@ export default function CartPage() {
     try {
       const token = getAuthToken();
       if (!token) {
-        // Update dummy data
-        setTimeout(() => {
-          setCartItems(cartItems.map(item =>
-            item._id === itemId ? { ...item, qty: newQty } : item
-          ));
-          setUpdatingItems(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(itemId);
-            return newSet;
-          });
-        }, 500);
+        setError('Please login to update cart');
         return;
       }
 
@@ -124,13 +62,11 @@ export default function CartPage() {
     } catch (err) {
       setError('Failed to update quantity');
     } finally {
-      if (token) {
-        setUpdatingItems(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(itemId);
-          return newSet;
-        });
-      }
+      setUpdatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
     }
   };
 
@@ -142,8 +78,7 @@ export default function CartPage() {
     try {
       const token = getAuthToken();
       if (!token) {
-        // Remove from dummy data
-        setCartItems(cartItems.filter(item => item._id !== itemId));
+        setError('Please login to remove items from cart');
         return;
       }
 
@@ -168,7 +103,7 @@ export default function CartPage() {
             <h2 className="text-lg md:text-xl font-serif font-medium text-[#9c7c3a] mb-3 tracking-[1px]">Please Login</h2>
             <p className="text-[#3b3b3b] mb-4 font-sans text-xs md:text-sm">You need to be logged in to view your cart</p>
             <Link
-              to="/user-login"
+              to="/login"
               className="inline-flex items-center gap-2 px-3 md:px-4 py-2 bg-[#9c7c3a] text-[#fbf7f2] rounded-lg hover:bg-[#8a6a2f] transition-colors font-serif font-medium tracking-[0.5px] text-xs md:text-sm"
             >
               Login to Continue
@@ -242,8 +177,8 @@ export default function CartPage() {
                           <div className="flex items-center border border-[#e6ddd2] rounded-lg bg-[#fbf7f2]">
                             <button
                               onClick={() => handleUpdateQty(item._id, item.qty - 1)}
-                              disabled={updatingItems.has(item._id)}
-                              className="p-1.5 md:p-2 hover:bg-[#e6ddd2] disabled:opacity-50 text-[#9c7c3a] transition-colors"
+                              disabled={updatingItems.has(item._id) || item.qty <= 1}
+                              className="p-1.5 md:p-2 hover:bg-[#e6ddd2] disabled:hover:bg-transparent disabled:opacity-50 text-[#9c7c3a] transition-colors"
                             >
                               <Minus className="w-3 h-3 md:w-4 md:h-4" />
                             </button>
@@ -252,12 +187,18 @@ export default function CartPage() {
                             </span>
                             <button
                               onClick={() => handleUpdateQty(item._id, item.qty + 1)}
-                              disabled={updatingItems.has(item._id)}
-                              className="p-1.5 md:p-2 hover:bg-[#e6ddd2] disabled:opacity-50 text-[#9c7c3a] transition-colors"
+                              disabled={updatingItems.has(item._id) || item.qty >= Math.min(3, item.variant?.stock || 1)}
+                              className="p-1.5 md:p-2 hover:bg-[#e6ddd2] disabled:hover:bg-transparent disabled:opacity-50 text-[#9c7c3a] transition-colors"
                             >
                               <Plus className="w-3 h-3 md:w-4 md:h-4" />
                             </button>
                           </div>
+
+                          {item.variant?.stock && (
+                            <span className="text-xs text-[#3b3b3b] font-sans">
+                              Max {Math.min(3, item.variant.stock)}
+                            </span>
+                          )}
 
                           <button
                             onClick={() => handleRemoveItem(item._id)}

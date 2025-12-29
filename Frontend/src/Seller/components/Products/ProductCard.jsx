@@ -2,7 +2,7 @@ import React from 'react';
 import { Edit, Trash2, CheckCircle, Clock, Package, Star } from 'lucide-react';
 
 const ProductCard = ({ product, onEdit, onDelete, accountBlocked, getProductMatrix, findProductVariant }) => {
-  const { sizes, colors } = getProductMatrix(product);
+  const { sizes, colors, totalStock } = getProductMatrix(product);
 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 group">
@@ -56,6 +56,11 @@ const ProductCard = ({ product, onEdit, onDelete, accountBlocked, getProductMatr
                   Sizes: {sizes.slice(0, 3).join(', ')}{sizes.length > 3 && '...'}
                 </span>
               )}
+              <span className={`text-xs px-2 py-1 rounded font-medium ${
+                totalStock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              }`}>
+                Stock: {totalStock}
+              </span>
             </div>
           ) : (
             <span className="text-sm text-gray-500">No variants</span>

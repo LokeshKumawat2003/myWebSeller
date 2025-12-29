@@ -3,12 +3,14 @@ import { adminListSellers, adminApproveSeller, adminBlockSeller, adminUnblockSel
 import SellerHeader from '../components/Seller/SellerHeader';
 import PendingSellersTable from '../components/Seller/PendingSellersTable';
 import ApprovedSellersTable from '../components/Seller/ApprovedSellersTable';
+import CreateSellerForm from '../components/Seller/CreateSellerForm';
 import { SellerLoadingState, SellerEmptyState } from '../components/Seller/SellerStates';
 
 export default function SellerManagement() {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     loadSellers();
@@ -70,11 +72,19 @@ export default function SellerManagement() {
 
   return (
     <div className="space-y-6">
-      <SellerHeader
-        total={sellers.length}
-        approved={approvedSellers.length}
-        pending={pendingSellers.length}
-      />
+      <div className="flex justify-between items-center">
+        <SellerHeader
+          total={sellers.length}
+          approved={approvedSellers.length}
+          pending={pendingSellers.length}
+        />
+        <button
+          onClick={() => setShowCreateForm(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center space-x-2"
+        >
+          <span>+ Create Seller</span>
+        </button>
+      </div>
 
       {loading ? (
         <SellerLoadingState />
@@ -97,6 +107,13 @@ export default function SellerManagement() {
             approving={approving}
           />
         </div>
+      )}
+
+      {showCreateForm && (
+        <CreateSellerForm
+          onSellerCreated={loadSellers}
+          onClose={() => setShowCreateForm(false)}
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ const adminController = require('../controllers/adminController');
 const { verifyToken, authorizeRole } = require('../middleware/auth');
 
 router.get('/sellers', verifyToken, authorizeRole('admin'), adminController.listSellers);
+router.post('/sellers', verifyToken, authorizeRole('admin'), adminController.createSeller);
 router.get('/admins', verifyToken, authorizeRole('admin'), adminController.listAdmins);
 router.post('/sellers/:id/approve', verifyToken, authorizeRole('admin'), adminController.approveSeller);
 router.post('/sellers/:id/block', verifyToken, authorizeRole('admin'), adminController.blockSeller);

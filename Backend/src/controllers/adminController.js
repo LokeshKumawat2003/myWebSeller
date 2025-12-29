@@ -55,6 +55,35 @@ exports.unblockSeller = async (req, res) => {
   }
 };
 
+exports.createSeller = async (req, res) => {
+  try {
+    const { name, email, password, phone, storeName, logoUrl, bannerUrl } = req.body;
+    if (!name || !email || !password || !phone || !storeName) {
+      return res.status(400).json({ message: 'Missing required fields: name, email, password, phone, storeName' });
+    }
+    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email or phone number already registered' });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+    const user = new User({ name, email, passwordHash, phone, role: 'seller' });
+    await user.save();
+    const seller = new Seller({
+      user: user._id,
+      storeName,
+      logoUrl,
+      bannerUrl,
+      approved: true, // Admin created sellers are approved by default
+    });
+    await seller.save();
+    return res.status(201).json({ message: 'Seller created successfully', seller, user: { id: user._id, name: user.name, email: user.email, phone: user.phone } });
+  } catch (err) {
+    console.error('createSeller error', err);
+    return res.status(500).json({ message: 'Error creating seller', error: err.message });
+  }
+};
+
 exports.approveProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);

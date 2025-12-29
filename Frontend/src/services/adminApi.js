@@ -7,6 +7,18 @@ export async function adminListSellers(token) {
   return tryFetch(`${API_URL}/admin/sellers`, { headers });
 }
 
+export async function adminCreateSeller(sellerData, token) {
+  const t = token || getAuthToken();
+  const headers = t
+    ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" }
+    : { "Content-Type": "application/json" };
+  return tryFetch(`${API_URL}/admin/sellers`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(sellerData),
+  });
+}
+
 export async function adminListAdmins(token) {
   const t = token || getAuthToken();
   const headers = t ? { Authorization: `Bearer ${t}` } : {};
