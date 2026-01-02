@@ -4,6 +4,7 @@ import { LayoutDashboard, Users, Package, ShoppingCart, User, Tag, Image, Credit
 import SharedSidebar from '../components/SharedSidebar';
 import { adminGetAllOrders, adminListSellers } from '../services/adminApi';
 import { getAllSupportTickets } from '../services/api';
+import ThemeSwitcher from './components/ThemeSwitcher';
 
 const MENU_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -77,11 +78,12 @@ function AdminSidebar({ activeTab, setActiveTab }) {
       user={admin}
       logout={logout}
       logoutPath="/admin/login"
-      theme="light"
+      theme="luxury"
       logoIcon={UserCircle}
-      logoTitle="AgriMart"
+      logoTitle="kalaqx"
       logoSubtitle="Admin Panel"
       notifications={notifications}
+      additionalUserContent={<ThemeSwitcher />}
     />
   );
 }

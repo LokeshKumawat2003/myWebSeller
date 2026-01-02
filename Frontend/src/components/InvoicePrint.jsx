@@ -92,7 +92,7 @@ export default function InvoicePrint({ order }) {
         <div className="border-b border-gray-300 pb-1 mb-1">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <h1 className="text-xl font-bold text-purple-600 leading-tight">AgriMart</h1>
+              <h1 className="text-xl font-bold text-purple-600 leading-tight">kalaqx</h1>
               <p className="text-gray-700 font-semibold text-xs leading-tight">Agriculture E-commerce</p>
             </div>
             <div className="text-right text-xs">
@@ -109,7 +109,7 @@ export default function InvoicePrint({ order }) {
           <div>
             <p className="text-black font-bold text-xs mb-0.5 border-b border-purple-300">BILL FROM</p>
             <div className="text-black">
-              <p className="font-semibold leading-tight text-xs">AgriMart</p>
+              <p className="font-semibold leading-tight text-xs">kalaqx</p>
               <p className="text-gray-700 text-xs leading-tight">E-commerce</p>
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function InvoicePrint({ order }) {
         {/* Footer - Compact */}
         <div className="border-t border-gray-300 pt-0.5 text-center text-xs">
           <p className="text-black font-semibold text-xs leading-tight">Thank you for your business!</p>
-          <p className="text-gray-700 text-xs leading-tight">support@agrimart.com</p>
+          <p className="text-gray-700 text-xs leading-tight">support@kalaqx.com</p>
         </div>
       </div>
     </div>

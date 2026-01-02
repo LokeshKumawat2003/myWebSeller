@@ -1,39 +1,40 @@
 import React from 'react';
 import { Users, Clock, CheckCircle, DollarSign } from 'lucide-react';
+import { Card } from '../UI';
 
 const SellerHeader = ({ total, approved, pending }) => {
   return (
-    <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 text-white p-8 rounded-xl shadow-lg">
-      <div className="flex items-center justify-between">
+    <Card className="luxury-text-primary" padding="p-6 sm:p-8">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Seller Management</h1>
-          <p className="text-indigo-100 mt-1">Manage seller accounts and approvals</p>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold luxury-accent">Seller Management</h1>
+          <p className="luxury-text-secondary mt-1 font-sans">Manage seller accounts and approvals</p>
         </div>
-        <div className="flex gap-6">
-          <div className="text-center">
-            <div className="flex items-center gap-2 text-indigo-100 mb-1">
+        <div className="flex flex-wrap justify-center lg:justify-end gap-4 lg:gap-6">
+          <div className="text-center min-w-[80px]">
+            <div className="flex items-center justify-center gap-2 luxury-text-secondary mb-1">
               <Users className="w-4 h-4" />
-              <span className="text-sm font-medium">Total</span>
+              <span className="text-sm font-medium font-sans">Total</span>
             </div>
-            <p className="text-2xl font-bold">{total}</p>
+            <p className="text-xl sm:text-2xl font-bold luxury-accent font-serif">{total}</p>
           </div>
-          <div className="text-center">
-            <div className="flex items-center gap-2 text-indigo-100 mb-1">
+          <div className="text-center min-w-[80px]">
+            <div className="flex items-center justify-center gap-2 luxury-text-secondary mb-1">
               <CheckCircle className="w-4 h-4" />
-              <span className="text-sm font-medium">Approved</span>
+              <span className="text-sm font-medium font-sans">Approved</span>
             </div>
-            <p className="text-2xl font-bold">{approved}</p>
+            <p className="text-xl sm:text-2xl font-bold luxury-accent font-serif">{approved}</p>
           </div>
-          <div className="text-center">
-            <div className="flex items-center gap-2 text-indigo-100 mb-1">
+          <div className="text-center min-w-[80px]">
+            <div className="flex items-center justify-center gap-2 luxury-text-secondary mb-1">
               <Clock className="w-4 h-4" />
-              <span className="text-sm font-medium">Pending</span>
+              <span className="text-sm font-medium font-sans">Pending</span>
             </div>
-            <p className="text-2xl font-bold">{pending}</p>
+            <p className="text-xl sm:text-2xl font-bold luxury-accent font-serif">{pending}</p>
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

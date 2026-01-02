@@ -71,7 +71,7 @@ export default function OrderManagement() {
   };
 
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'packed': return 'bg-orange-100 text-orange-800';
       case 'shipped': return 'bg-blue-100 text-blue-800';

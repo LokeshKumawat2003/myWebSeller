@@ -55,7 +55,7 @@ export default function SellerNavbar({ seller, onMenuClick }) {
                 </h1>
                 <div className="flex items-center gap-2 text-sm text-[#666] font-sans">
                   <User className="w-3 h-3" />
-                  <span className="truncate max-w-[200px]">{seller?.user?.email || 'seller@agrimart.com'}</span>
+                  <span className="truncate max-w-[200px]">{seller?.user?.email || 'seller@kalaqx.com'}</span>
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function SellerNavbar({ seller, onMenuClick }) {
               </h2>
               <p className="text-sm text-[#666] flex items-center gap-2 font-sans">
                 <User className="w-4 h-4" />
-                {seller?.user?.email || 'seller@agrimart.com'}
+                {seller?.user?.email || 'seller@kalaqx.com'}
               </p>
             </div>
 

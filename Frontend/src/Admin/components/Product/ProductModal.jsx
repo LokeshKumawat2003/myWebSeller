@@ -16,24 +16,24 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+      <div className="luxury-bg rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 luxury-border">
+          <h2 className="text-2xl font-bold luxury-text-primary flex items-center gap-2 italic">
             <Eye className="w-6 h-6" />
             Product Details
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-luxury-bg-secondary rounded-lg transition-colors"
           >
-            <X className="w-6 h-6 text-gray-500" />
+            <X className="w-6 h-6 luxury-text-secondary" />
           </button>
         </div>
 
         <div className="p-6 space-y-6">
           {/* Product Images */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Product Images</h3>
+            <h3 className="text-lg font-semibold luxury-text-primary mb-3 italic">Product Images</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {product.images && product.images.length > 0 ? (
                 product.images.map((image, index) => (
@@ -41,12 +41,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                     key={index}
                     src={image}
                     alt={`${product.title} ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                    className="w-full h-32 object-cover rounded-lg luxury-border"
                   />
                 ))
               ) : (
-                <div className="col-span-full flex items-center justify-center h-32 bg-gray-100 rounded-lg border border-gray-200">
-                  <Eye className="w-8 h-8 text-gray-400" />
+                <div className="col-span-full flex items-center justify-center h-32 luxury-bg-secondary rounded-lg luxury-border">
+                  <Eye className="w-8 h-8 luxury-text-secondary" />
                 </div>
               )}
             </div>

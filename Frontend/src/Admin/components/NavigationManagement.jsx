@@ -14,6 +14,7 @@ import {
   adminUpdateNavigation,
   adminDeleteNavigation,
 } from '../../services/adminApi';
+import { Button, Input, Checkbox, Card } from './UI';
 
 const NavigationManagement = () => {
   const [navigations, setNavigations] = useState([]);
@@ -101,32 +102,21 @@ const NavigationManagement = () => {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <Menu className="w-6 h-6 text-[#9c7c3a]" />
-          <h1 className="text-2xl font-serif font-medium text-[#9c7c3a]">Navigation Management</h1>
+          <h1 className="text-xl sm:text-2xl font-serif font-medium text-[#9c7c3a]">Navigation Management</h1>
         </div>
-        <div className="flex gap-3">
-          <button
-            onClick={async () => {
-              try {
-                await adminSeedNavigations();
-                await loadNavigations();
-              } catch (err) {
-                setError('Failed to seed navigations');
-              }
-            }}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Seed Navigations
-          </button>
-          <button
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#9c7c3a] text-white rounded-lg hover:bg-[#8a6a2f] transition-colors"
+            variant="primary"
+            size="medium"
+            className="w-full sm:w-auto"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 mr-2" />
             Add Navigation
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -138,97 +128,89 @@ const NavigationManagement = () => {
       )}
 
       {showForm && (
-        <div className="mb-6 p-6 bg-white border border-[#e6ddd2] rounded-lg">
-          <h2 className="text-lg font-serif font-medium text-[#9c7c3a] mb-4">
+        <Card className="mb-6">
+          <h2 className="text-lg font-serif font-medium luxury-accent mb-4">
             {editingItem ? 'Edit Navigation' : 'Add Navigation'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#3b3b3b] mb-1">Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#e6ddd2] rounded-lg focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#3b3b3b] mb-1">Slug</label>
-                <input
-                  type="text"
-                  value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#e6ddd2] rounded-lg focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#3b3b3b] mb-1">Order</label>
-                <input
-                  type="number"
-                  value={formData.order}
-                  onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
-                  className="w-full px-3 py-2 border border-[#e6ddd2] rounded-lg focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent"
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Name"
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <Input
+                label="Slug"
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                required
+              />
+              <Input
+                label="Order"
+                type="number"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+              />
               <div className="flex items-center">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    className="rounded border-[#e6ddd2] text-[#9c7c3a] focus:ring-[#9c7c3a]"
-                  />
-                  <span className="text-sm font-medium text-[#3b3b3b]">Active</span>
-                </label>
+                <Checkbox
+                  id="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  label="Active"
+                />
               </div>
             </div>
-            <div className="flex gap-3">
-              <button
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
+              <Button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#9c7c3a] text-white rounded-lg hover:bg-[#8a6a2f] transition-colors disabled:opacity-50"
+                variant="primary"
+                size="medium"
+                className="w-full sm:w-auto order-2 sm:order-1"
               >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                {editingItem ? 'Update' : 'Create'}
-              </button>
-              <button
+                {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                {editingItem ? 'Update Navigation' : 'Create Navigation'}
+              </Button>
+              <Button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 border border-[#e6ddd2] text-[#3b3b3b] rounded-lg hover:bg-[#fbf7f2] transition-colors"
+                variant="secondary"
+                size="medium"
+                className="w-full sm:w-auto order-1 sm:order-2"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
-        </div>
+        </Card>
       )}
 
-      <div className="bg-white border border-[#e6ddd2] rounded-lg overflow-hidden">
+      <Card className="overflow-hidden">
         {loading && !navigations.length ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-[#9c7c3a]" />
+            <Loader2 className="w-8 h-8 animate-spin luxury-accent" />
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#fbf7f2] border-b border-[#e6ddd2]">
+              <thead className="luxury-bg-secondary luxury-border">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3b3b3b] uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3b3b3b] uppercase tracking-wider">Slug</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3b3b3b] uppercase tracking-wider">Order</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-[#3b3b3b] uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-[#3b3b3b] uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium luxury-text-secondary uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium luxury-text-secondary uppercase tracking-wider">Slug</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium luxury-text-secondary uppercase tracking-wider">Order</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium luxury-text-secondary uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium luxury-text-secondary uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e6ddd2]">
+              <tbody className="divide-y luxury-border">
                 {navigations.map((item) => (
-                  <tr key={item._id} className="hover:bg-[#fbf7f2]">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#9c7c3a]">{item.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3b3b3b]">{item.slug}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3b3b3b]">{item.order}</td>
+                  <tr key={item._id} className="hover:luxury-bg-secondary">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium luxury-accent">{item.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm luxury-text-primary">{item.slug}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm luxury-text-primary">{item.order}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                         item.isActive
@@ -260,13 +242,13 @@ const NavigationManagement = () => {
             </table>
             {navigations.length === 0 && !loading && (
               <div className="text-center py-12">
-                <Menu className="w-12 h-12 text-[#e6ddd2] mx-auto mb-4" />
-                <p className="text-[#3b3b3b] font-sans">No navigation items found</p>
+                <Menu className="w-12 h-12 luxury-text-secondary mx-auto mb-4" />
+                <p className="luxury-text-primary font-sans">No navigation items found</p>
               </div>
             )}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

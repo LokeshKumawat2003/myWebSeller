@@ -28,10 +28,10 @@ const ProductTable = ({
 }) => {
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12">
+      <div className="luxury-bg rounded-xl shadow-sm luxury-border p-12">
         <div className="flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mr-3" />
-          <p className="text-gray-600 font-medium">Loading products...</p>
+          <Loader2 className="w-8 h-8 animate-spin luxury-accent mr-3" />
+          <p className="luxury-text-secondary font-medium italic">Loading products...</p>
         </div>
       </div>
     );
@@ -39,11 +39,11 @@ const ProductTable = ({
 
   if (products.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12">
+      <div className="luxury-bg rounded-xl shadow-sm luxury-border p-12">
         <div className="text-center">
           <Eye className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-          <p className="text-gray-600">No products match the current filter criteria</p>
+          <h3 className="text-lg font-medium luxury-text-primary mb-2 italic">No products found</h3>
+          <p className="luxury-text-secondary italic">No products match the current filter criteria</p>
         </div>
       </div>
     );
@@ -60,46 +60,46 @@ const ProductTable = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="luxury-bg rounded-xl shadow-sm luxury-border overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="luxury-bg-secondary luxury-border">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Product</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Seller</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">State</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Special</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Product</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Seller</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Price</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">State</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Special</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold luxury-text-secondary uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y luxury-border">
             {products.map((product) => (
-              <tr key={product._id} className="hover:bg-gray-50 transition-colors">
+              <tr key={product._id} className="hover:luxury-bg-secondary transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-12 w-12">
                       <img
-                        className="h-12 w-12 rounded-lg object-cover border border-gray-200"
+                        className="h-12 w-12 rounded-lg object-cover border border-[#e6ddd2]"
                         src={product.images?.[0] || '/placeholder-product.png'}
                         alt={product.title}
                       />
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
+                      <div className="text-sm font-medium luxury-text-primary max-w-xs truncate">
                         {product.title}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm luxury-text-secondary">
                         ID: {product._id?.substring(0, 8)}
                       </div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
+                <td className="px-6 py-4 text-sm luxury-text-primary">
                   {product.seller?.storeName || 'N/A'}
                 </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                <td className="px-6 py-4 text-sm font-medium luxury-text-primary">
                   ${product.basePrice}
                 </td>
                 <td className="px-6 py-4">
@@ -153,7 +153,7 @@ const ProductTable = ({
                       <select
                         value={selectedStatus[product._id] || ''}
                         onChange={(e) => onStatusChange(product._id, e.target.value)}
-                        className="px-2 py-1 border border-gray-300 rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="px-2 py-1 border border-[#e6ddd2] rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-[#9c7c3a]"
                       >
                         <option value="">Status</option>
                         <option value="draft">Draft</option>
@@ -163,7 +163,7 @@ const ProductTable = ({
                       </select>
                       <button
                         onClick={() => onApplyStatus(product._id)}
-                        className="p-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition-colors"
+                        className="p-1 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded transition-colors"
                         title="Apply Status"
                       >
                         <Check className="w-3 h-3" />

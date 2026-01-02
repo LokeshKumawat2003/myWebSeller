@@ -5,6 +5,7 @@ import PendingSellersTable from '../components/Seller/PendingSellersTable';
 import ApprovedSellersTable from '../components/Seller/ApprovedSellersTable';
 import CreateSellerForm from '../components/Seller/CreateSellerForm';
 import { SellerLoadingState, SellerEmptyState } from '../components/Seller/SellerStates';
+import { Button } from '../components/UI';
 
 export default function SellerManagement() {
   const [sellers, setSellers] = useState([]);
@@ -71,19 +72,23 @@ export default function SellerManagement() {
   const approvedSellers = sellers.filter(s => s.approved);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 p-4 sm:p-6">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
         <SellerHeader
           total={sellers.length}
           approved={approvedSellers.length}
           pending={pendingSellers.length}
         />
-        <button
-          onClick={() => setShowCreateForm(true)}
-          className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center space-x-2"
-        >
-          <span>+ Create Seller</span>
-        </button>
+        <div className="flex justify-center lg:justify-end">
+          <Button
+            variant="primary"
+            onClick={() => setShowCreateForm(true)}
+            size="medium"
+            className="w-full sm:w-auto"
+          >
+            + Create Seller
+          </Button>
+        </div>
       </div>
 
       {loading ? (

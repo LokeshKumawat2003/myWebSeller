@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9c7c3a]"></div>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-[#fbf7f2] overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (
         <div
@@ -100,18 +100,7 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 md:ml-0">
-        {/* Mobile Header with Hamburger */}
-        <div className="md:hidden bg-white shadow-md border-b border-gray-200 px-4 py-3 flex items-center">
-          <button
-            onClick={toggleMobileSidebar}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <Menu size={24} className="text-gray-600" />
-          </button>
-          <h2 className="ml-4 text-lg font-bold text-gray-900">Admin Dashboard</h2>
-        </div>
-
-        <AdminNavbar />
+        <AdminNavbar admin={admin} onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
         <main className="flex-1 overflow-y-auto">
           <div className="p-4 md:p-6">

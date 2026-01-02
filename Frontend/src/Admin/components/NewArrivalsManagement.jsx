@@ -148,14 +148,14 @@ const NewArrivalsManagement = () => {
         {newArrivals.length === 0 ? (
           <div className="text-center py-8">
             <Zap className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No New Arrivals</h3>
-            <p className="text-gray-600">Add products to showcase in the search modal</p>
+            <h3 className="text-lg font-medium luxury-text-primary mb-2 italic">No New Arrivals</h3>
+            <p className="luxury-text-secondary italic">Add products to showcase in the search modal</p>
           </div>
         ) : (
           newArrivals.map((arrival, index) => (
             <div
               key={arrival._id}
-              className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg"
+              className="flex items-center gap-4 p-4 luxury-border rounded-lg luxury-bg hover:bg-luxury-bg-secondary transition-colors"
             >
               <div className="flex items-center gap-2">
                 <GripVertical className="w-4 h-4 text-gray-400" />
@@ -228,15 +228,15 @@ const NewArrivalsManagement = () => {
               {availableProducts.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No Available Products</h4>
-                  <p className="text-gray-600">All approved products are already in new arrivals</p>
+                  <h4 className="text-lg font-medium luxury-text-primary mb-2 italic">No Available Products</h4>
+                  <p className="luxury-text-secondary italic">All approved products are already in new arrivals</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {availableProducts.map(product => (
                     <div
                       key={product._id}
-                      className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                      className="luxury-border rounded-lg overflow-hidden hover:shadow-md transition-shadow luxury-bg"
                     >
                       <div className="aspect-square overflow-hidden">
                         <img
@@ -247,15 +247,15 @@ const NewArrivalsManagement = () => {
                       </div>
 
                       <div className="p-4">
-                        <h4 className="font-medium text-gray-900 mb-2 line-clamp-2">
+                        <h4 className="font-medium luxury-text-primary mb-2 line-clamp-2 italic">
                           {product.title}
                         </h4>
 
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-lg font-semibold text-purple-600">
+                          <span className="text-lg font-semibold luxury-accent">
                             ${product.basePrice}
                           </span>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm luxury-text-secondary">
                             {product.seller?.storeName || 'Unknown Seller'}
                           </span>
                         </div>
@@ -263,7 +263,7 @@ const NewArrivalsManagement = () => {
                         <button
                           onClick={() => handleAddProduct(product._id)}
                           disabled={actionLoading === product._id}
-                          className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          className="w-full px-4 py-2 luxury-accent hover:bg-luxury-accent text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                           {actionLoading === product._id ? (
                             <Loader2 className="w-4 h-4 animate-spin" />

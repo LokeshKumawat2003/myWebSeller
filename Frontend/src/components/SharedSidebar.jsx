@@ -12,9 +12,10 @@ const SharedSidebar = ({
   logoutPath,
   theme = 'light',
   logoIcon: LogoIcon,
-  logoTitle = 'AgriMart',
+  logoTitle = 'kalaqx',
   logoSubtitle,
-  notifications = {}
+  notifications = {},
+  additionalUserContent
 }) => {
 
   // Early return for debugging
@@ -114,7 +115,7 @@ const SharedSidebar = ({
               </div>
               <div className="flex-1 min-w-0">
                 <p className={`text-sm font-semibold ${textClass} truncate drop-shadow-sm`}>{user?.name || 'User'}</p>
-                <p className={`text-xs ${textSecondaryClass} truncate font-medium`}>{user?.email || 'user@agrimart.com'}</p>
+                <p className={`text-xs ${textSecondaryClass} truncate font-medium`}>{user?.email || 'user@kalaqx.com'}</p>
               </div>
             </div>
             <button
@@ -127,9 +128,14 @@ const SharedSidebar = ({
           </>
         ) : (
           <div className="flex flex-col items-center gap-4 py-2">
-            <div className={`w-12 h-12 rounded-full ${isDark ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : isLuxury ? 'bg-gradient-to-r from-[#9c7c3a] to-[#b8914a]' : 'bg-gradient-to-r from-blue-500 to-indigo-500'} flex items-center justify-center text-white font-bold shadow-xl cursor-pointer transition-transform hover:scale-110`} title={`${user?.name || 'User'} - ${user?.email || 'user@agrimart.com'}`}>
+            <div className={`w-12 h-12 rounded-full ${isDark ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : isLuxury ? 'bg-gradient-to-r from-[#9c7c3a] to-[#b8914a]' : 'bg-gradient-to-r from-blue-500 to-indigo-500'} flex items-center justify-center text-white font-bold shadow-xl cursor-pointer transition-transform hover:scale-110`} title={`${user?.name || 'User'} - ${user?.email || 'user@kalaqx.com'}`}>
               <UserCircle size={24} />
             </div>
+            {additionalUserContent && (
+              <div className="w-full px-2">
+                {additionalUserContent}
+              </div>
+            )}
             <button
               onClick={handleLogout}
               className={`p-3 rounded-xl ${logoutClass} transition-all duration-200 hover:scale-110 shadow-lg`}

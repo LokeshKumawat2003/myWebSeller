@@ -37,7 +37,7 @@ const Navbar = () => {
           { name: "Jewelry", slug: "jewelry" },
           { name: "Accessories", slug: "accessories" },
           { name: "Gifting", slug: "gifting" },
-          { name: "Grassroot by Anita Dongre", slug: "grassroot-by-anita-dongre" },
+          { name: "Grassroot by kalaqx", slug: "grassroot-by-kalaqx" },
           { name: "Discover", slug: "discover" },
           { name: "Celebrity Closet", slug: "celebrity-closet" },
           { name: "Sale", slug: "sale" },
@@ -93,7 +93,7 @@ const Navbar = () => {
           {/* Center Logo */}
           <Link to="/" className="block">
             <span className="font-serif text-[22px] tracking-[3px] text-[#9c7c3a]">
-              ANITA DONGRE
+              kalaqx
             </span>
           </Link>
 
@@ -193,7 +193,7 @@ const Navbar = () => {
           className="absolute left-1/2 -translate-x-1/2 z-10"
         >
           <span className="font-serif text-[14px] tracking-[1px] text-[#9c7c3a]">
-            ANITA DONGRE
+            kalaqx
           </span>
         </Link>
 

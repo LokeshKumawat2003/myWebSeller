@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getAllSupportTickets, assignSupportTicket, updateSupportTicketStatus, postSupportResponse } from '../../../services/api';
 import { adminListSellers } from '../../../services/adminApi';
 import { adminListAdmins } from '../../../services/adminApi';
+import { useThemeColors } from '../../AdminContext';
 
 export default function SupportManagement() {
+  const colors = useThemeColors();
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [sellers, setSellers] = useState([]);
@@ -115,16 +117,30 @@ export default function SupportManagement() {
               <div
                 key={ticket._id}
                 onClick={() => setSelectedTicket(ticket)}
-                className={`p-4 border rounded-lg cursor-pointer transition ${
-                  selectedTicket?._id === ticket._id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:bg-gray-50'
-                }`}
+                className="p-4 rounded-lg cursor-pointer transition"
+                style={{
+                  borderColor: colors.border,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  backgroundColor: selectedTicket?._id === ticket._id ? colors.bgSecondary : colors.bgPrimary,
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedTicket?._id !== ticket._id) {
+                    e.target.style.backgroundColor = colors.bgSecondary;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedTicket?._id !== ticket._id) {
+                    e.target.style.backgroundColor = colors.bgPrimary;
+                  }
+                }}
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h5 className="font-semibold text-black">{ticket.subject}</h5>
-                    <p className="text-sm text-gray-600">From: {ticket.user?.name || 'Unknown'}</p>
-                    <p className="text-sm text-gray-600">Assigned: {ticket.assignedTo?.name || 'Unassigned'}</p>
-                    <p className="text-sm text-gray-600">
+                    <h5 className="font-semibold" style={{ color: colors.textPrimary }}>{ticket.subject}</h5>
+                    <p className="text-sm" style={{ color: colors.textSecondary }}>From: {ticket.user?.name || 'Unknown'}</p>
+                    <p className="text-sm" style={{ color: colors.textSecondary }}>Assigned: {ticket.assignedTo?.name || 'Unassigned'}</p>
+                    <p className="text-sm" style={{ color: colors.textSecondary }}>
                       {new Date(ticket.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -144,19 +160,26 @@ export default function SupportManagement() {
         <div>
           {selectedTicket ? (
             <div className="space-y-4">
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h4 className="text-lg font-semibold text-black mb-2">{selectedTicket.subject}</h4>
+              <div className="p-4 rounded-lg shadow" style={{ backgroundColor: colors.bgPrimary }}>
+                <h4 className="text-lg font-semibold mb-2" style={{ color: colors.textPrimary }}>{selectedTicket.subject}</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="font-semibold text-black">User:</p>
-                    <p className="text-gray-600">{selectedTicket.user?.name} ({selectedTicket.user?.email})</p>
+                    <p className="font-semibold" style={{ color: colors.textPrimary }}>User:</p>
+                    <p style={{ color: colors.textSecondary }}>{selectedTicket.user?.name} ({selectedTicket.user?.email})</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-black">Status:</p>
+                    <p className="font-semibold" style={{ color: colors.textPrimary }}>Status:</p>
                     <select
                       value={selectedTicket.status}
                       onChange={(e) => handleStatusChange(selectedTicket._id, e.target.value)}
-                      className="px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="px-2 py-1 rounded text-sm"
+                      style={{
+                        backgroundColor: colors.bgPrimary,
+                        color: colors.textPrimary,
+                        borderColor: colors.border,
+                        borderWidth: '1px',
+                        borderStyle: 'solid'
+                      }}
                     >
                       <option value="open">Open</option>
                       <option value="pending">Pending</option>
@@ -165,11 +188,11 @@ export default function SupportManagement() {
                     </select>
                   </div>
                   <div>
-                    <p className="font-semibold text-black">Assigned To:</p>
+                    <p className="font-semibold luxury-text-primary">Assigned To:</p>
                     <select
                       value={selectedTicket.assignedTo?._id || ''}
                       onChange={(e) => handleAssign(selectedTicket._id, e.target.value)}
-                      className="px-2 py-1 border border-gray-300 rounded text-sm"
+                      className="px-2 py-1 border luxury-border rounded text-sm luxury-bg"
                     >
                       <option value="">Unassigned</option>
                       <optgroup label="Admins">
@@ -189,29 +212,29 @@ export default function SupportManagement() {
                     </select>
                   </div>
                   <div>
-                    <p className="font-semibold text-black">Created:</p>
-                    <p className="text-gray-600">{new Date(selectedTicket.createdAt).toLocaleDateString()}</p>
+                    <p className="font-semibold luxury-text-primary">Created:</p>
+                    <p className="luxury-text-secondary">{new Date(selectedTicket.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
                 {selectedTicket.order && (
                   <div className="mt-4">
-                    <p className="font-semibold text-black">Related Order:</p>
-                    <p className="text-gray-600">ID: {selectedTicket.order}</p>
+                    <p className="font-semibold luxury-text-primary">Related Order:</p>
+                    <p className="luxury-text-secondary">ID: {selectedTicket.order}</p>
                   </div>
                 )}
               </div>
 
-              <div className="bg-white p-4 rounded-lg shadow">
-                <h5 className="font-semibold text-black mb-2">Messages</h5>
+              <div className="luxury-bg p-4 rounded-lg shadow">
+                <h5 className="font-semibold luxury-text-primary mb-2">Messages</h5>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {selectedTicket.messages?.map((msg, idx) => (
                     <div key={idx} className={`p-3 rounded-lg ${
                       msg.from?._id === selectedTicket.user?._id 
-                        ? 'bg-blue-50 ml-8' // Customer messages - light blue, indented right
+                        ? 'luxury-bg-secondary ml-8' // Customer messages - light blue, indented right
                         : 'bg-green-50 mr-8' // Support messages - light green, indented left
                     }`}>
                       <div className="flex justify-between items-start mb-1">
-                        <span className="text-xs font-semibold text-gray-600">
+                        <span className="text-xs font-semibold luxury-text-secondary">
                           {msg.from?.name || 'Unknown'} 
                           <span className={`ml-1 px-1 py-0.5 rounded text-xs ${
                             msg.from?.role === 'admin' ? 'bg-red-100 text-red-800' :
@@ -222,11 +245,11 @@ export default function SupportManagement() {
                              msg.from?.role === 'seller' ? 'Seller' : 'Customer'}
                           </span>
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs luxury-text-secondary">
                           {new Date(msg.createdAt).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-sm text-black">{msg.message}</p>
+                      <p className="text-sm luxury-text-primary">{msg.message}</p>
                     </div>
                   ))}
                 </div>
@@ -238,13 +261,13 @@ export default function SupportManagement() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && !loading && handleSendMessage()}
                       placeholder="Type your reply..."
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="flex-1 px-3 py-2 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent luxury-bg"
                       disabled={loading}
                     />
                     <button
                       onClick={handleSendMessage}
                       disabled={loading}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition disabled:opacity-50"
+                      className="px-4 py-2 luxury-accent hover:bg-luxury-accent text-white rounded-lg transition disabled:opacity-50"
                     >
                       {loading ? 'Sending...' : 'Reply'}
                     </button>
@@ -253,7 +276,7 @@ export default function SupportManagement() {
               </div>
             </div>
           ) : (
-            <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500">
+            <div className="luxury-bg p-8 rounded-lg shadow text-center luxury-text-secondary">
               Select a ticket to view details
             </div>
           )}

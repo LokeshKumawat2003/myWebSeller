@@ -76,7 +76,7 @@ export default function SellerSidebar({ activeTab, setActiveTab }) {
       logoutPath="/seller/login"
       theme="luxury"
       logoIcon={Store}
-      logoTitle="AgriMart"
+      logoTitle="kalaqx"
       logoSubtitle="Seller Panel"
       notifications={notifications}
     />

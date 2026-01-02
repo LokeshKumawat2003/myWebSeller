@@ -53,7 +53,7 @@ export default function SellerLogin() {
         <div className="bg-white rounded-lg shadow-sm p-8 border border-[#e6ddd2]">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">AgriMart</h1>
+            <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">kalaqx</h1>
             <p className="text-[#666] italic font-serif">Seller Login</p>
           </div>
 

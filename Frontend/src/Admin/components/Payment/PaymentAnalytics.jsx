@@ -61,12 +61,12 @@ const PaymentAnalytics = ({ analytics }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
       {cards.map((card, index) => (
-        <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div key={index} className="luxury-bg rounded-xl shadow-sm luxury-border p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600 mb-1">{card.title}</p>
-              <p className="text-2xl font-bold text-gray-900 mb-1">{card.value}</p>
-              <p className="text-xs text-gray-500">{card.subtitle}</p>
+              <p className="text-sm font-medium italic luxury-text-secondary mb-1">{card.title}</p>
+              <p className="text-2xl font-bold italic luxury-text-primary mb-1">{card.value}</p>
+              <p className="text-xs italic luxury-text-secondary">{card.subtitle}</p>
             </div>
             <div className={`p-3 rounded-lg ${card.color}`}>
               <card.icon className="w-6 h-6 text-white" />

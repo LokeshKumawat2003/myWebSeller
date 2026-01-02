@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-[#e6ddd2] bg-[#fbf7f2]">
-          <h2 className="text-xl font-serif font-medium tracking-[3px] text-[#9c7c3a]">ANITA DONGRE</h2>
+          <h2 className="text-xl font-serif font-medium tracking-[3px] text-[#9c7c3a]">kalaqx</h2>
           <button onClick={onClose}>
             <X className="w-6 h-6 text-[#3b3b3b] hover:text-[#9c7c3a]" />
           </button>

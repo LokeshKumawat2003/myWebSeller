@@ -42,12 +42,12 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center p-4">
+    <div className="min-h-screen luxury-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-2xl p-8">
+        <div className="luxury-bg rounded-lg shadow-2xl p-8 luxury-border">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-purple-600 mb-2">AgriMart Admin</h1>
-            <p className="text-black font-medium">Administrator Panel</p>
+            <h1 className="text-3xl font-bold luxury-accent mb-2">kalaqx Admin</h1>
+            <p className="luxury-text-primary font-medium">Administrator Panel</p>
           </div>
 
           {error && (
@@ -58,7 +58,7 @@ export default function AdminLogin() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-black text-sm font-semibold mb-2">
+              <label className="block luxury-text-primary text-sm font-semibold mb-2">
                 Phone Number
               </label>
               <input
@@ -68,12 +68,12 @@ export default function AdminLogin() {
                 placeholder="Enter admin phone number"
                 required
                 autoComplete="username"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent transition luxury-bg"
               />
             </div>
 
             <div>
-              <label className="block text-black text-sm font-semibold mb-2">
+              <label className="block luxury-text-primary text-sm font-semibold mb-2">
                 Password
               </label>
               <input
@@ -83,20 +83,20 @@ export default function AdminLogin() {
                 placeholder="Enter password"
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent transition luxury-bg"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white font-bold py-3 rounded-lg transition duration-200 mt-6"
+              className="w-full luxury-accent hover:luxury-accent/90 disabled:luxury-bg-secondary text-white font-bold py-3 rounded-lg transition duration-200 mt-6"
             >
               {loading ? 'Logging in...' : 'Admin Login'}
             </button>
           </form>
 
-          <p className="text-center text-black text-sm mt-6">
+          <p className="text-center luxury-text-primary text-sm mt-6">
             Admin access required
           </p>
         </div>

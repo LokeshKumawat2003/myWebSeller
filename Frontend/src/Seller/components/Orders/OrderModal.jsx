@@ -35,7 +35,7 @@ const OrderModal = ({ selectedOrder, showModal, setShowModal, getStatusColor }) 
           <div className="border-b-2 border-[#e6ddd2] pb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h1 className="text-3xl font-light italic text-[#9c7c3a] font-serif">AgriMart</h1>
+                <h1 className="text-3xl font-light italic text-[#9c7c3a] font-serif">kalaqx</h1>
                 <p className="text-[#666] text-sm italic font-serif">Professional Agriculture E-commerce</p>
               </div>
               <div className="text-right">
@@ -52,7 +52,7 @@ const OrderModal = ({ selectedOrder, showModal, setShowModal, getStatusColor }) 
             <div>
               <p className="text-[#3b3b3b] font-light italic text-sm mb-2 font-serif">BILL FROM:</p>
               <div className="text-[#666] text-sm italic font-serif">
-                <p className="font-light">AgriMart Platform</p>
+                <p className="font-light">kalaqx Platform</p>
                 <p>Agricultural E-commerce Services</p>
               </div>
             </div>
@@ -151,7 +151,7 @@ const OrderModal = ({ selectedOrder, showModal, setShowModal, getStatusColor }) 
           {/* Footer */}
           <div className="text-center text-[#666] text-xs pt-4 border-t border-[#e6ddd2] print:text-[#3b3b3b] print:text-center italic font-serif">
             <p>Thank you for your business!</p>
-            <p>For support, contact: support@agrimart.com</p>
+            <p>For support, contact: support@kalaqx.com</p>
           </div>
         </div>
       </div>

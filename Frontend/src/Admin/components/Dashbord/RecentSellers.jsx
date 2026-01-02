@@ -1,19 +1,20 @@
 import React from 'react';
 import { User, Shield, ShieldCheck, ShieldX } from 'lucide-react';
+import { Card } from '../UI';
 
 const RecentSellers = ({ sellers, onBlockSeller, onUnblockSeller, actionLoading }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <Card>
       <div className="flex items-center gap-2 mb-6">
-        <User className="w-5 h-5 text-gray-700" />
-        <h2 className="text-xl font-semibold text-gray-900">Recent Sellers</h2>
+        <User className="w-5 h-5 luxury-accent" />
+        <h2 className="text-xl font-semibold italic luxury-text-primary">Recent Sellers</h2>
       </div>
       <div className="space-y-4 max-h-80 overflow-y-auto">
         {Array.isArray(sellers) && sellers.slice(0, 5).map((seller) => (
-          <div key={seller._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+          <div key={seller._id} className="flex items-center justify-between p-4 luxury-bg-secondary rounded-lg hover:bg-luxury-accent hover:bg-opacity-10 transition-colors">
             <div className="flex-1">
-              <p className="font-medium text-gray-900">{seller.storeName || 'No Store'}</p>
-              <p className="text-sm text-gray-600">{seller.user?.email}</p>
+              <p className="font-medium italic luxury-text-primary">{seller.storeName || 'No Store'}</p>
+              <p className="text-sm italic luxury-text-secondary">{seller.user?.email}</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
@@ -65,13 +66,13 @@ const RecentSellers = ({ sellers, onBlockSeller, onUnblockSeller, actionLoading 
           </div>
         ))}
         {(!Array.isArray(sellers) || sellers.length === 0) && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 luxury-text-secondary">
             <User className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-            <p>No sellers found</p>
+            <p className="italic">No sellers found</p>
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 };
 
