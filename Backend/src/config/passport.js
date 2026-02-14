@@ -2,11 +2,13 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 
 module.exports = function(passport) {
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
-  }, async (accessToken, refreshToken, profile, done) => {
+  // Only configure Google OAuth if credentials are provided
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    passport.use(new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+    }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = profile.emails && profile.emails[0] && profile.emails[0].value;
       if (!email) return done(new Error('No email found in Google profile'));
@@ -28,6 +30,9 @@ module.exports = function(passport) {
       return done(err);
     }
   }));
+  } else {
+    console.warn('Google OAuth credentials not found in environment variables. Google login will not be available.');
+  }
 
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id, done) => {
