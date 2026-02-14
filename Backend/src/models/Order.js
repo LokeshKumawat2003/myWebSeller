@@ -17,6 +17,9 @@ const OrderSchema = new mongoose.Schema({
   totals: Object,
   deliveryDate: Date, // Expected delivery date (7 days after shipped)
   shippedAt: Date, // When order was marked as shipped
+  awb: String, // Airway Bill Number from ShipRocket
+  courierName: String, // Courier name
+  trackingUrl: String, // Tracking URL
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', OrderSchema);

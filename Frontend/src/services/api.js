@@ -266,6 +266,12 @@ export async function getOrder(orderId, token) {
   return tryFetch(`${API_URL}/orders/${orderId}`, { headers })
 }
 
+export async function getOrderTracking(orderId, token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}` } : {}
+  return tryFetch(`${API_URL}/orders/${orderId}/track`, { headers })
+}
+
 // --- Support APIs ---
 export async function createSupportTicket(payload, token) {
   const t = token || getAuthToken()

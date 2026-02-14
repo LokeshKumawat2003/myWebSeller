@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { adminGetAllOrders, adminUpdateOrderStatus, adminMarkOrderDelivered } from '../../services/adminApi';
+import { getOrderTracking } from '../../services/api';
 import OrderHeader from '../components/Order/OrderHeader';
 import OrdersTable from '../components/Order/OrdersTable';
 import OrderDetailsModal from '../components/Order/OrderDetailsModal';
@@ -11,6 +12,7 @@ export default function OrderManagement() {
   const [updating, setUpdating] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [trackingStatuses, setTrackingStatuses] = useState({});
 
   useEffect(() => {
     loadOrders();
@@ -21,13 +23,29 @@ export default function OrderManagement() {
     try {
       const data = await adminGetAllOrders();
       // Handle array response or object with orders property
+      let orderData = [];
       if (Array.isArray(data)) {
-        setOrders(data);
+        orderData = data;
       } else if (data && Array.isArray(data.orders)) {
-        setOrders(data.orders);
+        orderData = data.orders;
       } else {
         console.error('Unexpected response format:', data);
-        setOrders([]);
+        orderData = [];
+      }
+      setOrders(orderData);
+
+      // Fetch tracking statuses for orders with AWB
+      const ordersWithTracking = orderData.filter(order => order.awb);
+      if (ordersWithTracking.length > 0) {
+        const trackingPromises = ordersWithTracking.map(order => 
+          getOrderTracking(order._id).catch(() => ({ status: 'unknown' }))
+        );
+        const trackingResults = await Promise.all(trackingPromises);
+        const newStatuses = {};
+        ordersWithTracking.forEach((order, i) => {
+          newStatuses[order._id] = trackingResults[i];
+        });
+        setTrackingStatuses(newStatuses);
       }
     } catch (err) {
       console.error('Error loading orders:', err);
@@ -104,6 +122,7 @@ export default function OrderManagement() {
           onViewDetails={handleViewDetails}
           onMarkDelivered={handleMarkDelivered}
           onUpdateStatus={handleUpdateStatus}
+          trackingStatuses={trackingStatuses}
         />
       )}
 

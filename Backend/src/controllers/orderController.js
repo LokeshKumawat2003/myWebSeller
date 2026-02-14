@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Cart = require('../models/Cart');
+const shipRocketService = require('../services/shipRocket');
 
 exports.checkout = async (req, res) => {
   try {
@@ -68,6 +69,64 @@ exports.checkout = async (req, res) => {
       totals: { subtotal, tax, shipping, total }
     });
     await order.save();
+
+    // Integrate ShipRocket for shipping
+    try {
+      const orderData = {
+        order_id: order._id.toString(),
+        order_date: new Date().toISOString(),
+        pickup_location: "Default Pickup", // TODO: Get from seller profile
+        channel_id: "123456", // TODO: Set proper channel ID
+        comment: "Order from e-commerce platform",
+        billing_customer_name: req.user.name || "Customer",
+        billing_last_name: "",
+        billing_address: shippingAddress.address,
+        billing_city: shippingAddress.city,
+        billing_pincode: shippingAddress.pincode,
+        billing_state: shippingAddress.state,
+        billing_country: shippingAddress.country || "India",
+        billing_email: req.user.email,
+        billing_phone: shippingAddress.phone,
+        shipping_is_billing: true,
+        shipping_customer_name: req.user.name || "Customer",
+        shipping_last_name: "",
+        shipping_address: shippingAddress.address,
+        shipping_city: shippingAddress.city,
+        shipping_pincode: shippingAddress.pincode,
+        shipping_state: shippingAddress.state,
+        shipping_country: shippingAddress.country || "India",
+        shipping_email: req.user.email,
+        shipping_phone: shippingAddress.phone,
+        order_items: normalizedItems.map(item => ({
+          name: item.product.title || "Product",
+          sku: item.product._id.toString(),
+          units: item.qty,
+          selling_price: item.price,
+          discount: 0,
+          tax: 0,
+          hsn: ""
+        })),
+        payment_method: payment.method || "Prepaid",
+        shipping_charges: shipping,
+        giftwrap_charges: 0,
+        transaction_charges: 0,
+        total_discount: 0,
+        sub_total: subtotal,
+        length: 10,
+        breadth: 10,
+        height: 10,
+        weight: 0.5
+      };
+      const shipRocketResponse = await shipRocketService.createOrder(orderData);
+      // Update order with ShipRocket info
+      order.awb = shipRocketResponse.awb || shipRocketResponse.shipment_id;
+      order.courierName = shipRocketResponse.courier_name;
+      order.trackingUrl = shipRocketResponse.tracking_url;
+      await order.save();
+    } catch (error) {
+      console.error('ShipRocket integration error:', error.message);
+      // Continue without failing the order
+    }
 
     // Deduct stock from products
     for (const item of normalizedItems) {
@@ -233,5 +292,22 @@ exports.updateOrderStatus = async (req, res) => {
     res.json({ message: 'Order status updated', order });
   } catch (err) {
     res.status(500).json({ message: 'Error updating order status', error: err.message });
+  }
+};
+
+exports.trackOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (String(order.user) !== String(req.user._id) && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+    if (!order.awb) {
+      return res.status(400).json({ message: 'No tracking information available' });
+    }
+    const trackingData = await shipRocketService.trackShipment(order.awb);
+    res.json({ tracking: trackingData, awb: order.awb, courier: order.courierName, trackingUrl: order.trackingUrl });
+  } catch (err) {
+    res.status(500).json({ message: 'Error tracking order', error: err.message });
   }
 };

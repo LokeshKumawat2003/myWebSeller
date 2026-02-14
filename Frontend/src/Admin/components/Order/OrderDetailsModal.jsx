@@ -163,6 +163,29 @@ const OrderDetailsModal = ({ order, onClose }) => {
             </div>
           </div>
 
+          {order.awb && (
+            <div className="pt-4 luxury-border">
+              <p className="luxury-text-primary font-semibold text-sm mb-2">Shipping Details:</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="luxury-text-secondary text-sm">AWB Number:</p>
+                  <p className="font-medium">{order.awb}</p>
+                </div>
+                <div>
+                  <p className="luxury-text-secondary text-sm">Courier:</p>
+                  <p className="font-medium">{order.courierName || 'N/A'}</p>
+                </div>
+              </div>
+              {order.trackingUrl && (
+                <div className="mt-2">
+                  <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-3 py-1 bg-luxury-accent hover:bg-luxury-accent-hover text-white rounded-lg text-sm font-medium transition-colors">
+                    Track Shipment
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Footer */}
           <div className="text-center luxury-text-secondary text-sm pt-4 luxury-border">
             <p className="font-medium">Thank you for your business!</p>

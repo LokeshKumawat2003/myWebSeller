@@ -1,7 +1,7 @@
 import React from 'react';
 import { Eye, Printer, RefreshCw } from 'lucide-react';
 
-const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating }) => {
+const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating, trackingStatuses }) => {
   const getStatusColor = (status) => {
     switch(status) {
       case 'pending': return 'bg-[#e6ddd2] text-[#3b3b3b]';
@@ -36,6 +36,7 @@ const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating }
               <th className="px-6 py-4 text-left text-sm italic text-[#666] font-serif">Total</th>
               <th className="px-6 py-4 text-left text-sm italic text-[#666] font-serif">Items</th>
               <th className="px-6 py-4 text-left text-sm italic text-[#666] font-serif">Status</th>
+              <th className="px-6 py-4 text-left text-sm italic text-[#666] font-serif">Tracking</th>
               <th className="px-6 py-4 text-left text-sm italic text-[#666] font-serif">Actions</th>
             </tr>
           </thead>
@@ -58,9 +59,29 @@ const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating }
                   <td className="px-6 py-4 font-light italic text-[#9c7c3a] font-serif">₹{(order.totals?.total || 0).toFixed(2)}</td>
                   <td className="px-6 py-4 text-sm italic text-[#666] font-serif">{order.items?.length || 0} item(s)</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-light italic font-serif ${getStatusColor(order.status || 'pending')}`}>
-                      {order.status || 'pending'}
+                    <span className={`px-3 py-1 rounded-full text-xs font-light italic font-serif ${getStatusColor(order.awb ? (trackingStatuses[order._id]?.status || 'delivered') : (order.status || 'pending'))}`}>
+                      {order.awb ? ((trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)) : (order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Pending')}
                     </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {order.awb ? (
+                      <div className="text-sm">
+                        <p className="text-[#3b3b3b] font-serif font-medium">
+                          {(trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)}
+                        </p>
+                        <p className="text-[#666] text-xs">AWB: {order.awb.substring(0, 8)}...</p>
+                        <a
+                          href={order.trackingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#9c7c3a] hover:text-[#8a6a2f] underline text-xs"
+                        >
+                          View Details
+                        </a>
+                      </div>
+                    ) : (
+                      <span className="text-[#666] text-sm italic font-serif">Not available</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2 flex-wrap">
@@ -120,8 +141,8 @@ const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating }
                     <p className="font-mono text-sm italic text-[#3b3b3b] font-serif">{order._id?.substring(0, 8)}...</p>
                     <p className="text-sm italic text-[#666] font-serif">{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-light italic font-serif ${getStatusColor(order.status || 'pending')}`}>
-                    {order.status || 'pending'}
+                  <span className={`px-2 py-1 rounded-full text-xs font-light italic font-serif ${getStatusColor(order.awb ? (trackingStatuses[order._id]?.status || 'delivered') : (order.status || 'pending'))}`}>
+                    {order.awb ? ((trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)) : (order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Pending')}
                   </span>
                 </div>
 
@@ -137,6 +158,21 @@ const OrderTable = ({ orders, loading, onViewDetails, onUpdateStatus, updating }
 
                 <div className="flex justify-between items-center mb-3">
                   <p className="font-light italic text-[#9c7c3a] font-serif">₹{(order.totals?.total || 0).toFixed(2)}</p>
+                  {order.awb && (
+                    <div className="text-right text-sm">
+                      <p className="text-[#3b3b3b] font-serif font-medium">
+                        {(trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)}
+                      </p>
+                      <a
+                        href={order.trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#9c7c3a] hover:text-[#8a6a2f] underline text-xs"
+                      >
+                        View Details
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-2 flex-wrap">

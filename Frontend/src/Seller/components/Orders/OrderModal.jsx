@@ -146,6 +146,20 @@ const OrderModal = ({ selectedOrder, showModal, setShowModal, getStatusColor }) 
               </p>
               <p className="text-[#666] text-sm italic font-serif">{selectedOrder.payment?.method || 'N/A'}</p>
             </div>
+            {selectedOrder.awb && (
+              <div>
+                <p className="text-[#3b3b3b] font-light italic text-sm mb-2 font-serif">Shipping Details:</p>
+                <p className="text-[#666] text-sm italic font-serif">AWB: {selectedOrder.awb}</p>
+                <p className="text-[#666] text-sm italic font-serif">Courier: {selectedOrder.courierName || 'N/A'}</p>
+                {selectedOrder.trackingUrl && (
+                  <p className="text-[#666] text-sm italic font-serif">
+                    <a href={selectedOrder.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-[#9c7c3a] hover:underline">
+                      Track Shipment
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Footer */}

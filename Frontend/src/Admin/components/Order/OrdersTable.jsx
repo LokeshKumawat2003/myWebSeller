@@ -3,7 +3,7 @@ import { Eye, Printer, Check, Loader2, DollarSign } from 'lucide-react';
 import { Card, Button, Select, Badge } from '../UI';
 import { useThemeColors } from '../../AdminContext';
 
-const OrdersTable = ({ orders, updating, onViewDetails, onMarkDelivered, onUpdateStatus }) => {
+const OrdersTable = ({ orders, updating, onViewDetails, onMarkDelivered, onUpdateStatus, trackingStatuses }) => {
   const colors = useThemeColors();
 
   const getStatusColor = (status) => {
@@ -39,6 +39,7 @@ const OrdersTable = ({ orders, updating, onViewDetails, onMarkDelivered, onUpdat
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>Items</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>Total</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>Status</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>Tracking</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: colors.textSecondary }}>Actions</th>
             </tr>
           </thead>
@@ -81,9 +82,29 @@ const OrdersTable = ({ orders, updating, onViewDetails, onMarkDelivered, onUpdat
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <Badge variant={getStatusColor(order.status || 'pending')}>
-                    {order.status || 'pending'}
+                  <Badge variant={getStatusColor(order.awb ? (trackingStatuses[order._id]?.status || 'delivered') : (order.status || 'pending'))}>
+                    {order.awb ? ((trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)) : (order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Pending')}
                   </Badge>
+                </td>
+                <td className="px-6 py-4">
+                  {order.awb ? (
+                    <div className="text-sm">
+                      <p className="font-medium" style={{ color: colors.textPrimary }}>
+                        {(trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)}
+                      </p>
+                      <p className="text-xs" style={{ color: colors.textSecondary }}>AWB: {order.awb.substring(0, 8)}...</p>
+                      <a
+                        href={order.trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline text-xs"
+                      >
+                        View Details
+                      </a>
+                    </div>
+                  ) : (
+                    <span className="text-gray-500 text-sm">Not available</span>
+                  )}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2 flex-wrap">

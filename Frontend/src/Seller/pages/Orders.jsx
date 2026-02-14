@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getSellerOrders, updateOrderStatus } from '../../services/api';
+import { getSellerOrders, updateOrderStatus, getOrderTracking } from '../../services/api';
 import OrderTable from '../components/Orders/OrderTable';
 import OrderModal from '../components/Orders/OrderModal';
 import { ShoppingBag } from 'lucide-react';
@@ -10,6 +10,7 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [updating, setUpdating] = useState(null);
+  const [trackingStatuses, setTrackingStatuses] = useState({});
 
   useEffect(() => {
     loadOrders();
@@ -18,7 +19,22 @@ export default function Orders() {
   const loadOrders = async () => {
     try {
       const data = await getSellerOrders();
-      setOrders(Array.isArray(data) ? data : []);
+      const orderData = Array.isArray(data) ? data : [];
+      setOrders(orderData);
+
+      // Fetch tracking statuses for orders with AWB
+      const ordersWithTracking = orderData.filter(order => order.awb);
+      if (ordersWithTracking.length > 0) {
+        const trackingPromises = ordersWithTracking.map(order => 
+          getOrderTracking(order._id).catch(() => ({ status: 'unknown' }))
+        );
+        const trackingResults = await Promise.all(trackingPromises);
+        const newStatuses = {};
+        ordersWithTracking.forEach((order, i) => {
+          newStatuses[order._id] = trackingResults[i];
+        });
+        setTrackingStatuses(newStatuses);
+      }
     } catch (err) {
       console.error('Error loading orders:', err);
       setOrders([]);
@@ -70,6 +86,7 @@ export default function Orders() {
         onViewDetails={handleViewDetails}
         onUpdateStatus={handleUpdateStatus}
         updating={updating}
+        trackingStatuses={trackingStatuses}
       />
 
       <OrderModal

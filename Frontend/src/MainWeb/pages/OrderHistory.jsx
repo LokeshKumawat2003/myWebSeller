@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUserOrders, getOrder, getAuthToken } from '../../services/api';
+import { getUserOrders, getOrder, getOrderTracking, getAuthToken } from '../../services/api';
 import Layout from '../components/Layout';
 import { Eye, Package, Truck, CheckCircle, XCircle, Clock, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ const OrderHistory = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [trackingStatuses, setTrackingStatuses] = useState({});
 
   useEffect(() => {
     fetchOrders();
@@ -40,6 +41,21 @@ const OrderHistory = () => {
           if (orderData.length > 0) {
             setOrders(orderData);
             setLoading(false);
+
+            // Fetch tracking statuses for orders with AWB
+            const ordersWithTracking = orderData.filter(order => order.awb);
+            if (ordersWithTracking.length > 0) {
+              const trackingPromises = ordersWithTracking.map(order => 
+                getOrderTracking(order._id, token).catch(() => ({ status: 'unknown' }))
+              );
+              const trackingResults = await Promise.all(trackingPromises);
+              const newStatuses = {};
+              ordersWithTracking.forEach((order, i) => {
+                newStatuses[order._id] = trackingResults[i];
+              });
+              setTrackingStatuses(newStatuses);
+            }
+
             return;
           } else {
             // No orders found
@@ -192,8 +208,8 @@ const OrderHistory = () => {
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                      <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-sans font-medium uppercase tracking-[0.5px] self-start ${getStatusColor(order.status)}`}>
-                        {order.status}
+                      <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-sans font-medium uppercase tracking-[0.5px] self-start ${getStatusColor(order.awb ? (trackingStatuses[order._id]?.status || 'delivered') : order.status)}`}>
+                        {order.awb ? ((trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)) : (order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Pending')}
                       </span>
                       <button
                         onClick={(e) => {
@@ -222,7 +238,19 @@ const OrderHistory = () => {
                       <span className="font-serif font-medium text-[#9c7c3a] text-xs md:text-sm uppercase tracking-[1px]">Items:</span>
                       <p className="text-[#3b3b3b] font-sans font-medium mt-1 text-sm md:text-base">{order.items?.length || 0} item(s)</p>
                     </div>
-                    {order.status === 'shipped' && order.deliveryDate && (
+                    {order.awb ? (
+                      <div className="bg-[#fbf7f2] p-3 md:p-4 rounded border border-[#e6ddd2]">
+                        <span className="font-serif font-medium text-[#9c7c3a] text-xs md:text-sm uppercase tracking-[1px]">Tracking Status:</span>
+                        <p className="text-[#3b3b3b] font-sans font-medium mt-1 text-sm md:text-base">
+                          {(trackingStatuses[order._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[order._id]?.status || 'delivered').slice(1)}
+                        </p>
+                        <p className="text-[#666] text-xs mt-1">AWB: {order.awb}</p>
+                        <p className="text-[#666] text-xs">Courier: {order.courierName}</p>
+                        <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-[#9c7c3a] hover:underline text-xs mt-1 block">
+                          View on Courier Site
+                        </a>
+                      </div>
+                    ) : order.status === 'shipped' && order.deliveryDate ? (
                       <div className="bg-[#fbf7f2] p-3 md:p-4 rounded border border-[#e6ddd2]">
                         <span className="font-serif font-medium text-[#9c7c3a] text-xs md:text-sm uppercase tracking-[1px]">Expected Delivery:</span>
                         <p className="text-[#3b3b3b] font-sans font-medium mt-1 text-sm md:text-base">
@@ -233,7 +261,7 @@ const OrderHistory = () => {
                           })}
                         </p>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               ))}
@@ -273,9 +301,9 @@ const OrderHistory = () => {
                     <h3 className="text-base md:text-lg font-serif font-medium text-[#9c7c3a] mb-3 tracking-[1px]">Order Information</h3>
                     <div className="space-y-3 bg-white p-3 md:p-4 rounded border border-[#e6ddd2]">
                       <div className="flex items-center space-x-2">
-                        {getStatusIcon(selectedOrder.status)}
-                        <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-sans font-medium uppercase tracking-[0.5px] ${getStatusColor(selectedOrder.status)}`}>
-                          {selectedOrder.status}
+                        {getStatusIcon(selectedOrder.awb ? (trackingStatuses[selectedOrder._id]?.status || 'delivered') : selectedOrder.status)}
+                        <span className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-sans font-medium uppercase tracking-[0.5px] ${getStatusColor(selectedOrder.awb ? (trackingStatuses[selectedOrder._id]?.status || 'delivered') : selectedOrder.status)}`}>
+                          {selectedOrder.awb ? ((trackingStatuses[selectedOrder._id]?.status || 'delivered').charAt(0).toUpperCase() + (trackingStatuses[selectedOrder._id]?.status || 'delivered').slice(1)) : (selectedOrder.status ? selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1) : 'Pending')}
                         </span>
                       </div>
                       <p className="text-[#3b3b3b] font-sans text-sm md:text-base"><span className="font-serif font-medium text-[#9c7c3a]">Order Date:</span> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
@@ -295,6 +323,20 @@ const OrderHistory = () => {
                           day: 'numeric',
                           year: 'numeric'
                         })}</p>
+                      )}
+                      {selectedOrder.awb && (
+                        <>
+                          <p className="text-[#3b3b3b] font-sans text-sm md:text-base"><span className="font-serif font-medium text-[#9c7c3a]">AWB Number:</span> {selectedOrder.awb}</p>
+                          <p className="text-[#3b3b3b] font-sans text-sm md:text-base"><span className="font-serif font-medium text-[#9c7c3a]">Courier:</span> {selectedOrder.courierName || 'N/A'}</p>
+                          {selectedOrder.trackingUrl && (
+                            <p className="text-[#3b3b3b] font-sans text-sm md:text-base">
+                              <span className="font-serif font-medium text-[#9c7c3a]">Tracking:</span> 
+                              <a href={selectedOrder.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-[#9c7c3a] hover:underline ml-1">
+                                Track Shipment
+                              </a>
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

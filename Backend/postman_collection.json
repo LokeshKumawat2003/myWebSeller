@@ -13,7 +13,7 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"name\":\"Alice Buyer\",\"email\":\"alice@example.com\",\"password\":\"Password123\"}" },
+            "body": { "mode": "raw", "raw": "{\"name\":\"Alice Buyer\",\"email\":\"alice@example.com\",\"password\":\"Password123\",\"phone\":\"9876543210\"}" },
             "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
           }
         },
@@ -22,7 +22,7 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"email\":\"alice@example.com\",\"password\":\"Password123\"}" },
+            "body": { "mode": "raw", "raw": "{\"phone\":\"9876543210\",\"password\":\"Password123\"}" },
             "url": { "raw": "http://localhost:5000/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","login"] }
           }
         },
@@ -31,7 +31,7 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"name\":\"Bob Seller\",\"email\":\"bob@example.com\",\"password\":\"SellerPass123\"}" },
+            "body": { "mode": "raw", "raw": "{\"name\":\"Bob Seller\",\"email\":\"bob@example.com\",\"password\":\"SellerPass123\",\"phone\":\"9876543211\"}" },
             "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
           }
         },
@@ -40,7 +40,7 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\"name\":\"Admin User\",\"email\":\"admin@example.com\",\"password\":\"AdminPass123\",\"role\":\"admin\"}" },
+            "body": { "mode": "raw", "raw": "{\"name\":\"Admin User\",\"email\":\"admin@example.com\",\"password\":\"AdminPass123\",\"phone\":\"9876543212\",\"role\":\"admin\"}" },
             "url": { "raw": "http://localhost:5000/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["auth","register"] }
           }
         }
@@ -244,6 +244,14 @@
             "method": "GET",
             "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
             "url": { "raw": "http://localhost:5000/orders/{{orderId}}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders","{{orderId}}"] }
+          }
+        },
+        {
+          "name": "Track Order",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": { "raw": "http://localhost:5000/orders/{{orderId}}/track", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["orders","{{orderId}}","track"] }
           }
         },
         {

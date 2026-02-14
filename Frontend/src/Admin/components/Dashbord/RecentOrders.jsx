@@ -30,7 +30,7 @@ const RecentOrders = ({ orders }) => {
                   ? 'bg-green-100 text-green-800'
                   : 'bg-blue-100 text-blue-800'
               }`}>
-                {order.status || 'pending'}
+                {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Pending'}
               </span>
             </div>
           </div>
