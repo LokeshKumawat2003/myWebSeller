@@ -39,7 +39,23 @@ const ProductDetail = () => {
   };
 
   const getColorValue = (colorName) => {
-    return colorMap[colorName.toLowerCase()] || '#CCCCCC';
+    if (!colorName) return '#CCCCCC';
+
+    // If the colorName is already a hex value, use it directly
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(colorName.trim())) return colorName.trim();
+
+    // Try to find matching variant from the product data (prefer API-supplied color hex)
+    if (product && Array.isArray(product.variants)) {
+      const match = product.variants.find(v => v.color && v.color.toLowerCase() === colorName.toLowerCase());
+      if (match) {
+        // common field names that APIs might use for color hex/code
+        const candidate = match.colorValue || match.colorHex || match.hex || match.hexCode || match.color_code || match.color_code_hex;
+        if (candidate) return candidate;
+      }
+    }
+
+    // Fallback to built-in color map
+    return colorMap[colorName.toLowerCase()];
   };
 
   useEffect(() => {
