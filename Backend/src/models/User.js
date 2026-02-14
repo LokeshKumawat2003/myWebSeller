@@ -15,9 +15,10 @@ const AddressSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true },
+  // passwordHash and phone are optional to support social logins
+  passwordHash: { type: String },
   role: { type: String, enum: ['user', 'seller', 'admin'], default: 'user' },
-  phone: { type: String, required: true, unique: true },
+  phone: { type: String, unique: true, sparse: true },
   addresses: [AddressSchema],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 }, { timestamps: true });

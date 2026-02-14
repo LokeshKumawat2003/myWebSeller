@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authLogin, authRegister, setAuthToken } from '../../services/api';
+import { authLogin, authRegister, setAuthToken, API_URL } from '../../services/api';
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -154,13 +154,21 @@ const LoginPage = () => {
           </div>
 
           <div className="text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-indigo-600 hover:text-indigo-500"
-            >
-              {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-indigo-600 hover:text-indigo-500"
+              >
+                {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
+              </button>
+              <a
+                href={`${API_URL}/auth/google`}
+                className="inline-flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Sign in with Google
+              </a>
+            </div>
           </div>
         </form>
       </div>

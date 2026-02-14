@@ -35,6 +35,19 @@ exports.login = async (req, res) => {
   }
 };
 
+// Google OAuth callback handler
+exports.googleCallback = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) return res.status(400).json({ message: 'Authentication failed' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const redirectUrl = (process.env.CLIENT_URL || 'http://localhost:3000') + '/auth/success?token=' + token;
+    return res.redirect(redirectUrl);
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
 // Address Management
 exports.getUserAddresses = async (req, res) => {
   try {

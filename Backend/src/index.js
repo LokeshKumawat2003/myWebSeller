@@ -5,6 +5,9 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const logger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
+const passport = require('passport');
+// Configure passport strategies
+require('./config/passport')(passport);
 
 const app = express();
 // Configure CORS so the frontend can send credentials (cookies, auth)
@@ -17,6 +20,7 @@ app.use(bodyParser.json());
 
 // Middleware
 app.use(logger);
+app.use(passport.initialize());
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/clothing_store';
