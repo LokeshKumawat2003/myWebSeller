@@ -267,7 +267,7 @@ export default function SupportManagement() {
                     <button
                       onClick={handleSendMessage}
                       disabled={loading}
-                      className="px-4 py-2 luxury-accent hover:bg-luxury-accent text-white rounded-lg transition disabled:opacity-50"
+                      className="px-4 py-2 bg-luxury-accent hover:bg-luxury-accent/90 text-white rounded-lg transition disabled:opacity-50"
                     >
                       {loading ? 'Sending...' : 'Reply'}
                     </button>

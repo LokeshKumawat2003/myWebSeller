@@ -263,7 +263,8 @@ const NewArrivalsManagement = () => {
                         <button
                           onClick={() => handleAddProduct(product._id)}
                           disabled={actionLoading === product._id}
-                          className="w-full px-4 py-2 luxury-accent hover:bg-luxury-accent text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          className="w-full px-4 py-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+
                         >
                           {actionLoading === product._id ? (
                             <Loader2 className="w-4 h-4 animate-spin" />

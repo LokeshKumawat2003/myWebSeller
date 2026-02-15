@@ -23,7 +23,7 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
               type="text"
               value={formData.title}
               onChange={(e) => onFormDataChange({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg"
+              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg text-gray-900 placeholder-gray-500"
               placeholder="Enter banner title"
               required
             />
@@ -37,18 +37,45 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
               type="url"
               value={formData.imageUrl}
               onChange={(e) => onFormDataChange({ ...formData, imageUrl: e.target.value })}
-              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg"
+              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg text-gray-900 placeholder-gray-500"
               placeholder="https://example.com/banner-image.jpg"
             />
             <div className="mt-3">
-              <label className="block text-sm font-medium luxury-text-primary mb-1">Or upload image file</label>
-              <input type="file" accept="image/*" onChange={(e) => setSelectedImageFile(e.target.files && e.target.files[0])} />
+              <label className="block text-sm font-semibold text-gray-800 mb-1">
+                Or upload image file
+              </label>
+
+              <div className="flex items-center gap-3">
+
+                {/* Upload Button */}
+                <label className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#B8960B] hover:from-[#C9A227] hover:to-[#A17C00] text-black font-semibold rounded-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-300">
+                  Upload
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => setSelectedImageFile(e.target.files && e.target.files[0])}
+                  />
+                </label>
+
+                {/* File Name */}
+                <span className="text-sm text-gray-700">
+                  {selectedImageFile ? selectedImageFile.name : 'No file chosen'}
+                </span>
+              </div>
+
+              {/* Image Preview */}
               {selectedImageFile && (
-                <div className="mt-2">
-                  <img src={URL.createObjectURL(selectedImageFile)} alt="banner preview" className="w-48 h-24 object-cover rounded" />
+                <div className="mt-3">
+                  <img
+                    src={URL.createObjectURL(selectedImageFile)}
+                    alt="banner preview"
+                    className="w-52 h-28 object-cover rounded-xl border-2 border-[#D4AF37] shadow-md"
+                  />
                 </div>
               )}
             </div>
+
           </div>
 
           <div>
@@ -59,7 +86,7 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
               type="number"
               value={formData.position || 0}
               onChange={(e) => onFormDataChange({ ...formData, position: e.target.value ? parseInt(e.target.value) : 0 })}
-              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg"
+              className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg text-gray-900 placeholder-gray-500"
               min="0"
               placeholder="0"
             />
@@ -71,30 +98,33 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
               id="active"
               checked={formData.active}
               onChange={(e) => onFormDataChange({ ...formData, active: e.target.checked })}
-              className="h-5 w-5 luxury-accent focus:ring-luxury-accent border luxury-border rounded"
+              className="h-5 w-5 text-[#D4AF37] focus:ring-[#D4AF37] border-[#D4AF37] rounded cursor-pointer"
             />
-            <label htmlFor="active" className="ml-3 text-sm font-medium luxury-text-primary">
+            <label htmlFor="active" className="ml-3 text-sm font-medium text-gray-800 cursor-pointer">
               Active Banner
             </label>
           </div>
+
         </div>
 
         <div className="flex gap-3 pt-4">
           <button
             type="submit"
-            className="px-6 py-3 luxury-accent hover:bg-luxury-accent text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             {editingBanner ? 'Update Banner' : 'Create Banner'}
           </button>
+
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 luxury-bg-secondary hover:bg-luxury-accent luxury-accent rounded-lg font-medium transition-colors flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
           >
             <X className="w-4 h-4" />
             Cancel
           </button>
+
         </div>
       </form>
     </div>

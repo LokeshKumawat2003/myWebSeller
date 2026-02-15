@@ -15,9 +15,9 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="luxury-bg rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 luxury-border">
+    <div className="fixed inset-0 bg-luxury-bg-secondary/95 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="background-red rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-luxury-border">
           <h2 className="text-2xl font-bold luxury-text-primary flex items-center gap-2 italic">
             <Eye className="w-6 h-6" />
             Product Details
@@ -30,7 +30,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 ">
           {/* Product Images */}
           <div>
             <h3 className="text-lg font-semibold luxury-text-primary mb-3 italic">Product Images</h3>
