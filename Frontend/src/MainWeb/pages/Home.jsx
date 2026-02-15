@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import ProductCard from '../components/ProductCard';
 import ProductGrid from '../components/ProductGrid';
+import { useToast } from '../../Admin/components/UI';
 import { Sliders } from 'lucide-react';
 import HeroSlider from '../components/HeroSlider';
 import { getFeaturedProducts, listCategories } from '../../services/api';
 
 
 const Home = () => {
+  const { showError } = useToast();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,9 @@ const Home = () => {
       setCategories(categoriesData);
     } catch (err) {
       console.error('Error fetching home data:', err);
-      setError('Failed to load data. Please try again later.');
+      const errorMsg = 'Failed to load data. Please try again later.';
+      setError(errorMsg);
+      showError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -93,8 +97,11 @@ const Home = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Failed to Load Content</h2>
           <p className="text-gray-600 mb-8">{error}</p>
           <button
-            onClick={fetchHomeData}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              setError(null);
+              fetchHomeData();
+            }}
+            className="bg-[#9c7c3a] text-white px-6 py-3 rounded-lg hover:bg-[#8a6a2f] transition-colors font-serif font-medium"
           >
             Try Again
           </button>
@@ -146,8 +153,11 @@ const Home = () => {
               <h2 className="text-3xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">
                 FEATURED PRODUCTS
               </h2>
-              <p className="text-[#3b3b3b] text-lg font-sans font-light">
+              <p className="text-[#3b3b3b] text-lg font-sans font-light mb-2">
                 Discover our curated collection
+              </p>
+              <p className="text-sm text-[#9c7c3a] font-serif tracking-[1px]">
+                💝 Add your favorites to wishlist
               </p>
             </div>
             {featuredProducts.length > 0 ? (

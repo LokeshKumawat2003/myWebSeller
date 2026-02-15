@@ -1,7 +1,10 @@
 import React from 'react';
 import { X, Eye, Star, TrendingUp, Zap, Shield, ShieldCheck, DollarSign, User, Calendar } from 'lucide-react';
+import { useToast } from '../UI';
 
 const ProductModal = ({ product, isOpen, onClose }) => {
+  const { showSuccess, showError, showWarning } = useToast();
+
   if (!isOpen || !product) return null;
 
   const getStatusColor = (status) => {
@@ -189,7 +192,23 @@ const ProductModal = ({ product, isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="flex justify-end p-6 border-t border-gray-200">
+        <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
+          <button
+            onClick={() => {
+              showWarning('This feature will be implemented soon!', 'Coming Soon');
+            }}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => {
+              showSuccess('Product details copied to clipboard!', 'Copied');
+            }}
+            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+          >
+            Copy Details
+          </button>
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"

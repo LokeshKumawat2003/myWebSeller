@@ -1,9 +1,11 @@
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useToast } from "../../Admin/components/UI";
 import { addToWishlist, checkWishlistStatus, getAuthToken } from "../../services/api";
 
 const ProductCard = ({ product }) => {
+  const { showError, showSuccess } = useToast();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
@@ -44,19 +46,19 @@ const ProductCard = ({ product }) => {
       const token = getAuthToken();
 
       if (!token) {
-        alert('Please login to add items to wishlist');
+        showError('Please login to add items to wishlist');
         return;
       }
 
       // Use the first available variant
       if (!product.variants || product.variants.length === 0) {
-        alert('No variants available for this product');
+        showError('No variants available for this product');
         return;
       }
 
       const firstVariant = product.variants[0];
       if (!firstVariant.sizes || firstVariant.sizes.length === 0) {
-        alert('No sizes available for this product');
+        showError('No sizes available for this product');
         return;
       }
 
@@ -72,15 +74,33 @@ const ProductCard = ({ product }) => {
         // For product cards, we can't easily remove specific items
         // Just toggle the state for now
         setIsWishlisted(false);
-        alert('Removed from wishlist');
+        showSuccess('Removed from wishlist', 'Success');
       } else {
-        await addToWishlist(payload, token);
-        setIsWishlisted(true);
-        alert('Added to wishlist!');
+        try {
+          await addToWishlist(payload, token);
+          setIsWishlisted(true);
+          showSuccess('Added to wishlist!', 'Success');
+        } catch (apiError) {
+          const errorMsg = apiError.message || '';
+          
+          // Check if item is already in wishlist
+          if (errorMsg.includes('already in wishlist') || errorMsg.includes('400')) {
+            setIsWishlisted(true);
+            showSuccess('Already in your wishlist', 'Info');
+          } 
+          // Check if product not found
+          else if (errorMsg.includes('not found') || errorMsg.includes('404')) {
+            showError('Product not found');
+          }
+          // Generic error
+          else {
+            showError(errorMsg || 'Failed to add to wishlist');
+          }
+        }
       }
     } catch (error) {
       console.error('Error updating wishlist:', error);
-      alert('Failed to update wishlist. Please try again.');
+      showError('Failed to update wishlist. Please try again.');
     } finally {
       setWishlistLoading(false);
     }

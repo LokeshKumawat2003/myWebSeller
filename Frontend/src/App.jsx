@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { SellerProvider, useSeller } from './Seller/SellerContext';
 import { AdminProvider, useAdmin } from './Admin/AdminContext';
+import { ToastProvider } from './Admin/components/UI/ToastContainer';
 import SellerLogin from './Seller/SellerLogin';
 import SellerDashboard from './Seller/SellerDashboard';
 import AdminLogin from './Admin/AdminLogin';
@@ -44,10 +45,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <SellerProvider>
-      <AdminProvider>
-        <AppContent />
-      </AdminProvider>
-    </SellerProvider>
+    <ToastProvider>
+      <SellerProvider>
+        <AdminProvider>
+          <AppContent />
+        </AdminProvider>
+      </SellerProvider>
+    </ToastProvider>
   );
 }

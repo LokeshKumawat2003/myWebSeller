@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { useToast } from '../../Admin/components/UI';
 import { getCart, checkoutOrder, getAuthToken, getUserAddresses, addUserAddress, updateUserAddress } from '../../services/api';
 import AddressManagement from '../components/AddressManagement';
 import { ArrowLeft, Truck, CreditCard, CheckCircle, MapPin, Phone, Mail, ShoppingBag, Plus, Minus } from 'lucide-react';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
+  const { showError, showSuccess } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +119,7 @@ export default function CheckoutPage() {
     // Validate form data
     if (!shippingAddress.name || !shippingAddress.phone || !shippingAddress.line1 ||
         !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode) {
-      setError('Please fill in all required fields');
+      showError('Please fill in all required fields');
       return;
     }
 
@@ -159,9 +161,10 @@ export default function CheckoutPage() {
       setSelectedAddress(savedAddress);
       // shippingAddress is already set to the form data
 
+      showSuccess('Address saved successfully!');
       setCurrentStep(2);
     } catch (err) {
-      setError(err.message || 'Failed to save address');
+      showError(err.message || 'Failed to save address');
     } finally {
       setProcessing(false);
     }
@@ -204,6 +207,7 @@ export default function CheckoutPage() {
 
       const response = await checkoutOrder(orderData, token);
 
+      showSuccess('Order placed successfully!', 'Success');
       // Navigate to success page with order details
       navigate('/checkout/success', {
         state: {
@@ -215,7 +219,7 @@ export default function CheckoutPage() {
         }
       });
     } catch (err) {
-      setError(err.message || 'Checkout failed');
+      showError(err.message || 'Checkout failed');
     } finally {
       setProcessing(false);
     }

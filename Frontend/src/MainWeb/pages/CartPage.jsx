@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { getCart, deleteCartItem, updateCartItem, getAuthToken } from '../../services/api';
+import { useToast } from '../../Admin/components/UI';
 import { ShoppingBag, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
 
 export default function CartPage() {
   const navigate = useNavigate();
+  const { showError, showSuccess } = useToast();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,7 +53,7 @@ export default function CartPage() {
     try {
       const token = getAuthToken();
       if (!token) {
-        setError('Please login to update cart');
+        showError('Please login to update cart');
         return;
       }
 
@@ -59,8 +61,9 @@ export default function CartPage() {
       setCartItems(cartItems.map(item =>
         item._id === itemId ? { ...item, qty: newQty } : item
       ));
+      showSuccess('Cart updated successfully');
     } catch (err) {
-      setError('Failed to update quantity');
+      showError('Failed to update quantity');
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -78,14 +81,15 @@ export default function CartPage() {
     try {
       const token = getAuthToken();
       if (!token) {
-        setError('Please login to remove items from cart');
+        showError('Please login to remove items from cart');
         return;
       }
 
       await deleteCartItem(itemId, token);
       setCartItems(cartItems.filter(item => item._id !== itemId));
+      showSuccess('Item removed from cart');
     } catch (err) {
-      setError('Failed to remove item');
+      showError('Failed to remove item');
     }
   };
 

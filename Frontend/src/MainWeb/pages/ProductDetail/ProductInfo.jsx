@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { useToast } from '../../../Admin/components/UI';
 import { addToWishlist, checkWishlistStatus, getAuthToken } from '../../../services/api';
 
 const ProductInfo = ({
@@ -22,6 +23,7 @@ const ProductInfo = ({
   onAddToCart
 }) => {
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const { showError, showSuccess } = useToast();
 
   useEffect(() => {
     checkWishlistStatusOnLoad();
@@ -52,12 +54,12 @@ const ProductInfo = ({
       const token = getAuthToken();
 
       if (!token) {
-        alert('Please login to add items to wishlist');
+        showError('Please login to add items to wishlist');
         return;
       }
 
       if (!selectedSize) {
-        alert('Please select a size');
+        showError('Please select a size');
         return;
       }
 
@@ -73,15 +75,33 @@ const ProductInfo = ({
         // Remove from wishlist - we'll need to get the item ID first
         // For now, just toggle the state
         setIsWishlisted(false);
-        alert('Removed from wishlist');
+        showSuccess('Removed from wishlist', 'Success');
       } else {
-        await addToWishlist(payload, token);
-        setIsWishlisted(true);
-        alert('Added to wishlist successfully!');
+        try {
+          await addToWishlist(payload, token);
+          setIsWishlisted(true);
+          showSuccess('Added to wishlist successfully!', 'Success');
+        } catch (apiError) {
+          const errorMsg = apiError.message || '';
+          
+          // Check if item is already in wishlist
+          if (errorMsg.includes('already in wishlist') || errorMsg.includes('400')) {
+            setIsWishlisted(true);
+            showSuccess('Already in your wishlist', 'Info');
+          } 
+          // Check if product not found
+          else if (errorMsg.includes('not found') || errorMsg.includes('404')) {
+            showError('Product not found. Please refresh the page.');
+          }
+          // Generic error
+          else {
+            showError(errorMsg || 'Failed to add to wishlist');
+          }
+        }
       }
     } catch (error) {
       console.error('Error updating wishlist:', error);
-      alert('Failed to update wishlist. Please try again.');
+      showError('Failed to update wishlist. Please try again.');
     } finally {
       setWishlistLoading(false);
     }

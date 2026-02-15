@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { useToast } from '../../Admin/components/UI';
 import { getProduct, addCartItem, getAuthToken } from '../../services/api';
 import ProductImages from './ProductDetail/ProductImages';
 import ProductInfo from './ProductDetail/ProductInfo';
@@ -10,6 +11,7 @@ import SizeGuide from './ProductDetail/SizeGuide';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { showError, showSuccess } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -73,24 +75,24 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!selectedSize) {
-      alert('Please select a size');
+      showError('Please select a size');
       return;
     }
 
     if (selectedSize.stock === 0) {
-      alert('This size is currently out of stock');
+      showError('This size is currently out of stock');
       return;
     }
 
     if (quantity > Math.min(3, selectedSize.stock)) {
-      alert(`Maximum quantity per order is ${Math.min(3, selectedSize.stock)} items`);
+      showError(`Maximum quantity per order is ${Math.min(3, selectedSize.stock)} items`);
       return;
     }
 
     try {
       const token = getAuthToken();
       if (!token) {
-        alert('Please login to add items to cart');
+        showError('Please login to add items to cart');
         return;
       }
 
@@ -106,10 +108,10 @@ const ProductDetail = () => {
       
 
       await addCartItem(payload, token);
-      alert('Item added to cart successfully!');
+      showSuccess('Item added to cart successfully!');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert('Failed to add item to cart. Please try again.');
+      showError('Failed to add item to cart. Please try again.');
     }
   };
 

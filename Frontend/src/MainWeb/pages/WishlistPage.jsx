@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { useToast } from '../../Admin/components/UI';
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 import { getWishlist, removeFromWishlist, addCartItem, getAuthToken } from '../../services/api';
 
 const WishlistPage = () => {
+  const { showError, showSuccess } = useToast();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,9 +43,10 @@ const WishlistPage = () => {
 
       await removeFromWishlist(itemId, token);
       setWishlistItems(wishlistItems.filter(item => item._id !== itemId));
+      showSuccess('Removed from wishlist');
     } catch (error) {
       console.error('Error removing from wishlist:', error);
-      alert('Failed to remove item from wishlist');
+      showError('Failed to remove item from wishlist');
     }
   };
 
@@ -51,7 +54,7 @@ const WishlistPage = () => {
     try {
       const token = getAuthToken();
       if (!token) {
-        alert('Please login to add items to cart');
+        showError('Please login to add items to cart');
         return;
       }
 
@@ -69,10 +72,10 @@ const WishlistPage = () => {
       };
 
       await addCartItem(payload, token);
-      alert('Added to cart successfully!');
+      showSuccess('Added to cart successfully!');
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert('Failed to add item to cart');
+      showError('Failed to add item to cart');
     }
   };
 
