@@ -316,8 +316,20 @@ export async function adminListBanners(token) {
 
 export async function adminCreateBanner(bannerData, token) {
   const t = token || getAuthToken();
-  const headers = t
-    ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" }
+  const tkn = token || getAuthToken();
+  const authHeader = tkn ? { Authorization: `Bearer ${tkn}` } : {};
+  if (bannerData instanceof FormData) {
+    const res = await fetch(`${API_URL}/banners`, { method: 'POST', headers: authHeader, body: bannerData, credentials: 'include' })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      let msg = `Request failed (${res.status})`
+      try { const json = JSON.parse(body); if (json && json.message) msg += `: ${json.message}` } catch(e) {}
+      throw new Error(msg)
+    }
+    return res.json()
+  }
+  const headers = tkn
+    ? { Authorization: `Bearer ${tkn}`, "Content-Type": "application/json" }
     : { "Content-Type": "application/json" };
   return tryFetch(`${API_URL}/banners`, {
     method: "POST",
@@ -327,9 +339,20 @@ export async function adminCreateBanner(bannerData, token) {
 }
 
 export async function adminUpdateBanner(bannerId, bannerData, token) {
-  const t = token || getAuthToken();
-  const headers = t
-    ? { Authorization: `Bearer ${t}`, "Content-Type": "application/json" }
+  const tkn = token || getAuthToken();
+  const authHeader = tkn ? { Authorization: `Bearer ${tkn}` } : {};
+  if (bannerData instanceof FormData) {
+    const res = await fetch(`${API_URL}/banners/${bannerId}`, { method: 'PUT', headers: authHeader, body: bannerData, credentials: 'include' })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      let msg = `Request failed (${res.status})`
+      try { const json = JSON.parse(body); if (json && json.message) msg += `: ${json.message}` } catch(e) {}
+      throw new Error(msg)
+    }
+    return res.json()
+  }
+  const headers = tkn
+    ? { Authorization: `Bearer ${tkn}`, "Content-Type": "application/json" }
     : { "Content-Type": "application/json" };
   return tryFetch(`${API_URL}/banners/${bannerId}`, {
     method: "PUT",

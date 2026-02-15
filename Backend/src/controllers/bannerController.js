@@ -8,11 +8,14 @@ exports.listBanners = async (req, res) => {
 
 exports.createBanner = async (req, res) => {
   try {
-    const { title, imageUrl, active, position } = req.body;
+    const { title, active, position } = req.body;
+
+    // Get image URL from multer/Cloudinary or from request body
+    let imageUrl = req.file ? req.file.path : req.body.imageUrl;
 
     // Validate required fields
     if (!title || !imageUrl) {
-      return res.status(400).json({ message: 'Title and imageUrl are required' });
+      return res.status(400).json({ message: 'Title and image are required' });
     }
 
     const banner = new Banner({
@@ -32,14 +35,25 @@ exports.createBanner = async (req, res) => {
 
 exports.updateBanner = async (req, res) => {
   try {
-    const { title, imageUrl, active, position } = req.body;
+    const { title, active, position } = req.body;
+
+    // Get image URL from multer/Cloudinary if provided, otherwise keep existing
+    const imageUrl = req.file ? req.file.path : req.body.imageUrl;
 
     const updateData = {
-      title,
-      imageUrl,
       active: active !== undefined ? active : true,
       position: position || 0
     };
+
+    // Only update title if provided
+    if (title) {
+      updateData.title = title;
+    }
+
+    // Only update image URL if a new one was uploaded or provided
+    if (imageUrl) {
+      updateData.imageUrl = imageUrl;
+    }
 
     const banner = await Banner.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!banner) {

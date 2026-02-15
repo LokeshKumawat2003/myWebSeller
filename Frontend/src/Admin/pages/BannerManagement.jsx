@@ -15,6 +15,7 @@ export default function BannerManagement() {
     active: true,
     position: 0
   });
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
 
   useEffect(() => {
     loadBanners();
@@ -36,10 +37,28 @@ export default function BannerManagement() {
     e.preventDefault();
     try {
       if (editingBanner) {
-        await adminUpdateBanner(editingBanner._id, formData);
+        if (selectedImageFile) {
+          const fd = new FormData();
+          fd.append('image', selectedImageFile);
+          fd.append('title', formData.title);
+          fd.append('active', String(formData.active));
+          fd.append('position', String(formData.position || 0));
+          await adminUpdateBanner(editingBanner._id, fd);
+        } else {
+          await adminUpdateBanner(editingBanner._id, formData);
+        }
         alert('Banner updated successfully!');
       } else {
-        await adminCreateBanner(formData);
+        if (selectedImageFile) {
+          const fd = new FormData();
+          fd.append('image', selectedImageFile);
+          fd.append('title', formData.title);
+          fd.append('active', String(formData.active));
+          fd.append('position', String(formData.position || 0));
+          await adminCreateBanner(fd);
+        } else {
+          await adminCreateBanner(formData);
+        }
         alert('Banner created successfully!');
       }
       loadBanners();
@@ -81,6 +100,7 @@ export default function BannerManagement() {
       position: 0
     });
     setEditingBanner(null);
+    setSelectedImageFile(null);
     setShowForm(false);
   };
 
@@ -93,6 +113,8 @@ export default function BannerManagement() {
         editingBanner={editingBanner}
         formData={formData}
         onFormDataChange={setFormData}
+        selectedImageFile={selectedImageFile}
+        setSelectedImageFile={setSelectedImageFile}
         onSubmit={handleSubmit}
         onCancel={resetForm}
       />

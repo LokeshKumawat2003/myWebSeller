@@ -143,6 +143,24 @@ export async function sellerCreateProduct(payload, token) {
   return tryFetch(`${API_URL}/products`, { method: 'POST', headers, body: JSON.stringify(payload) })
 }
 
+// Create product with FormData (for file uploads). If payload is FormData, send without JSON headers.
+export async function sellerCreateProductForm(formData, token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}` } : {}
+  // Use fetch directly because tryFetch expects JSON and sets headers
+  const res = await fetch(`${API_URL}/products`, { method: 'POST', headers, body: formData, credentials: 'include' })
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    let msg = `Request failed (${res.status})`
+    try {
+      const json = JSON.parse(body)
+      if (json && json.message) msg += `: ${json.message}`
+    } catch (e) {}
+    throw new Error(msg)
+  }
+  return res.json()
+}
+
 export async function sellerRequestAccount(payload, token) {
   const t = token || getAuthToken()
   const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
@@ -234,6 +252,22 @@ export async function sellerUpdateProduct(productId, payload, token) {
   const t = token || getAuthToken()
   const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
   return tryFetch(`${API_URL}/products/${productId}`, { method: 'PUT', headers, body: JSON.stringify(payload) })
+}
+
+export async function sellerUpdateProductForm(productId, formData, token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}` } : {}
+  const res = await fetch(`${API_URL}/products/${productId}`, { method: 'PUT', headers, body: formData, credentials: 'include' })
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    let msg = `Request failed (${res.status})`
+    try {
+      const json = JSON.parse(body)
+      if (json && json.message) msg += `: ${json.message}`
+    } catch (e) {}
+    throw new Error(msg)
+  }
+  return res.json()
 }
 
 export async function sellerDeleteProduct(productId, token) {

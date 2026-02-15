@@ -4,8 +4,18 @@ const Category = require('../models/Category');
 
 exports.createProduct = async (req, res) => {
   try {
-    const { title, description, category, subcategory, clothingType, basePrice, discount, variants, images } = req.body;
+    const { title, description, category, subcategory, clothingType, basePrice, discount } = req.body;
+    let { variants } = req.body;
+    // If product was submitted as multipart/form-data, variants may arrive as a JSON string
+    if (typeof variants === 'string') {
+      try {
+        variants = JSON.parse(variants);
+      } catch (e) {
+        variants = [];
+      }
+    }
     if (!title || !basePrice) return res.status(400).json({ message: 'Missing required fields' });
+    
     // Find seller document for this user
     const sellerDoc = await Seller.findOne({ user: req.user._id });
     if (!sellerDoc) return res.status(400).json({ message: 'Seller profile not found. Please request a seller account.' });
@@ -16,6 +26,11 @@ exports.createProduct = async (req, res) => {
       if (!catExists) return res.status(400).json({ message: 'Invalid category' });
     }
 
+    // Get image URLs from multer/Cloudinary
+    const images = req.files && req.files.length > 0 
+      ? req.files.map(file => file.path) 
+      : [];
+
     const product = new Product({
       seller: sellerDoc._id,
       title,
@@ -23,10 +38,10 @@ exports.createProduct = async (req, res) => {
       category,
       subcategory,
       clothingType,
-      basePrice,
-      discount: discount || 0,
-      variants: variants || [],
-      images: images || [],
+      basePrice: Number(basePrice) || 0,
+      discount: Number(discount) || 0,
+      variants: Array.isArray(variants) ? variants : [],
+      images: images,
       // default status is 'pending' (configured in schema). Do not auto-approve seller-submitted products.
     });
     await product.save();
@@ -227,7 +242,52 @@ exports.updateProduct = async (req, res) => {
     if (req.user.role !== 'admin' && 'status' in req.body) {
       delete req.body.status;
     }
-    Object.assign(product, req.body);
+    
+    // Handle new image uploads
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => file.path);
+      req.body.images = newImages;
+      // build a map of original filename -> uploaded url so we can map variant files
+      const nameToUrl = {};
+      req.files.forEach(f => {
+        if (f.originalname) nameToUrl[f.originalname] = f.path;
+      });
+      // If client sent variantFiles mapping, attach uploaded files to corresponding variants
+      if (req.body.variantFiles) {
+        try {
+          const variantFiles = typeof req.body.variantFiles === 'string' ? JSON.parse(req.body.variantFiles) : req.body.variantFiles;
+          // ensure variants array exists
+          req.body.variants = req.body.variants || [];
+          for (const [variantIdx, fileNames] of Object.entries(variantFiles)) {
+            const idx = Number(variantIdx);
+            if (Number.isNaN(idx)) continue;
+            const urls = (fileNames || []).map(fname => nameToUrl[fname]).filter(Boolean);
+            if (!req.body.variants[idx]) req.body.variants[idx] = {};
+            // merge with existing images for variant
+            req.body.variants[idx].images = Array.isArray(req.body.variants[idx].images) ? req.body.variants[idx].images.concat(urls) : urls;
+          }
+        } catch (e) {
+          // ignore mapping errors
+        }
+      }
+    }
+    // If variants or other complex fields were submitted as JSON strings (FormData), parse them
+    if (req.body.variants && typeof req.body.variants === 'string') {
+      try {
+        req.body.variants = JSON.parse(req.body.variants);
+      } catch (e) {
+        req.body.variants = [];
+      }
+    }
+    // Ensure numeric fields are cast
+    if (req.body.basePrice) req.body.basePrice = Number(req.body.basePrice);
+    if (req.body.discount) req.body.discount = Number(req.body.discount);
+
+    // Prevent overwriting the product.seller with malformed input from the client
+    const updates = { ...req.body };
+    if ('seller' in updates) delete updates.seller;
+
+    Object.assign(product, updates);
     await product.save();
     res.json({ message: 'Product updated', product });
   } catch (err) {

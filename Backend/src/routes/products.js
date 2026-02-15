@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 const { verifyToken, authorizeRole } = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 // Public endpoints
 router.get('/', productController.listProducts);
@@ -23,8 +24,8 @@ router.get('/seller/my-products', verifyToken, authorizeRole('seller'), productC
 router.get('/:id', productController.getProduct);
 
 // Seller endpoints
-router.post('/', verifyToken, authorizeRole('seller'), productController.createProduct);
-router.put('/:id', verifyToken, authorizeRole(['seller', 'admin']), productController.updateProduct);
+router.post('/', verifyToken, authorizeRole('seller'), upload.array('images', 10), productController.createProduct);
+router.put('/:id', verifyToken, authorizeRole(['seller', 'admin']), upload.array('images', 10), productController.updateProduct);
 router.delete('/:id', verifyToken, authorizeRole(['seller', 'admin']), productController.deleteProduct);
 
 module.exports = router;

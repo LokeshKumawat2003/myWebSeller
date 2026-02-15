@@ -20,6 +20,7 @@ const ProductForm = ({
   handleColorInputChange, 
   handleAddColorImage, 
   handleRemoveColorImage, 
+  handleColorFilesSelected,
   handleSizeInputChange, 
   handleAddSize, 
   handleRemoveSize, 
@@ -38,7 +39,9 @@ const ProductForm = ({
   accountBlocked, 
   seller, 
   editingId, 
-  resetForm 
+  resetForm,
+  selectedFiles,
+  setSelectedFiles
 }) => {
   
   return (
@@ -190,50 +193,122 @@ const ProductForm = ({
             Product Images
           </h3>
           
-          <div className="flex gap-3 mb-6">
-            <input
-              type="text"
-              placeholder="Enter image URL"
-              value={imageInput}
-              onChange={(e) => setImageInput(e.target.value)}
-              className="flex-1 px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-              disabled={accountBlocked || !seller}
-            />
-            <button
-              type="button"
-              onClick={handleAddImage}
-              className="px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all disabled:cursor-not-allowed font-serif"
-              disabled={accountBlocked || !seller}
-            >
-              Add Image
-            </button>
+          <div className="flex flex-col gap-3 mb-6">
+            {/* <div className="flex gap-3">
+              <input
+                type="text"
+                placeholder="Enter image URL"
+                value={imageInput}
+                onChange={(e) => setImageInput(e.target.value)}
+                className="flex-1 px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-transparent transition-all bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
+                disabled={accountBlocked || !seller}
+              />
+              <button
+                type="button"
+                onClick={handleAddImage}
+                className="px-6 py-3 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-light italic transition-all disabled:cursor-not-allowed font-serif"
+                disabled={accountBlocked || !seller}
+              >
+                Add Image
+              </button>
+            </div> */}
+
+            <div className="flex items-center gap-3">
+              <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 bg-white border border-dashed border-gray-300 rounded-lg hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H4z" />
+                </svg>
+                <span className="text-sm text-gray-700">Upload images</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || [])
+                    setSelectedFiles && setSelectedFiles(prev => {
+                      const existing = Array.isArray(prev) ? prev : []
+                      const merged = [...existing]
+                      for (const f of files) {
+                        if (!merged.some(m => m.name === f.name && m.size === f.size)) merged.push(f)
+                      }
+                      return merged
+                    })
+                  }}
+                  disabled={accountBlocked || !seller}
+                  className="hidden"
+                />
+              </label>
+
+              <div className="text-sm text-gray-500">or drag & drop images onto the area above</div>
+            </div>
           </div>
 
-          {formData.images && formData.images.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {formData.images.map((img, idx) => (
-                <div key={idx} className="relative group">
-                  <img
-                    src={img}
-                    alt={`product ${idx + 1}`}
-                    className="w-full h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(idx)}
-                    className="absolute top-2 right-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <div className="text-4xl mb-2">📷</div>
-              <p>No images added yet</p>
-            </div>
-          )}
+          {/* <div className="mb-4">
+            <label className="block text-sm italic text-[#666] font-serif mb-2">Or upload image files</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setSelectedFiles && setSelectedFiles(files);
+              }}
+              className="w-full"
+              disabled={accountBlocked || !seller}
+            />
+            {selectedFiles && selectedFiles.length > 0 && (
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {selectedFiles.map((f, idx) => (
+                  <div key={idx} className="relative">
+                    <img src={URL.createObjectURL(f)} alt={f.name} className="w-full h-20 object-cover rounded" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div> */}
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {selectedFiles && selectedFiles.length > 0 && selectedFiles.map((file, idx) => (
+              <div key={`file-${idx}-${file.name}`} className="relative group">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  className="w-full h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSelectedFiles && setSelectedFiles(prev => prev.filter((_, i) => i !== idx))}
+                  className="absolute top-2 right-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {formData.images && formData.images.length > 0 && formData.images.map((img, idx) => (
+              <div key={`url-${idx}-${img}`} className="relative group">
+                <img
+                  src={img}
+                  alt={`product ${idx + 1}`}
+                  className="w-full h-24 object-cover rounded-lg border border-gray-200 shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(idx)}
+                  className="absolute top-2 right-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white p-1 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {(!selectedFiles || selectedFiles.length === 0) && (!formData.images || formData.images.length === 0) && (
+              <div className="text-center py-8 text-gray-500 col-span-full">
+                <div className="text-4xl mb-2">📷</div>
+                <p>No images added yet</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Variants Section */}
@@ -301,7 +376,7 @@ const ProductForm = ({
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Color Images</label>
+                {/* <label className="block text-sm font-medium text-gray-700">Color Images</label>
                 <input
                   type="text"
                   placeholder="Enter image URLs separated by commas"
@@ -316,15 +391,32 @@ const ProductForm = ({
                   }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   disabled={accountBlocked || !seller}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddColorImage}
-                  className="mt-2 px-4 py-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-medium transition-all disabled:cursor-not-allowed font-sans"
-                  disabled={!colorInput.colorImageInput.trim() || accountBlocked || !seller}
-                >
-                  Add Images
-                </button>
+                /> */}
+                <div className="flex items-center gap-3 mt-2">
+                  {/* <button
+                    type="button"
+                    onClick={handleAddColorImage}
+                    className="px-4 py-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] rounded-lg font-medium transition-all disabled:cursor-not-allowed font-sans"
+                    disabled={(!colorInput.colorImageInput || !String(colorInput.colorImageInput).trim()) || accountBlocked || !seller}
+                  >
+                    Add Images (URLs)
+                  </button> */}
+
+                  <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 bg-white border border-dashed border-gray-300 rounded-lg hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H4z" />
+                    </svg>
+                    <span className="text-sm text-gray-700">Upload files</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleColorFilesSelected && handleColorFilesSelected(e.target.files)}
+                      disabled={accountBlocked || !seller}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
 

@@ -23,6 +23,7 @@ const ProductFormModal = ({
   handleColorInputChange,
   handleAddColorImage,
   handleRemoveColorImage,
+  handleColorFilesSelected,
   handleSizeInputChange,
   handleAddSize,
   handleRemoveSize,
@@ -41,7 +42,9 @@ const ProductFormModal = ({
   accountBlocked,
   seller,
   editingId,
-  resetForm
+  resetForm,
+  selectedFiles,
+  setSelectedFiles
 }) => {
   if (!showForm) return null;
 
@@ -85,6 +88,7 @@ const ProductFormModal = ({
             handleColorInputChange={handleColorInputChange}
             handleAddColorImage={handleAddColorImage}
             handleRemoveColorImage={handleRemoveColorImage}
+            handleColorFilesSelected={handleColorFilesSelected}
             handleSizeInputChange={handleSizeInputChange}
             handleAddSize={handleAddSize}
             handleRemoveSize={handleRemoveSize}
@@ -107,6 +111,8 @@ const ProductFormModal = ({
             seller={seller}
             editingId={editingId}
             resetForm={resetForm}
+            selectedFiles={selectedFiles}
+            setSelectedFiles={setSelectedFiles}
           />
         </div>
       </div>

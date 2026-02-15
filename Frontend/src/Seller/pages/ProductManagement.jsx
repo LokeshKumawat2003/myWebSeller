@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { sellerCreateProduct, sellerUpdateProduct, sellerDeleteProduct, listCategories } from '../../services/api';
+import { sellerCreateProduct, sellerCreateProductForm, sellerUpdateProduct, sellerUpdateProductForm, sellerDeleteProduct, listCategories } from '../../services/api';
 import ProductFormModal from '../components/Products/ProductFormModal';
 import ProductList from '../components/Products/ProductList';
 
@@ -27,6 +27,7 @@ export default function ProductManagement({ seller, products, onRefresh }) {
   const [editingStock, setEditingStock] = useState(null); // {variantIdx, sizeIdx, value}
   const [stockInputValue, setStockInputValue] = useState('');
   const [imageInput, setImageInput] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [colorInput, setColorInput] = useState({
     color: '',
     material: '',
@@ -35,6 +36,11 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     colorImageInput: '',
     sizes: [],
   });
+  // ensure a place to store selected files for the color being added
+  useEffect(() => {
+    setColorInput(prev => ({ ...prev, _files: prev._files || [] }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [sizeInput, setSizeInput] = useState({
     size: '',
     price: '',
@@ -135,8 +141,8 @@ export default function ProductManagement({ seller, products, onRefresh }) {
   };
 
   const handleAddColorImage = () => {
-    if (colorInput.colorImageInput.trim()) {
-      const urls = colorInput.colorImageInput.split(',').map(url => url.trim()).filter(url => url);
+    if (colorInput.colorImageInput && String(colorInput.colorImageInput).trim()) {
+      const urls = String(colorInput.colorImageInput).split(',').map(url => url.trim()).filter(url => url);
       if (urls.length > 0) {
         setColorInput(prev => ({
           ...prev,
@@ -147,10 +153,22 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     }
   };
 
+  const handleColorFilesSelected = (files) => {
+    if (!files || files.length === 0) return;
+    const arr = Array.from(files);
+    // create preview URLs for display and keep File objects in _files
+    setColorInput(prev => ({
+      ...prev,
+      images: [...(prev.images || []), ...arr.map(f => URL.createObjectURL(f))],
+      _files: [...(prev._files || []), ...arr]
+    }));
+  };
+
   const handleRemoveColorImage = (index) => {
     setColorInput(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
+      _files: (prev._files || []).filter((_, i) => i !== index),
     }));
   };
 
@@ -219,9 +237,14 @@ export default function ProductManagement({ seller, products, onRefresh }) {
 
   const handleAddColor = () => {
     if (colorInput.color && colorInput.sizes.length > 0) {
+      // include any _files with the variant so they can be appended to FormData on submit
+      const variant = { ...colorInput };
+      if (colorInput._files && colorInput._files.length > 0) {
+        variant._files = colorInput._files.slice();
+      }
       setFormData(prev => ({
         ...prev,
-        variants: [...prev.variants, { ...colorInput }],
+        variants: [...prev.variants, variant],
       }));
       setColorInput({
         color: '',
@@ -297,10 +320,47 @@ export default function ProductManagement({ seller, products, onRefresh }) {
 
     try {
       if (editingId) {
-        await sellerUpdateProduct(editingId, formData);
+        const fd = new FormData();
+        // append global product image files
+        (selectedFiles || []).forEach(f => fd.append('images', f));
+        // collect variant files mapping: variantIndex -> [originalname]
+        const variantFilesMap = {};
+        (formData.variants || []).forEach((v, idx) => {
+          if (v && Array.isArray(v._files) && v._files.length > 0) {
+            v._files.forEach(f => fd.append('images', f));
+            variantFilesMap[idx] = v._files.map(f => f.name);
+          }
+        });
+        // append other fields
+        for (const key of Object.keys(formData)) {
+          if (key === 'variants' || key === 'images') {
+            fd.append(key, JSON.stringify(formData[key] || []));
+          } else {
+            fd.append(key, formData[key] === undefined ? '' : String(formData[key]));
+          }
+        }
+        if (Object.keys(variantFilesMap).length > 0) fd.append('variantFiles', JSON.stringify(variantFilesMap));
+        await sellerUpdateProductForm(editingId, fd);
         alert('Product updated successfully!');
       } else {
-        await sellerCreateProduct(formData);
+        const fd = new FormData();
+        (selectedFiles || []).forEach(f => fd.append('images', f));
+        const variantFilesMap = {};
+        (formData.variants || []).forEach((v, idx) => {
+          if (v && Array.isArray(v._files) && v._files.length > 0) {
+            v._files.forEach(f => fd.append('images', f));
+            variantFilesMap[idx] = v._files.map(f => f.name);
+          }
+        });
+        for (const key of Object.keys(formData)) {
+          if (key === 'variants' || key === 'images') {
+            fd.append(key, JSON.stringify(formData[key] || []));
+          } else {
+            fd.append(key, formData[key] === undefined ? '' : String(formData[key]));
+          }
+        }
+        if (Object.keys(variantFilesMap).length > 0) fd.append('variantFiles', JSON.stringify(variantFilesMap));
+        await sellerCreateProductForm(fd);
         alert('Product created successfully!');
       }
       resetForm();
@@ -397,6 +457,7 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     setEditingStock(null);
     setStockInputValue('');
     setShowForm(false);
+    setSelectedFiles([]);
   };
 
   const accountBlocked = seller?.blocked;
@@ -463,6 +524,7 @@ export default function ProductManagement({ seller, products, onRefresh }) {
         handleColorInputChange={handleColorInputChange}
         handleAddColorImage={handleAddColorImage}
         handleRemoveColorImage={handleRemoveColorImage}
+        handleColorFilesSelected={handleColorFilesSelected}
         handleSizeInputChange={handleSizeInputChange}
         handleAddSize={handleAddSize}
         handleRemoveSize={handleRemoveSize}
@@ -482,6 +544,8 @@ export default function ProductManagement({ seller, products, onRefresh }) {
         seller={seller}
         editingId={editingId}
         resetForm={resetForm}
+        selectedFiles={selectedFiles}
+        setSelectedFiles={setSelectedFiles}
       />
 
       {/* Products List */}

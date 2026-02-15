@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Save, Image as ImageIcon } from 'lucide-react';
 
-const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSubmit, onCancel }) => {
+const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSubmit, onCancel, selectedImageFile, setSelectedImageFile }) => {
   if (!showForm) return null;
 
   return (
@@ -31,7 +31,7 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium luxury-text-primary mb-2">
-              Image URL
+              Image URL or Upload
             </label>
             <input
               type="url"
@@ -39,8 +39,16 @@ const BannerForm = ({ showForm, editingBanner, formData, onFormDataChange, onSub
               onChange={(e) => onFormDataChange({ ...formData, imageUrl: e.target.value })}
               className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent transition-colors luxury-bg"
               placeholder="https://example.com/banner-image.jpg"
-              required
             />
+            <div className="mt-3">
+              <label className="block text-sm font-medium luxury-text-primary mb-1">Or upload image file</label>
+              <input type="file" accept="image/*" onChange={(e) => setSelectedImageFile(e.target.files && e.target.files[0])} />
+              {selectedImageFile && (
+                <div className="mt-2">
+                  <img src={URL.createObjectURL(selectedImageFile)} alt="banner preview" className="w-48 h-24 object-cover rounded" />
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
