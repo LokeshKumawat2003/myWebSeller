@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
+import Logo from '../../components/Logo';
 import { CheckCircle, Package, Truck, Home } from 'lucide-react';
 
 export default function CheckoutSuccessPage() {
@@ -18,6 +19,9 @@ export default function CheckoutSuccessPage() {
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Success Header */}
           <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <Logo size="lg" />
+            </div>
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#9c7c3a] rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-[#fbf7f2]" />
             </div>

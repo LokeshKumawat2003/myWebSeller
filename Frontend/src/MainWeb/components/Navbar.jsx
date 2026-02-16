@@ -10,6 +10,7 @@ import {
   Menu,
 } from "lucide-react"
 import SearchModal from "./SearchModal"
+import Logo from "../../components/Logo"
 import { getNavigations } from "../../services/api"
 import { getAuthToken, clearAuthToken } from "../../services/api"
 
@@ -91,7 +92,8 @@ const Navbar = () => {
           </div>
 
           {/* Center Logo */}
-          <Link to="/" className="block">
+          <Link to="/" className="flex items-center gap-2">
+            <Logo size="sm" />
             <span className="font-serif text-[22px] tracking-[3px] text-[#9c7c3a]">
               kalaqx
             </span>
@@ -190,8 +192,9 @@ const Navbar = () => {
         {/* Center Logo */}
         <Link
           to="/"
-          className="absolute left-1/2 -translate-x-1/2 z-10"
+          className="absolute left-1/2 -translate-x-1/2 z-10 flex items-center gap-1"
         >
+          <Logo size="sm" />
           <span className="font-serif text-[14px] tracking-[1px] text-[#9c7c3a]">
             kalaqx
           </span>

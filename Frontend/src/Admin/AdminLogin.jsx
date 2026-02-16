@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authLogin } from '../services/api';
 import { useAdmin } from './AdminContext';
+import Logo from '../components/Logo';
 
 export default function AdminLogin() {
   const [phone, setPhone] = useState('');
@@ -46,6 +47,9 @@ export default function AdminLogin() {
       <div className="w-full max-w-md">
         <div className="luxury-bg rounded-lg shadow-2xl p-8 luxury-border">
           <div className="text-center mb-8">
+            <div className="mb-4 flex justify-center">
+              <Logo size="lg" />
+            </div>
             <h1 className="text-3xl font-bold luxury-accent mb-2">kalaqx Admin</h1>
             <p className="luxury-text-primary font-medium">Administrator Panel</p>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAdmin } from './AdminContext';
 import { LogOut, User, Shield, Bell, Menu, X } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function AdminNavbar({ admin, onMenuClick }) {
   const { logout } = useAdmin();
@@ -30,7 +31,7 @@ export default function AdminNavbar({ admin, onMenuClick }) {
 
               {/* Admin Logo */}
               <div className="w-10 h-10 lg:w-12 lg:h-12 luxury-bg-secondary rounded-xl flex items-center justify-center shadow-sm">
-                <Shield className="w-5 h-5 lg:w-6 lg:h-6 luxury-accent" />
+                <Logo size="sm" />
               </div>
 
               {/* Admin Info - Hidden on mobile, visible on larger screens */}

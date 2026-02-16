@@ -4,6 +4,7 @@ import Layout from '../components/Layout';
 import { useToast } from '../../Admin/components/UI';
 import { getCart, checkoutOrder, getAuthToken, getUserAddresses, addUserAddress, updateUserAddress } from '../../services/api';
 import AddressManagement from '../components/AddressManagement';
+import Logo from '../../components/Logo';
 import { ArrowLeft, Truck, CreditCard, CheckCircle, MapPin, Phone, Mail, ShoppingBag, Plus, Minus } from 'lucide-react';
 
 export default function CheckoutPage() {
@@ -253,7 +254,10 @@ export default function CheckoutPage() {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               Back to Cart
             </Link>
-            <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#9c7c3a] tracking-[1px] sm:tracking-[2px]">Checkout</h1>
+            <div className="flex items-center gap-3">
+              <Logo size="md" />
+              <h1 className="text-2xl sm:text-3xl font-serif font-medium text-[#9c7c3a] tracking-[1px] sm:tracking-[2px]">Checkout</h1>
+            </div>
           </div>
 
           {/* Progress Steps */}

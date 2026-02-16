@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendOTPRegister, sendOTPLogin, verifyOTPRegister, verifyOTPLogin, setAuthToken, API_URL } from '../../services/api';
+import Logo from '../../components/Logo';
 
 const LoginPage = () => {
   const [step, setStep] = useState('choice'); // choice, phone, otp
@@ -81,11 +82,7 @@ const LoginPage = () => {
         <div className="bg-white rounded-lg shadow-sm p-8 border border-[#e6ddd2]">
           <div className="text-center mb-6">
             <div className="mb-4 flex justify-center">
-              <svg className="w-16 h-16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="48" fill="#9c7c3a" opacity="0.1" />
-                <path d="M 30 50 Q 50 30 70 50 Q 50 70 30 50" stroke="#9c7c3a" strokeWidth="2" fill="none" strokeLinecap="round" />
-                <circle cx="50" cy="50" r="6" fill="#9c7c3a" />
-              </svg>
+              <Logo size="lg" />
             </div>
             <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">kalaqx</h1>
             <p className="text-[#666] italic font-serif">Sign in or create account</p>
@@ -127,6 +124,12 @@ const LoginPage = () => {
                 </svg>
                 {loading ? 'Sending OTP...' : 'Send OTP'}
               </button>
+
+              <div className="text-center mt-3">
+                <button type="button" onClick={() => { setStep('choice'); setPhone(''); setOtp(''); setIsExistingUser(null); setError(''); }} className="text-[#1922d2] italic font-serif text-sm hover:underline">
+                  ← Back
+                </button>
+              </div>
             </form>
           ) : (
             <form onSubmit={handleVerifyOTP} className="space-y-4">

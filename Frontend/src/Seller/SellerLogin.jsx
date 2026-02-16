@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authLogin, getSellerProfile } from '../services/api';
 import { useSeller } from './SellerContext';
+import Logo from '../components/Logo';
 
 export default function SellerLogin() {
   const [phone, setPhone] = useState('');
@@ -53,6 +54,9 @@ export default function SellerLogin() {
         <div className="bg-white rounded-lg shadow-sm p-8 border border-[#e6ddd2]">
           {/* Header */}
           <div className="text-center mb-8">
+            <div className="mb-4 flex justify-center">
+              <Logo size="lg" />
+            </div>
             <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">kalaqx</h1>
             <p className="text-[#666] italic font-serif">Seller Login</p>
           </div>

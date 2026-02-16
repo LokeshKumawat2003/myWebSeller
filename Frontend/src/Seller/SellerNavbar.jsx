@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSeller } from './SellerContext';
 import { Menu, LogOut, Store, User, Bell, CheckCircle, Clock, XCircle, X } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function SellerNavbar({ seller, onMenuClick }) {
   const { logout } = useSeller();
@@ -45,7 +46,7 @@ export default function SellerNavbar({ seller, onMenuClick }) {
 
               {/* Store Logo */}
               <div className="w-10 h-10 lg:w-12 lg:h-12 bg-[#e6ddd2] rounded-xl flex items-center justify-center shadow-sm">
-                <Store className="w-5 h-5 lg:w-6 lg:h-6 text-[#9c7c3a]" />
+                <Logo size="sm" />
               </div>
 
               {/* Store Info - Hidden on mobile, visible on larger screens */}
