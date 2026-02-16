@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '21d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '5y' });
     return res.json({ token, user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role } });
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
@@ -42,7 +42,7 @@ exports.googleCallback = async (req, res) => {
   try {
     const user = req.user;
     if (!user) return res.status(400).json({ message: 'Authentication failed' });
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET , { expiresIn: '5y' });
     const redirectUrl = (process.env.CLIENT_URL || 'http://localhost:3000') + '/auth/success?token=' + token;
     return res.redirect(redirectUrl);
   } catch (err) {
@@ -276,7 +276,7 @@ exports.verifyOTPRegister = async (req, res) => {
     await OTP.deleteOne({ phone });
     
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET , { expiresIn: '5y' });
     
     return res.status(201).json({ 
       message: 'User registered successfully',
@@ -334,7 +334,7 @@ exports.verifyOTPLogin = async (req, res) => {
     await OTP.deleteOne({ phone });
     
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '21d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET , { expiresIn: '5y' });
     
     return res.json({ 
       message: 'Login successful',

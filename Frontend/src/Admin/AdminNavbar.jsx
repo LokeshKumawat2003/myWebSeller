@@ -78,9 +78,9 @@ export default function AdminNavbar({ admin, onMenuClick }) {
               </button>
 
               {/* Desktop Logout */}
-             <div
-  onClick={logout}
-  className="hidden sm:flex items-center gap-2 px-5 py-2.5 
+              <div
+                onClick={logout}
+                className="hidden sm:flex items-center gap-2 px-5 py-2.5 
   bg-[#9c7c3a] hover:bg-[#9c7c3a] 
   text-white 
   rounded-lg text-sm font-light italic 
@@ -88,10 +88,10 @@ export default function AdminNavbar({ admin, onMenuClick }) {
   shadow-md hover:shadow-lg hover:shadow-[#b8955f]/30 
   border border-[#c6a76b]/40 
   font-serif group"
->
-  <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" />
-  <span>Logout</span>
-</div>
+              >
+                <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" />
+                <span>Logout</span>
+              </div>
 
               {/* Desktop User Avatar */}
               <div className="hidden sm:flex w-10 h-10 luxury-bg-secondary rounded-full items-center justify-center shadow-sm">
