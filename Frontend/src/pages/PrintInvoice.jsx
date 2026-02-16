@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getOrder } from '../services/api';
 import InvoicePrint from '../components/InvoicePrint';
+import Logo from '../components/Logo';
 
 export default function PrintInvoice() {
   const [order, setOrder] = useState(null);
@@ -35,20 +36,20 @@ export default function PrintInvoice() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-black text-xl">Loading invoice...</p>
+      <div className="flex items-center justify-center h-screen bg-[#fbf7f2]">
+        <p className="text-[#3b3b3b] text-xl">Loading invoice...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-[#fbf7f2]">
         <div className="text-center">
           <p className="text-red-600 text-xl font-bold mb-4">{error}</p>
           <button
             onClick={() => window.history.back()}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+            className="px-4 py-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] text-white rounded-lg font-serif"
           >
             Go Back
           </button>
