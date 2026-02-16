@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const OTP = require('../models/OTP');
+const { sendOTP } = require('../services/twilioService');
 
 exports.register = async (req, res) => {
   try {
@@ -28,7 +30,7 @@ exports.login = async (req, res) => {
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '21d' });
     return res.json({ token, user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role } });
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
@@ -143,6 +145,208 @@ exports.deleteUserAddress = async (req, res) => {
     await user.save();
 
     return res.json({ message: 'Address deleted successfully' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// OTP-based Authentication
+exports.sendOTPRegister = async (req, res) => {
+  try {
+    const { phone, name, email } = req.body;
+    
+    if (!phone) return res.status(400).json({ message: 'Phone number is required' });
+    
+    // Check if phone already registered
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) return res.status(400).json({ message: 'Phone number already registered' });
+    
+    // Delete any existing OTP for this phone
+    await OTP.deleteOne({ phone });
+    
+    // Send OTP via Twilio
+    const otp = await sendOTP(phone);
+    
+    // Store OTP in database
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+    const otpDoc = new OTP({ 
+      phone, 
+      otp, 
+      email, 
+      name, 
+      expiresAt, 
+      type: 'register',
+      attempts: 0 
+    });
+    await otpDoc.save();
+    
+    return res.status(200).json({ message: 'OTP sent successfully', phone });
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed to send OTP', error: err.message });
+  }
+};
+
+exports.sendOTPLogin = async (req, res) => {
+  try {
+    const { phone } = req.body;
+    
+    if (!phone) return res.status(400).json({ message: 'Phone number is required' });
+    
+    // Check if phone exists
+    const user = await User.findOne({ phone });
+    if (!user) return res.status(400).json({ message: 'Phone number not registered' });
+    
+    // Delete any existing OTP for this phone
+    await OTP.deleteOne({ phone });
+    
+    // Send OTP via Twilio
+    const otp = await sendOTP(phone);
+    
+    // Store OTP in database
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+    const otpDoc = new OTP({ 
+      phone, 
+      otp, 
+      expiresAt, 
+      type: 'login',
+      attempts: 0 
+    });
+    await otpDoc.save();
+    
+    return res.status(200).json({ message: 'OTP sent successfully', phone });
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed to send OTP', error: err.message });
+  }
+};
+
+exports.verifyOTPRegister = async (req, res) => {
+  try {
+    const { phone, otp, name, email, password } = req.body;
+    
+    if (!phone || !otp) return res.status(400).json({ message: 'Phone and OTP are required' });
+    
+    // Find OTP record
+    const otpRecord = await OTP.findOne({ phone, type: 'register' });
+    
+    if (!otpRecord) return res.status(400).json({ message: 'OTP expired or not found' });
+    
+    // Check if OTP has expired
+    if (new Date() > otpRecord.expiresAt) {
+      await OTP.deleteOne({ phone });
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+    
+    // Check OTP attempts
+    if (otpRecord.attempts >= 5) {
+      await OTP.deleteOne({ phone });
+      return res.status(400).json({ message: 'Maximum OTP attempts exceeded' });
+    }
+    
+    // Verify OTP
+    if (otpRecord.otp !== otp) {
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+      return res.status(400).json({ message: 'Invalid OTP', attempts: otpRecord.attempts });
+    }
+    
+    // Check if phone already registered
+    let user = await User.findOne({ phone });
+    
+    if (user) {
+      // User exists, just mark OTP as verified
+      await OTP.deleteOne({ phone });
+      return res.status(400).json({ message: 'Phone already registered' });
+    }
+    
+    // Create new user
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = password ? await bcrypt.hash(password, salt) : null;
+    
+    user = new User({
+      name: name || otpRecord.name,
+      email: email || otpRecord.email,
+      phone,
+      passwordHash,
+      role: 'user'
+    });
+    
+    await user.save();
+    
+    // Delete OTP record
+    await OTP.deleteOne({ phone });
+    
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    
+    return res.status(201).json({ 
+      message: 'User registered successfully',
+      token, 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        phone: user.phone, 
+        role: user.role 
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+exports.verifyOTPLogin = async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    
+    if (!phone || !otp) return res.status(400).json({ message: 'Phone and OTP are required' });
+    
+    // Find OTP record
+    const otpRecord = await OTP.findOne({ phone, type: 'login' });
+    
+    if (!otpRecord) return res.status(400).json({ message: 'OTP expired or not found' });
+    
+    // Check if OTP has expired
+    if (new Date() > otpRecord.expiresAt) {
+      await OTP.deleteOne({ phone });
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+    
+    // Check OTP attempts
+    if (otpRecord.attempts >= 5) {
+      await OTP.deleteOne({ phone });
+      return res.status(400).json({ message: 'Maximum OTP attempts exceeded' });
+    }
+    
+    // Verify OTP
+    if (otpRecord.otp !== otp) {
+      otpRecord.attempts += 1;
+      await otpRecord.save();
+      return res.status(400).json({ message: 'Invalid OTP', attempts: otpRecord.attempts });
+    }
+    
+    // Find user
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+    
+    // Delete OTP record
+    await OTP.deleteOne({ phone });
+    
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '21d' });
+    
+    return res.json({ 
+      message: 'Login successful',
+      token, 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        phone: user.phone, 
+        role: user.role 
+      }
+    });
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
   }

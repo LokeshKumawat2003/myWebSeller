@@ -379,3 +379,35 @@ export async function deleteUserAddress(addressId, token) {
   const headers = t ? { Authorization: `Bearer ${t}` } : {}
   return tryFetch(`${API_URL}/auth/addresses/${addressId}`, { method: 'DELETE', headers })
 }
+// OTP-based authentication functions
+export async function sendOTPRegister(payload) {
+  return tryFetch(`${API_URL}/auth/otp/send-register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function sendOTPLogin(payload) {
+  return tryFetch(`${API_URL}/auth/otp/send-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function verifyOTPRegister(payload) {
+  return tryFetch(`${API_URL}/auth/otp/verify-register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function verifyOTPLogin(payload) {
+  return tryFetch(`${API_URL}/auth/otp/verify-login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}

@@ -1,46 +1,75 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authLogin, authRegister, setAuthToken, API_URL } from '../../services/api';
+import { sendOTPRegister, sendOTPLogin, verifyOTPRegister, verifyOTPLogin, setAuthToken, API_URL } from '../../services/api';
 
 const LoginPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [step, setStep] = useState('choice'); // choice, phone, otp
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [isExistingUser, setIsExistingUser] = useState(null);
+  const [timer, setTimer] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const startOTPTimer = () => {
+    setTimer(60);
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+  const handleSendOTP = async (e) => {
+    e && e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      // Try login first, if not found -> register
+      try {
+        await sendOTPLogin({ phone });
+        setIsExistingUser(true);
+      } catch (err) {
+        const msg = (err && err.message) || '';
+        if (msg.includes('(404)') || msg.toLowerCase().includes('not found')) {
+          await sendOTPRegister({ phone });
+          setIsExistingUser(false);
+        } else {
+          throw err;
+        }
+      }
+      setStep('otp');
+      setOtp('');
+      startOTPTimer();
+    } catch (err) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const handleVerifyOTP = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      if (isLogin) {
-        const response = await authLogin({ phone: formData.phone, password: formData.password });
+      if (isExistingUser) {
+        const response = await verifyOTPLogin({ phone, otp });
         setAuthToken(response.token);
         navigate('/');
       } else {
-        if (formData.password !== formData.confirmPassword) {
-          setError('Passwords do not match');
-          setLoading(false);
-          return;
-        }
-        const response = await authRegister({ name: formData.name, email: formData.email, phone: formData.phone, password: formData.password });
+        const response = await verifyOTPRegister({ phone, otp });
         setAuthToken(response.token);
         navigate('/');
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to verify OTP');
     } finally {
       setLoading(false);
     }
@@ -51,124 +80,75 @@ const LoginPage = () => {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-sm p-8 border border-[#e6ddd2]">
           <div className="text-center mb-6">
+            <div className="mb-4 flex justify-center">
+              <svg className="w-16 h-16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#9c7c3a" opacity="0.1" />
+                <path d="M 30 50 Q 50 30 70 50 Q 50 70 30 50" stroke="#9c7c3a" strokeWidth="2" fill="none" strokeLinecap="round" />
+                <circle cx="50" cy="50" r="6" fill="#9c7c3a" />
+              </svg>
+            </div>
             <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">kalaqx</h1>
-            <p className="text-[#666] italic font-serif">{isLogin ? 'Sign in to your account' : 'Create your account'}</p>
+            <p className="text-[#666] italic font-serif">Sign in or create account</p>
           </div>
 
           {error && (
             <div className="mb-4 p-3 bg-[#e6ddd2] border border-[#9c7c3a] text-[#3b3b3b] rounded-lg text-sm italic font-serif">{error}</div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div>
-                <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Name</label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required={!isLogin}
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-                />
-              </div>
-            )}
-
-            {!isLogin && (
-              <div>
-                <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Email address</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required={!isLogin}
-                  placeholder="Email address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-                />
-              </div>
-            )}
-
-            <div>
-              <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Phone number</label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                placeholder="Phone number"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-              />
-            </div>
-
-            {!isLogin && (
-              <div>
-                <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Confirm Password</label>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  required={!isLogin}
-                  placeholder="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
-                />
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] font-light italic py-3 rounded-lg transition duration-200 mt-2 font-serif"
-            >
-              {loading ? (isLogin ? 'Signing in...' : 'Signing up...') : (isLogin ? 'Sign in' : 'Sign up')}
-            </button>
-
-            <div className="text-center mt-3">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-[#1922d2] italic font-serif text-sm"
-              >
-                {isLogin ? 'Need an account? Sign up' : 'Already have an account? Sign in'}
+          {step === 'choice' ? (
+            <div className="space-y-4">
+              <a href={`${API_URL}/auth/google`} className="w-full inline-flex items-center justify-center gap-3 py-3 border border-[#e6ddd2] rounded-lg text-[#3b3b3b] bg-white hover:shadow-sm italic font-serif transition">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Continue with Google
+              </a>
+              <button onClick={() => { setStep('phone'); setError(''); setPhone(''); }} className="w-full inline-flex items-center justify-center gap-3 py-3 border border-[#e6ddd2] rounded-lg text-[#3b3b3b] bg-white hover:shadow-sm italic font-serif transition">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#3b3b3b">
+                  <path d="M17 2H7c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 18c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5-3H7V4h10v13z" />
+                </svg>
+                Continue with Phone
               </button>
             </div>
+          ) : step === 'phone' ? (
+            <form onSubmit={handleSendOTP} className="space-y-4">
+              <div>
+                <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">Phone number</label>
+                <input type="tel" required placeholder="10 digit number (e.g., 9876543210)" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength="10" className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]" />
+                <p className="text-[#999] text-xs italic mt-1 font-serif">Enter your 10-digit mobile number (India)</p>
+              </div>
 
-            <div className="text-center mt-2">
-              <a
-                href={`${API_URL}/auth/google`}
-                className="inline-flex items-center justify-center py-2 px-4 border border-[#e6ddd2] rounded-md text-sm text-[#3b3b3b] bg-white hover:bg-gray-50 italic font-serif"
-              >
-                <svg className="w-5 h-5 mr-3" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path fill="#4285f4" d="M533.5 278.4c0-17.5-1.6-35-4.9-51.8H272v98.1h147.5c-6.4 34.6-25.7 63.9-54.8 83.6v69.4h88.6c51.9-47.8 81.2-118.1 81.2-199.3z"/>
-                  <path fill="#34a853" d="M272 544.3c73.6 0 135.5-24.4 180.6-66.2l-88.6-69.4c-24.6 16.5-56 26.1-92 26.1-70.8 0-130.9-47.8-152.3-112.3H27.1v70.6C71.6 489.1 166.6 544.3 272 544.3z"/>
-                  <path fill="#fbbc04" d="M119.7 329.5c-10.8-32.6-10.8-67.9 0-100.5V158.4H27.1c-39.7 79.5-39.7 172.4 0 251.9l92.6-80.8z"/>
-                  <path fill="#ea4335" d="M272 109.1c39.9 0 75.9 13.8 104.2 40.9l78-78C405.9 25.6 344 0 272 0 166.6 0 71.6 55.2 27.1 139.1l92.6 70.6C141.1 156.9 201.2 109.1 272 109.1z"/>
+              <button type="submit" disabled={loading || phone.length < 10} className="w-full inline-flex items-center justify-center gap-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] font-light italic py-3 rounded-lg transition duration-200 mt-2 font-serif">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                 </svg>
-                Sign in with Google
-              </a>
-            </div>
-          </form>
+                {loading ? 'Sending OTP...' : 'Send OTP'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOTP} className="space-y-4">
+              <div>
+                <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">OTP</label>
+                <input type="text" required placeholder="Enter 6-digit OTP" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} maxLength="6" className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]" />
+              </div>
+
+              <button type="submit" disabled={loading || otp.length < 6} className="w-full inline-flex items-center justify-center gap-2 bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] font-light italic py-3 rounded-lg transition duration-200 mt-2 font-serif">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                </svg>
+                {loading ? 'Verifying...' : 'Verify OTP'}
+              </button>
+
+              <div className="text-center mt-3">
+                <button type="button" onClick={() => { setStep('choice'); setPhone(''); setOtp(''); setIsExistingUser(null); setError(''); }} className="text-[#1922d2] italic font-serif text-sm hover:underline">Choose another sign-in method</button>
+              </div>
+            </form>
+          )}
+
+
 
           <p className="text-center text-[#666] text-sm mt-6 italic font-serif">
             By signing in you agree to our terms and conditions.
