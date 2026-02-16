@@ -9,6 +9,7 @@ import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
 import UserManagement from './pages/UserManagement';
 import CategoryManagement from './pages/CategoryManagement';
+import CategoryDisplayManagement from './pages/CategoryDisplayManagement';
 import PaymentManagement from './pages/PaymentManagement';
 import BannerManagement from './pages/BannerManagement';
 import SupportManagement from './components/Support/SupportManagement';
@@ -62,6 +63,8 @@ export default function AdminDashboard() {
         return <UserManagement />;
       case 'categories':
         return <CategoryManagement />;
+      case 'category-display':
+        return <CategoryDisplayManagement />;
       case 'banners':
         return <BannerManagement />;
       case 'payments':

@@ -241,6 +241,10 @@ export async function listCategories() {
   return tryFetch(`${API_URL}/categories`)
 }
 
+export async function getCategoryDisplays() {
+  return tryFetch(`${API_URL}/category-display`)
+}
+
 // --- Payments (stub) ---
 export async function createPaymentIntent(payload, token) {
   const t = token || getAuthToken()

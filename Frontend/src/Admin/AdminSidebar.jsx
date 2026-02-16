@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAdmin } from './AdminContext';
-import { LayoutDashboard, Users, Package, ShoppingCart, User, Tag, Image, CreditCard, HeadphonesIcon, UserCircle, Menu } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ShoppingCart, User, Tag, Image, Grid, CreditCard, HeadphonesIcon, UserCircle, Menu } from 'lucide-react';
 import SharedSidebar from '../components/SharedSidebar';
 import { adminGetAllOrders, adminListSellers } from '../services/adminApi';
 import { getAllSupportTickets } from '../services/api';
@@ -13,6 +13,7 @@ const MENU_ITEMS = [
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
   { id: 'users', label: 'Users', icon: User },
   { id: 'categories', label: 'Categories', icon: Tag },
+  { id: 'category-display', label: 'Category Display', icon: Grid },
   { id: 'navigations', label: 'Navigation', icon: Menu },
   { id: 'banners', label: 'Banners', icon: Image },
   { id: 'payments', label: 'Payments', icon: CreditCard },

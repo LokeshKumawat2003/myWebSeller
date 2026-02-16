@@ -251,6 +251,46 @@ export async function adminDeleteCategory(categoryId, token) {
   });
 }
 
+// Admin Category Display APIs (NEW)
+export async function adminListCategoryDisplays(token) {
+  const t = token || getAuthToken();
+  const headers = t ? { Authorization: `Bearer ${t}` } : {};
+  return tryFetch(`${API_URL}/category-display/admin/all`, { headers });
+}
+
+export async function adminCreateCategoryDisplay(payload, token) {
+  const t = token || getAuthToken();
+  const headers = t
+    ? { Authorization: `Bearer ${t}` }
+    : {};
+  return tryFetch(`${API_URL}/category-display`, {
+    method: "POST",
+    headers,
+    body: payload,
+  });
+}
+
+export async function adminUpdateCategoryDisplay(categoryId, payload, token) {
+  const t = token || getAuthToken();
+  const headers = t
+    ? { Authorization: `Bearer ${t}` }
+    : {};
+  return tryFetch(`${API_URL}/category-display/${categoryId}`, {
+    method: "PUT",
+    headers,
+    body: payload,
+  });
+}
+
+export async function adminDeleteCategoryDisplay(categoryId, token) {
+  const t = token || getAuthToken();
+  const headers = t ? { Authorization: `Bearer ${t}` } : {};
+  return tryFetch(`${API_URL}/category-display/${categoryId}`, {
+    method: "DELETE",
+    headers,
+  });
+}
+
 // Admin Payments APIs
 export async function adminListPayments(
   status = "",

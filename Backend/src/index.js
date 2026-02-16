@@ -38,6 +38,7 @@ app.use('/reviews', require('./routes/reviews'));
 app.use('/cart', require('./routes/cart'));
 app.use('/wishlist', require('./routes/wishlist'));
 app.use('/banners', require('./routes/banners'));
+app.use('/category-display', require('./routes/categoryDisplay'));
 app.use('/seller', require('./routes/seller'));
 app.use('/admin', require('./routes/admin'));
 app.use('/support', require('./routes/support'));

@@ -3,15 +3,14 @@ import Layout from '../components/Layout';
 import ProductCard from '../components/ProductCard';
 import ProductGrid from '../components/ProductGrid';
 import { useToast } from '../../Admin/components/UI';
-import { Sliders } from 'lucide-react';
 import HeroSlider from '../components/HeroSlider';
-import { getFeaturedProducts, listCategories } from '../../services/api';
+import ShopByCategory from '../../components/ShopByCategory';
+import { getFeaturedProducts } from '../../services/api';
 
 
 const Home = () => {
   const { showError } = useToast();
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,14 +23,9 @@ const Home = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch featured products and categories in parallel
-      const [featuredData, categoriesData] = await Promise.all([
-        getFeaturedProducts(12), // Get up to 12 featured products
-        listCategories()
-      ]);
-
+      // Fetch featured products only (categories are now fetched by ShopByCategory component)
+      const featuredData = await getFeaturedProducts(12);
       setFeaturedProducts(featuredData);
-      setCategories(categoriesData);
     } catch (err) {
       console.error('Error fetching home data:', err);
       const errorMsg = 'Failed to load data. Please try again later.';
@@ -41,27 +35,6 @@ const Home = () => {
       setLoading(false);
     }
   };
-
-  // Fallback categories if API fails
-  const fallbackCategories = [
-    {
-      name: "Men",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      slug: "men"
-    },
-    {
-      name: "Women",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
-      slug: "women"
-    },
-    {
-      name: "Sneakers",
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
-      slug: "sneakers"
-    }
-  ];
-
-  const displayCategories = categories.length > 0 ? categories : fallbackCategories;
 
   if (loading) {
     return (
@@ -116,35 +89,8 @@ const Home = () => {
         {/* Hero Section */}
         <HeroSlider />
 
-        {/* Categories Section */}
-        <section className="py-20 px-4 md:px-8 bg-[#fbf7f2]">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-serif text-center mb-16 tracking-[3px] text-[#9c7c3a]">
-              SHOP BY CATEGORY
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-              {displayCategories.map((category, index) => (
-                <a
-                  key={index}
-                  href={`/${category.slug || category.name.toLowerCase()}`}
-                  className="group relative overflow-hidden bg-[#e6ddd2] aspect-square hover:shadow-lg transition-all duration-300"
-                >
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors"></div>
-                  <div className="absolute bottom-6 left-6">
-                    <h3 className="text-[#3b3b3b] text-xl md:text-2xl font-serif tracking-[2px] font-medium">
-                      {category.name}
-                    </h3>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Categories Section - Using New Category Display API */}
+        <ShopByCategory />
 
         {/* Featured Products */}
         <section className="py-20 px-4 md:px-8 bg-[#fbf7f2]">
@@ -156,9 +102,7 @@ const Home = () => {
               <p className="text-[#3b3b3b] text-lg font-sans font-light mb-2">
                 Discover our curated collection
               </p>
-              <p className="text-sm text-[#9c7c3a] font-serif tracking-[1px]">
-                💝 Add your favorites to wishlist
-              </p>
+            
             </div>
             {featuredProducts.length > 0 ? (
               <ProductGrid products={featuredProducts} />
