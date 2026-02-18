@@ -5,6 +5,7 @@ import { Settings as SettingsIcon } from 'lucide-react';
 import StoreInfoCard from '../components/Settings/StoreInfoCard';
 import StoreSettingsForm from '../components/Settings/StoreSettingsForm';
 import AccountStatusCard from '../components/Settings/AccountStatusCard';
+import SellerPayout from '../SellerPayout';
 
 export default function StoreSettings({ seller }) {
   const [loading, setLoading] = useState(false);
@@ -92,6 +93,9 @@ export default function StoreSettings({ seller }) {
             loadingData={loadingData}
             onRefresh={handleRefresh}
           />
+
+          {/* Payout settings (one-time set / change request) */}
+          <SellerPayout />
         </div>
       </div>
     </div>

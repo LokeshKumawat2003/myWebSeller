@@ -14,6 +14,7 @@ import PaymentManagement from './pages/PaymentManagement';
 import BannerManagement from './pages/BannerManagement';
 import SupportManagement from './components/Support/SupportManagement';
 import NavigationManagement from './components/NavigationManagement';
+import AdminPayoutRequests from './AdminPayoutRequests';
 import AdminSidebar from './AdminSidebar';
 import { Menu } from 'lucide-react';
 
@@ -69,6 +70,8 @@ export default function AdminDashboard() {
         return <BannerManagement />;
       case 'payments':
         return <PaymentManagement />;
+      case 'payout-requests':
+        return <AdminPayoutRequests />;
       case 'support':
         return <SupportManagement />;
       case 'navigations':

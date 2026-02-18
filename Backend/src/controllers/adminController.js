@@ -17,6 +17,87 @@ exports.listSellers = async (req, res) => {
   }
 };
 
+// List all pending payout change requests across sellers
+exports.listPayoutRequests = async (req, res) => {
+  try {
+    const sellers = await Seller.find({ 'payoutChangeRequests.status': 'pending' })
+      .select('storeName user payoutChangeRequests')
+      .populate('user', 'name email')
+      .lean();
+
+    // Flatten requests with seller context
+    const requests = [];
+    for (const s of sellers) {
+      const pending = (s.payoutChangeRequests || []).filter(r => r.status === 'pending');
+      for (const r of pending) {
+        requests.push({ sellerId: s._id, storeName: s.storeName, user: s.user, request: r });
+      }
+    }
+
+    return res.json(requests);
+  } catch (err) {
+    console.error('listPayoutRequests error', err);
+    return res.status(500).json({ message: 'Error fetching payout requests', error: err.message });
+  }
+};
+
+// Approve a seller payout change request
+exports.approvePayoutRequest = async (req, res) => {
+  try {
+    const { sellerId, requestId } = req.params;
+    const seller = await Seller.findById(sellerId);
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    const reqIndex = (seller.payoutChangeRequests || []).findIndex(r => String(r._id) === String(requestId));
+    if (reqIndex === -1) return res.status(404).json({ message: 'Request not found' });
+
+    const reqObj = seller.payoutChangeRequests[reqIndex];
+    if (reqObj.status !== 'pending') return res.status(400).json({ message: 'Request already processed' });
+
+    // Apply new payout
+    seller.payout = reqObj.new;
+    seller.payout.verified = true;
+
+    // Mark request approved
+    seller.payoutChangeRequests[reqIndex].status = 'approved';
+    seller.payoutChangeRequests[reqIndex].adminId = req.user._id;
+    seller.payoutChangeRequests[reqIndex].reviewedAt = new Date();
+
+    await seller.save();
+    return res.json({ message: 'Payout change approved', seller });
+  } catch (err) {
+    console.error('approvePayoutRequest error', err);
+    return res.status(500).json({ message: 'Error approving payout request', error: err.message });
+  }
+};
+
+// Reject a seller payout change request
+exports.rejectPayoutRequest = async (req, res) => {
+  try {
+    const { sellerId, requestId } = req.params;
+    const { comment } = req.body;
+    const seller = await Seller.findById(sellerId);
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    const reqIndex = (seller.payoutChangeRequests || []).findIndex(r => String(r._id) === String(requestId));
+    if (reqIndex === -1) return res.status(404).json({ message: 'Request not found' });
+
+    const reqObj = seller.payoutChangeRequests[reqIndex];
+    if (reqObj.status !== 'pending') return res.status(400).json({ message: 'Request already processed' });
+
+    seller.payoutChangeRequests[reqIndex].status = 'rejected';
+    seller.payoutChangeRequests[reqIndex].adminId = req.user._id;
+    seller.payoutChangeRequests[reqIndex].adminComment = comment || '';
+    seller.payoutChangeRequests[reqIndex].reviewedAt = new Date();
+
+    await seller.save();
+    return res.json({ message: 'Payout change rejected', seller });
+  } catch (err) {
+    console.error('rejectPayoutRequest error', err);
+    return res.status(500).json({ message: 'Error rejecting payout request', error: err.message });
+  }
+};
+
 exports.approveSeller = async (req, res) => {
   try {
     const seller = await Seller.findById(req.params.id);

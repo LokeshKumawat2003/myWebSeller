@@ -12,4 +12,8 @@ router.get(
   sellerController.getSellerOrders,
 );
 
+// Payout endpoints
+router.post('/payout', verifyToken, authorizeRole('seller'), sellerController.setPayout);
+router.get('/payout-requests', verifyToken, authorizeRole('seller'), sellerController.getPayoutRequests);
+
 module.exports = router;

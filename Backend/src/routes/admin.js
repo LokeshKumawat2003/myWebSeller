@@ -17,4 +17,9 @@ router.post('/seed-seller', verifyToken, authorizeRole('admin'), adminController
 router.post('/seed-categories', verifyToken, authorizeRole('admin'), adminController.seedCategories);
 router.post('/seed-products', verifyToken, authorizeRole('admin'), adminController.seedProducts);
 
+// Payout change requests
+router.get('/payout-requests', verifyToken, authorizeRole('admin'), adminController.listPayoutRequests);
+router.post('/payout-requests/:sellerId/:requestId/approve', verifyToken, authorizeRole('admin'), adminController.approvePayoutRequest);
+router.post('/payout-requests/:sellerId/:requestId/reject', verifyToken, authorizeRole('admin'), adminController.rejectPayoutRequest);
+
 module.exports = router;

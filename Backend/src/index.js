@@ -12,7 +12,7 @@ require('./config/passport')(passport);
 const app = express();
 // Configure CORS so the frontend can send credentials (cookies, auth)
 const corsOptions = {
-	origin: process.env.CLIENT_URL || 'http://localhost:3000',
+	origin: process.env.CLIENT_URL,
 	credentials: true,
 };
 app.use(cors(corsOptions));
@@ -22,8 +22,8 @@ app.use(bodyParser.json());
 app.use(logger);
 app.use(passport.initialize());
 
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/clothing_store';
+const PORT = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI ;
 
 connectDB(MONGO_URI);
 

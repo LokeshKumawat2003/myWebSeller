@@ -17,6 +17,7 @@ const MENU_ITEMS = [
   { id: 'navigations', label: 'Navigation', icon: Menu },
   { id: 'banners', label: 'Banners', icon: Image },
   { id: 'payments', label: 'Payments', icon: CreditCard },
+  { id: 'payout-requests', label: 'Payout Requests', icon: CreditCard },
   { id: 'support', label: 'Support', icon: HeadphonesIcon },
 ];
 

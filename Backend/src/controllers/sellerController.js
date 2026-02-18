@@ -112,3 +112,66 @@ exports.getSellerOrders = async (req, res) => {
       .json({ message: "Error fetching seller orders", error: err.message });
   }
 };
+
+// Set initial payout or request a payout change
+exports.setPayout = async (req, res) => {
+  try {
+    const { bank, upi } = req.body;
+    const seller = await Seller.findOne({ user: req.user._id });
+    if (!seller) return res.status(404).json({ message: 'Seller profile not found' });
+
+    const newPayout = {};
+    if (bank) newPayout.bank = bank;
+    if (upi) newPayout.upi = upi;
+    newPayout.addedAt = new Date();
+
+    // If seller has existing payout data, create or update a single pending change request
+    if (seller.payout && (seller.payout.bank || seller.payout.upi)) {
+      seller.payoutChangeRequests = seller.payoutChangeRequests || [];
+      // Check for an existing pending request
+      const existingIndex = seller.payoutChangeRequests.findIndex(r => r.status === 'pending');
+      if (existingIndex !== -1) {
+        // Update existing pending request (do not create duplicates)
+        seller.payoutChangeRequests[existingIndex].new = newPayout;
+        seller.payoutChangeRequests[existingIndex].requestedAt = new Date();
+        seller.payoutChangeRequests[existingIndex].requestedBy = req.user._id;
+        seller.payoutChangeRequests[existingIndex].status = 'pending';
+        await seller.save();
+        return res.status(202).json({ message: 'Payout change request updated', request: seller.payoutChangeRequests[existingIndex] });
+      }
+
+      // No pending request -> create one
+      const reqObj = {
+        old: seller.payout,
+        new: newPayout,
+        requestedBy: req.user._id,
+        status: 'pending',
+        requestedAt: new Date(),
+      };
+      seller.payoutChangeRequests.push(reqObj);
+      await seller.save();
+      return res.status(202).json({ message: 'Payout change request submitted', request: reqObj });
+    }
+
+    // Otherwise set initial payout (one-time set)
+    seller.payout = newPayout;
+    // keep verified false until admin verifies if you want; leave false for now
+    seller.payout.verified = false;
+    await seller.save();
+    return res.status(200).json({ message: 'Payout details saved', payout: seller.payout });
+  } catch (err) {
+    console.error('setPayout error', err);
+    return res.status(500).json({ message: 'Error setting payout details', error: err.message });
+  }
+};
+
+exports.getPayoutRequests = async (req, res) => {
+  try {
+    const seller = await Seller.findOne({ user: req.user._id }).populate('payoutChangeRequests.requestedBy', 'name email');
+    if (!seller) return res.status(404).json({ message: 'Seller profile not found' });
+    return res.json({ payout: seller.payout, requests: seller.payoutChangeRequests || [] });
+  } catch (err) {
+    console.error('getPayoutRequests error', err);
+    return res.status(500).json({ message: 'Error fetching payout requests', error: err.message });
+  }
+};

@@ -137,6 +137,38 @@ export async function getSellerProfile(token) {
   return tryFetch(`${API_URL}/seller/me`, { headers })
 }
 
+// Seller payout APIs
+export async function sellerSetPayout(payload, token) {
+  const t = token || getAuthToken()
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
+  return tryFetch(`${API_URL}/seller/payout`, { method: 'POST', headers, body: JSON.stringify(payload) })
+}
+
+export async function sellerGetPayoutRequests(token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}` } : {}
+  return tryFetch(`${API_URL}/seller/payout-requests`, { headers })
+}
+
+// Admin payout APIs
+export async function adminListPayoutRequests(token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}` } : {}
+  return tryFetch(`${API_URL}/admin/payout-requests`, { headers })
+}
+
+export async function adminApprovePayout(sellerId, requestId, token) {
+  const t = token || getAuthToken()
+  const headers = t ? { Authorization: `Bearer ${t}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' }
+  return tryFetch(`${API_URL}/admin/payout-requests/${sellerId}/${requestId}/approve`, { method: 'POST', headers })
+}
+
+export async function adminRejectPayout(sellerId, requestId, comment, token) {
+  const t = token || getAuthToken()
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
+  return tryFetch(`${API_URL}/admin/payout-requests/${sellerId}/${requestId}/reject`, { method: 'POST', headers, body: JSON.stringify({ comment }) })
+}
+
 export async function sellerCreateProduct(payload, token) {
   const t = token || getAuthToken()
   const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
