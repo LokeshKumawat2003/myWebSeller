@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useToast } from '../../Admin/components/UI';
-import { getCart, checkoutOrder, getAuthToken, getUserAddresses, addUserAddress, updateUserAddress } from '../../services/api';
+import { getCart, checkoutOrder, getAuthToken, getUserAddresses, addUserAddress, updateUserAddress, createRazorpayOrder, verifyRazorpayPayment, getRazorpayKey } from '../../services/api';
 import AddressManagement from '../components/AddressManagement';
 import Logo from '../../components/Logo';
 import { ArrowLeft, Truck, CreditCard, CheckCircle, MapPin, Phone, Mail, ShoppingBag, Plus, Minus } from 'lucide-react';
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
 
     // Validate form data
     if (!shippingAddress.name || !shippingAddress.phone || !shippingAddress.line1 ||
-        !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode) {
+      !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode) {
       showError('Please fill in all required fields');
       return;
     }
@@ -206,19 +206,81 @@ export default function CheckoutPage() {
         }
       };
 
-      const response = await checkoutOrder(orderData, token);
+      if (paymentMethod === 'online') {
+        // Create a Razorpay order on the server (amount in rupees)
+        // server returns { order }
+        const rpResp = await createRazorpayOrder({ amount: total }, token);
+        const rpOrder = rpResp.order || rpResp; // fallback if server returns raw order
 
-      showSuccess('Order placed successfully!', 'Success');
-      // Navigate to success page with order details
-      navigate('/checkout/success', {
-        state: {
-          orderId: response.order._id,
-          orderDetails: response,
-          cartItems,
-          shippingAddress,
-          paymentMethod
+
+        // Load Razorpay checkout script
+        await new Promise((resolve, reject) => {
+          if (window.Razorpay) return resolve()
+          const s = document.createElement('script')
+          s.src = 'https://checkout.razorpay.com/v1/checkout.js'
+          s.onload = resolve
+          s.onerror = () => reject(new Error('Failed to load Razorpay script'))
+          document.body.appendChild(s)
+        })
+
+        // Fetch public key from backend at runtime, fallback to build-time env
+        let fetchedKey = null
+        try {
+          fetchedKey = await getRazorpayKey()
+        } catch (e) {
+          fetchedKey = null
         }
-      });
+        const keyId = fetchedKey || import.meta.env.VITE_RAZORPAY_KEY_ID || ''
+        const options = {
+          key: keyId,
+          amount: rpOrder.amount,
+          currency: rpOrder.currency || 'INR',
+          name: import.meta.env.VITE_APP_NAME || 'Skalaqxhop',
+          description: 'Order Payment',
+          order_id: rpOrder.id || rpOrder.order_id,
+          handler: async function (response) {
+            try {
+              // Verify signature on server
+              await verifyRazorpayPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }, token);
+
+              // On success, finalize checkout (mark payment info)
+              const paidOrderData = Object.assign({}, orderData);
+              paidOrderData.payment = { method: 'razorpay', razorpay_payment_id: response.razorpay_payment_id };
+              const finalResp = await checkoutOrder(paidOrderData, token);
+              showSuccess('Payment successful and order placed!', 'Success');
+              navigate('/checkout/success', { state: { orderId: finalResp.order._id, orderDetails: finalResp, cartItems, shippingAddress, paymentMethod: 'online' } });
+            } catch (err) {
+              showError(err.message || 'Payment verification failed');
+            }
+          },
+          prefill: {
+            name: shippingAddress.name,
+            email: shippingAddress.email,
+            contact: shippingAddress.phone
+          }
+        }
+
+        const rzp = new window.Razorpay(options)
+        rzp.open()
+        console.log('Razorpay order created:', rzp);
+      } else {
+        const response = await checkoutOrder(orderData, token);
+        showSuccess('Order placed successfully!', 'Success');
+        // Navigate to success page with order details
+        navigate('/checkout/success', {
+          state: {
+            orderId: response.order._id,
+            orderDetails: response,
+            cartItems,
+            shippingAddress,
+            paymentMethod
+          }
+        });
+      }
     } catch (err) {
       showError(err.message || 'Checkout failed');
     } finally {
@@ -264,44 +326,36 @@ export default function CheckoutPage() {
           <div className="mb-8">
             <div className="flex items-center justify-center">
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
-                  currentStep >= 1 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
-                }`}>
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${currentStep >= 1 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
+                  }`}>
                   <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${
-                  currentStep >= 1 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
-                }`}>
+                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${currentStep >= 1 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
+                  }`}>
                   Shipping
                 </span>
               </div>
-              <div className={`w-8 sm:w-16 h-0.5 sm:h-1 mx-2 sm:mx-4 ${
-                currentStep >= 2 ? 'bg-[#9c7c3a]' : 'bg-[#e6ddd2]'
-              }`}></div>
+              <div className={`w-8 sm:w-16 h-0.5 sm:h-1 mx-2 sm:mx-4 ${currentStep >= 2 ? 'bg-[#9c7c3a]' : 'bg-[#e6ddd2]'
+                }`}></div>
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
-                  currentStep >= 2 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
-                }`}>
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${currentStep >= 2 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
+                  }`}>
                   <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${
-                  currentStep >= 2 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
-                }`}>
+                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${currentStep >= 2 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
+                  }`}>
                   Payment
                 </span>
               </div>
-              <div className={`w-8 sm:w-16 h-0.5 sm:h-1 mx-2 sm:mx-4 ${
-                currentStep >= 3 ? 'bg-[#9c7c3a]' : 'bg-[#e6ddd2]'
-              }`}></div>
+              <div className={`w-8 sm:w-16 h-0.5 sm:h-1 mx-2 sm:mx-4 ${currentStep >= 3 ? 'bg-[#9c7c3a]' : 'bg-[#e6ddd2]'
+                }`}></div>
               <div className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
-                  currentStep >= 3 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
-                }`}>
+                <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${currentStep >= 3 ? 'bg-[#9c7c3a] text-[#fbf7f2]' : 'bg-[#e6ddd2] text-[#3b3b3b]'
+                  }`}>
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${
-                  currentStep >= 3 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
-                }`}>
+                <span className={`ml-2 text-xs sm:text-sm font-sans font-medium ${currentStep >= 3 ? 'text-[#9c7c3a]' : 'text-[#3b3b3b]'
+                  }`}>
                   Confirmation
                 </span>
               </div>
@@ -467,7 +521,7 @@ export default function CheckoutPage() {
                         {savedAddresses.length > 0 && (
                           <div className="mt-3 p-3 bg-white rounded-lg border border-[#e6ddd2]">
                             <p className="text-sm text-[#3b3b3b]/70 font-sans">
-                              💡 Using your last used address. 
+                              💡 Using your last used address.
                               <button
                                 onClick={() => setShowAddressManagement(true)}
                                 className="text-[#9c7c3a] hover:text-[#8a6a2f] underline ml-1 font-medium"
@@ -484,11 +538,10 @@ export default function CheckoutPage() {
                   <button
                     onClick={handleShippingSubmit}
                     disabled={processing || !shippingAddress.name || !shippingAddress.phone || !shippingAddress.line1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode}
-                    className={`w-full py-3 px-4 rounded-lg font-serif font-medium transition-colors flex items-center justify-center gap-2 tracking-[0.5px] text-sm ${
-                      processing || !shippingAddress.name || !shippingAddress.phone || !shippingAddress.line1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode
+                    className={`w-full py-3 px-4 rounded-lg font-serif font-medium transition-colors flex items-center justify-center gap-2 tracking-[0.5px] text-sm ${processing || !shippingAddress.name || !shippingAddress.phone || !shippingAddress.line1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.pincode
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-[#9c7c3a] hover:bg-[#8a6a2f] text-[#fbf7f2]'
-                    }`}
+                      }`}
                   >
                     {processing ? (
                       <>

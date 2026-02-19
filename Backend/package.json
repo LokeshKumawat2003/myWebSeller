@@ -25,7 +25,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.5.0",
     "node-fetch": "^2.6.7",
-    "twilio": "^5.11.1"
+    "twilio": "^5.11.1",
+    "razorpay": "^2.8.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

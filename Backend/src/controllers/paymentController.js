@@ -3,6 +3,7 @@ const Seller = require('../models/Seller');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const razorpayService = require('../services/razorpayService');
 
 // Seller: Request payment/payout
 exports.requestPayment = async (req, res) => {
@@ -256,5 +257,86 @@ exports.adminGetPaymentAnalytics = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching analytics', error: err.message });
+  }
+};
+
+// Create a Razorpay order (client will use order id to complete payment)
+exports.createOrder = async (req, res) => {
+  try {
+    const { amount, currency = 'INR', receipt, notes } = req.body;
+    if (!amount) return res.status(400).json({ message: 'Amount is required' });
+
+    // Accept amount in rupees from client; convert to paise
+    const amountPaise = Math.round(Number(amount) * 100);
+    const order = await razorpayService.createOrder({
+      amount: amountPaise,
+      currency,
+      receipt: receipt || `rcpt_${Date.now()}`,
+      notes: notes || {},
+    });
+;
+    res.json({ order });
+  } catch (err) {
+    console.error('createOrder error:', err);
+    // If the error was wrapped by the service, include more details for debugging
+    const details = err.raw || err.error || null;
+    res.status(500).json({ message: 'Error creating order', error: err.message, details });
+  }
+};
+
+// Public: return the Razorpay public key (safe to expose)
+exports.getPublicKey = async (req, res) => {
+  try {
+    const key = process.env.RAZORPAY_KEY_ID || null;
+    res.json({ key });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching key', error: err.message });
+  }
+};
+
+// Verify payment signature after client completes payment
+exports.verifyPayment = async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ message: 'Missing required fields for verification' });
+    }
+
+    const valid = razorpayService.verifyPaymentSignature({
+      order_id: razorpay_order_id,
+      payment_id: razorpay_payment_id,
+      signature: razorpay_signature,
+    });
+
+    if (!valid) return res.status(400).json({ message: 'Invalid signature' });
+
+    // Optionally: record payment against Order/Payment models here
+    res.json({ message: 'Payment verified', ok: true });
+  } catch (err) {
+    res.status(500).json({ message: 'Error verifying payment', error: err.message });
+  }
+};
+
+// Razorpay webhook receiver — verifies signature then processes event
+exports.razorpayWebhook = async (req, res) => {
+  try {
+    const signature = req.headers['x-razorpay-signature'];
+    const raw = req.rawBody || (req.body && JSON.stringify(req.body));
+    if (!signature || !raw) return res.status(400).send('Bad request');
+
+    const valid = razorpayService.verifyWebhookSignature(raw, signature);
+    if (!valid) return res.status(400).send('Invalid signature');
+
+    const event = typeof raw === 'string' ? JSON.parse(raw) : JSON.parse(raw.toString());
+
+    // Handle important events (expand as needed)
+    if (event.event === 'payment.captured') {
+      const paymentEntity = event.payload?.payment?.entity;
+      // TODO: update Order / Payment records using paymentEntity (order_id, id, amount, etc.)
+    }
+
+    res.status(200).send('ok');
+  } catch (err) {
+    res.status(500).send('error');
   }
 };

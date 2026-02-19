@@ -284,6 +284,30 @@ export async function createPaymentIntent(payload, token) {
   return tryFetch(`${API_URL}/payments/create`, { method: 'POST', headers, body: JSON.stringify(payload) })
 }
 
+// Create a Razorpay order on the server. `payload` should contain `amount` (rupees)
+export async function createRazorpayOrder(payload, token) {
+  const t = token || getAuthToken()
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
+  return tryFetch(`${API_URL}/payments/create-order`, { method: 'POST', headers, body: JSON.stringify(payload) })
+}
+
+// Get Razorpay public key (runtime) from backend. No auth required.
+export async function getRazorpayKey() {
+  try {
+    const data = await tryFetch(`${API_URL}/payments/key`)
+    return data.key || null
+  } catch (err) {
+    return null
+  }
+}
+
+// Verify a Razorpay payment signature on the server
+export async function verifyRazorpayPayment(payload, token) {
+  const t = token || getAuthToken()
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})
+  return tryFetch(`${API_URL}/payments/verify`, { method: 'POST', headers, body: JSON.stringify(payload) })
+}
+
 export async function sellerUpdateProduct(productId, payload, token) {
   const t = token || getAuthToken()
   const headers = Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: `Bearer ${t}` } : {})

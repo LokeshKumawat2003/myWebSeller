@@ -10,12 +10,24 @@ const {
   adminRejectPayment,
   adminPayPayment,
   adminGetPaymentAnalytics,
+  getPublicKey,
+  createOrder,
+  verifyPayment,
+  razorpayWebhook,
 } = require('../controllers/paymentController');
 
 // Seller routes
 router.post('/request', requireAuth, isSeller, requestPayment);
 router.get('/history', requireAuth, isSeller, getSellerPaymentHistory);
 router.get('/earnings', requireAuth, isSeller, getSellerEarnings);
+
+// Payment gateway endpoints
+router.post('/create-order', requireAuth, createOrder);
+// Publicly accessible Razorpay public key (runtime config)
+router.get('/key', getPublicKey);
+router.post('/verify', requireAuth, verifyPayment);
+// Razorpay will POST webhooks to this endpoint; do NOT require auth
+router.post('/webhook', razorpayWebhook);
 
 // Admin routes
 router.get('/admin/list', requireAuth, isAdmin, adminListPayments);

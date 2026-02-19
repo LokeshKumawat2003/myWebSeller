@@ -16,7 +16,8 @@ const corsOptions = {
 	credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
+// Keep raw request body available on req.rawBody (needed for webhook signature verification)
+app.use(bodyParser.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
 
 // Middleware
 app.use(logger);
