@@ -24,13 +24,13 @@ export default function ShopByCategory() {
 
   if (loading) {
     return (
-      <section className="py-20 px-4 md:px-8 bg-[#fbf7f2]">
+      <section className="py-1 px-2 sm:px-4 md:px-8 bg-[#fbf7f2]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-serif text-center mb-16 tracking-[3px] text-[#9c7c3a]">
+          <h2 className="text-1xl sm:text-2xl md:text-1xl font-serif text-center mb-8 sm:mb-16 tracking-[2px] sm:tracking-[3px] text-[#9c7c3a]">
             SHOP BY CATEGORY
           </h2>
-          <div className="flex justify-center items-center h-64">
-            <p className="text-[#9c7c3a]">Loading categories...</p>
+          <div className="flex justify-center items-center h-40 sm:h-64">
+            <p className="text-[#9c7c3a] text-base sm:text-lg">Loading categories...</p>
           </div>
         </div>
       </section>
@@ -53,9 +53,9 @@ export default function ShopByCategory() {
   }
 
   return (
-    <section className="py-20 px-4 md:px-8 bg-[#fbf7f2]">
+    <section className="py-10 px-4 md:px-8 bg-[#fbf7f2]">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-serif text-center mb-16 tracking-[3px] text-[#9c7c3a]">
+        <h2 className="text-2xl md:text-4xl font-serif text-center mb-16 tracking-[3px] text-[#9c7c3a]">
           SHOP BY CATEGORY
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">

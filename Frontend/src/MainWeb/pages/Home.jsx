@@ -24,7 +24,7 @@ const Home = () => {
       setError(null);
 
       // Fetch featured products only (categories are now fetched by ShopByCategory component)
-      const featuredData = await getFeaturedProducts(12);
+      const featuredData = await getFeaturedProducts(4);
       setFeaturedProducts(featuredData);
     } catch (err) {
       console.error('Error fetching home data:', err);
@@ -96,12 +96,12 @@ const Home = () => {
         <section className="py-10 px-2 md:px-8 bg-[#fbf7f2]">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">
-                FEATURED PRODUCTS
-              </h2>
-              <p className="text-[#3b3b3b] text-lg font-sans font-light mb-2">
-                Discover our curated collection
-              </p>
+              <h2 className="text-2xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">
+                  FEATURED PRODUCTS
+                </h2>
+                <p className="text-[#3b3b3b] text-base sm:text-lg font-sans font-light mb-2 sm:mb-4 px-2 sm:px-0">
+                  Discover our curated collection
+                </p>
             
             </div>
             {featuredProducts.length > 0 ? (

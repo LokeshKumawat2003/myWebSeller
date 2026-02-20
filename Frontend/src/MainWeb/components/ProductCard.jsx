@@ -131,7 +131,7 @@ const ProductCard = ({ product }) => {
   const brand = seller?.storeName || "Brand";
 
   return (
-    <div className="w-full bg-white rounded-md shadow-sm hover:shadow-lg transition-all duration-300 border border-[#e6ddd2]">
+    <div className="w-full  rounded-md  hover:shadow-lg transition-all duration-300 ">
       <Link to={`/product/${_id}`}>
         {/* Image */}
         <div className="relative w-full h-[260px] sm:h-[320px] md:h-[420px] overflow-hidden bg-[#fbf7f2]">

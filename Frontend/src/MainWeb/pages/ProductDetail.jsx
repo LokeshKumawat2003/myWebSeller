@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useToast } from '../../Admin/components/UI';
 import { getProduct, addCartItem, getAuthToken } from '../../services/api';
@@ -20,7 +20,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-
+const navigate = useNavigate();
   // Color mapping for swatches
   const colorMap = {
     'black': '#000000',
@@ -109,6 +109,7 @@ const ProductDetail = () => {
 
       await addCartItem(payload, token);
       showSuccess('Item added to cart successfully!');
+      navigate("/shopping-cart")
     } catch (error) {
       console.error('Error adding to cart:', error);
       showError('Failed to add item to cart. Please try again.');
