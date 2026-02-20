@@ -17,7 +17,7 @@ const ProductGrid = ({
           sm:grid-cols-2
           md:grid-cols-3
           lg:grid-cols-4
-          gap-4
+          gap-3
         "
       >
         {Array.from({ length: 8 }).map((_, index) => (
@@ -41,7 +41,7 @@ const ProductGrid = ({
   /* ================= EMPTY STATE ================= */
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-16 md:py-20 px-4">
+      <div className="text-center py-15 md:py-20 px-4">
         <div className="relative mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#9c7c3a]/10 to-[#9c7c3a]/20 rounded-full border-2 border-[#9c7c3a]/20">
             <Diamond className="w-10 h-10 md:w-12 md:h-12 text-[#9c7c3a]" />
@@ -78,7 +78,7 @@ const ProductGrid = ({
         sm:grid-cols-2
         md:grid-cols-3
         lg:grid-cols-4
-        gap-4
+        gap-2
       "
     >
       {products.map((product) => (

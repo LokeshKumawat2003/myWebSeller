@@ -93,7 +93,7 @@ const Home = () => {
         <ShopByCategory />
 
         {/* Featured Products */}
-        <section className="py-20 px-4 md:px-8 bg-[#fbf7f2]">
+        <section className="py-10 px-2 md:px-8 bg-[#fbf7f2]">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">

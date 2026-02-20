@@ -68,12 +68,11 @@ export default function ShopByCategory() {
               <img
                 src={category.image}
                 alt={category.name}
-            className="w-fit object-cover group-hover:scale-105 transition-transform duration-700"
-
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors"></div>
-              <div className="absolute bottom-6 left-6">
-                <h3 className="text-[#ffb51b] text-xl md:text-2xl font-serif tracking-[2px] font-medium">
+              <div className="absolute left-0 right-0 bottom-0 md:bottom-6 md:left-6 md:right-auto bg-black/40 md:bg-transparent flex justify-center md:justify-start items-center py-2 md:py-0 px-4 md:px-0">
+                <h3 className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-serif tracking-[2px] font-medium max-w-[90%] md:max-w-none text-center md:text-left break-words">
                   {category.name}
                 </h3>
               </div>

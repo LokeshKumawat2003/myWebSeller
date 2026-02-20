@@ -260,25 +260,48 @@ export async function adminListCategoryDisplays(token) {
 
 export async function adminCreateCategoryDisplay(payload, token) {
   const t = token || getAuthToken();
-  const headers = t
-    ? { Authorization: `Bearer ${t}` }
-    : {};
+  const tkn = token || getAuthToken();
+  const authHeader = tkn ? { Authorization: `Bearer ${tkn}` } : {};
+  if (payload instanceof FormData) {
+    const res = await fetch(`${API_URL}/category-display`, { method: 'POST', headers: authHeader, body: payload, credentials: 'include' })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      let msg = `Request failed (${res.status})`
+      try { const json = JSON.parse(body); if (json && json.message) msg += `: ${json.message}` } catch(e) {}
+      throw new Error(msg)
+    }
+    return res.json()
+  }
+  const headers = tkn
+    ? { Authorization: `Bearer ${tkn}`, "Content-Type": "application/json" }
+    : { "Content-Type": "application/json" };
   return tryFetch(`${API_URL}/category-display`, {
     method: "POST",
     headers,
-    body: payload,
+    body: JSON.stringify(payload),
   });
 }
 
 export async function adminUpdateCategoryDisplay(categoryId, payload, token) {
-  const t = token || getAuthToken();
-  const headers = t
-    ? { Authorization: `Bearer ${t}` }
-    : {};
+  const tkn = token || getAuthToken();
+  const authHeader = tkn ? { Authorization: `Bearer ${tkn}` } : {};
+  if (payload instanceof FormData) {
+    const res = await fetch(`${API_URL}/category-display/${categoryId}`, { method: 'PUT', headers: authHeader, body: payload, credentials: 'include' })
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      let msg = `Request failed (${res.status})`
+      try { const json = JSON.parse(body); if (json && json.message) msg += `: ${json.message}` } catch(e) {}
+      throw new Error(msg)
+    }
+    return res.json()
+  }
+  const headers = tkn
+    ? { Authorization: `Bearer ${tkn}`, "Content-Type": "application/json" }
+    : { "Content-Type": "application/json" };
   return tryFetch(`${API_URL}/category-display/${categoryId}`, {
     method: "PUT",
     headers,
-    body: payload,
+    body: JSON.stringify(payload),
   });
 }
 

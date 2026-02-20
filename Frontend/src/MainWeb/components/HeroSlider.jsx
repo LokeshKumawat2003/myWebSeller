@@ -111,9 +111,9 @@ const HeroSlider = () => {
               </p>
               <a
                 href="/"
-                className="inline-flex items-center px-8 py-4 bg-[#9c7c3a] text-[#fbf7f2] font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
+                className="inline-flex items-center px-4 py-2 md:px-8 md:py-4 bg-[#9c7c3a] text-[#fbf7f2] text-sm md:text-base font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
               >
-                Shop Now
+                Shop Now 
               </a>
             </div>
           </div>
@@ -157,7 +157,7 @@ const HeroSlider = () => {
                     </p>
                     <a
                       href={slide.buttonLink}
-                      className="inline-flex items-center px-8 py-4 bg-[#9c7c3a] text-[#fbf7f2] font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
+                      className="inline-flex items-center px-4 py-2 md:px-8 md:py-4 bg-[#9c7c3a] text-[#fbf7f2] text-sm md:text-base font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
                     >
                       {slide.buttonText}
                       <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
