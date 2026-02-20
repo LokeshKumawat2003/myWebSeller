@@ -123,13 +123,13 @@ const Home = () => {
             <p className="text-[#fbf7f2]/80 mb-8 text-lg font-sans font-light">
               Subscribe to receive updates on new arrivals and exclusive offers
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto w-full px-4">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 bg-[#fbf7f2] text-[#3b3b3b] placeholder-[#3b3b3b]/60 focus:outline-none font-sans border border-[#e6ddd2]"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-3 bg-[#fbf7f2] text-[#3b3b3b] placeholder-[#3b3b3b]/60 focus:outline-none font-sans border border-[#e6ddd2] rounded-sm"
               />
-              <button className="px-8 py-3 bg-[#9c7c3a] text-[#fbf7f2] font-serif font-medium hover:bg-[#8a6a2f] transition-colors tracking-[1px]">
+              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-[#9c7c3a] text-[#fbf7f2] text-sm md:text-base font-serif font-medium hover:bg-[#8a6a2f] transition-colors tracking-[1px] rounded-sm">
                 SUBSCRIBE
               </button>
             </div>

@@ -28,22 +28,10 @@ const Navbar = () => {
       try {
         const data = await getNavigations()
         setNavigations(data)
+        console.log(data)
       } catch (err) {
         console.error('Failed to fetch navigations:', err)
-        // Fallback to hardcoded if API fails
-        setNavigations([
-          { name: "Women", slug: "women" },
-          { name: "Men", slug: "men" },
-          { name: "Wedding", slug: "wedding" },
-          { name: "Jewelry", slug: "jewelry" },
-          { name: "Accessories", slug: "accessories" },
-          { name: "Gifting", slug: "gifting" },
-          { name: "Grassroot by kalaqx", slug: "grassroot-by-kalaqx" },
-          { name: "Discover", slug: "discover" },
-          { name: "Celebrity Closet", slug: "celebrity-closet" },
-          { name: "Sale", slug: "sale" },
-          { name: "Rewild", slug: "rewild" },
-        ])
+   
       }
     }
     fetchNavigations()
@@ -154,8 +142,9 @@ const Navbar = () => {
 
       {/* ================= DESKTOP MENU ================= */}
       <nav className="hidden lg:block border-t border-[#e6ddd2]">
-        <ul className="max-w-7xl mx-auto h-[44px] flex items-center justify-center gap-8 font-sans text-[12px] tracking-[0.12em] uppercase text-[#3b3b3b]">
+        <ul className="max-w-7xl mx-auto h-[44px] flex items-center justify-center gap-8 font-sans text-[14px] tracking-[0.12em] uppercase text-[#3b3b3b]">
           {navigations.map((item) => (
+         
             <li key={item.slug}>
               <Link
                 to={`/${item.slug}`}
@@ -260,7 +249,7 @@ const Navbar = () => {
               <li key={item.slug}>
                 <Link
                   to={`/${item.slug}`}
-                  className="block py-2 text-[14px] font-sans tracking-[0.12em] uppercase text-[#3b3b3b] hover:text-black transition-colors"
+                  className="block py-2 text-[16px] font-sans tracking-[0.12em] uppercase text-[#3b3b3b] hover:text-black transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
