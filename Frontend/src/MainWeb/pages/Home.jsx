@@ -14,6 +14,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Lazy load heavy components
+  const HeroSlider = React.lazy(() => import('../components/HeroSlider'));
+  const ShopByCategory = React.lazy(() => import('../../components/ShopByCategory'));
+  const ProductGrid = React.lazy(() => import('../components/ProductGrid'));
+
   useEffect(() => {
     fetchHomeData();
   }, []);
@@ -22,7 +27,6 @@ const Home = () => {
     try {
       setLoading(true);
       setError(null);
-
       // Fetch featured products only (categories are now fetched by ShopByCategory component)
       const featuredData = await getFeaturedProducts(4);
       setFeaturedProducts(featuredData);
@@ -86,34 +90,32 @@ const Home = () => {
   return (
     <Layout>
       <div className="bg-white">
-        {/* Hero Section */}
-        <HeroSlider />
-
-        {/* Categories Section - Using New Category Display API */}
-        <ShopByCategory />
-
-        {/* Featured Products */}
-        <section className="py-10 px-2 md:px-8 bg-[#fbf7f2]">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-2xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">
-                  FEATURED PRODUCTS
-                </h2>
-                <p className="text-[#3b3b3b] text-base sm:text-lg font-sans font-light mb-2 sm:mb-4 px-2 sm:px-0">
-                  Discover our curated collection
-                </p>
-            
-            </div>
-            {featuredProducts.length > 0 ? (
-              <ProductGrid products={featuredProducts} />
-            ) : (
-              <div className="text-center py-16">
-                <p className="text-[#3b3b3b] text-lg font-sans">No featured products available at the moment.</p>
+        <React.Suspense fallback={<div className="animate-pulse h-32 bg-[#e6ddd2] rounded mb-8" />}> 
+          {/* Hero Section */}
+          <HeroSlider />
+          {/* Categories Section */}
+          <ShopByCategory />
+          {/* Featured Products */}
+          <section className="py-10 px-2 md:px-8 bg-[#fbf7f2]">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-2xl md:text-4xl font-serif font-medium mb-4 tracking-[3px] text-[#9c7c3a]">
+                    FEATURED PRODUCTS
+                  </h2>
+                  <p className="text-[#3b3b3b] text-base sm:text-lg font-sans font-light mb-2 sm:mb-4 px-2 sm:px-0">
+                    Discover our curated collection
+                  </p>
               </div>
-            )}
-          </div>
-        </section>
-
+              {featuredProducts.length > 0 ? (
+                <ProductGrid products={featuredProducts} />
+              ) : (
+                <div className="text-center py-16">
+                  <p className="text-[#3b3b3b] text-lg font-sans">No featured products available at the moment.</p>
+                </div>
+              )}
+            </div>
+          </section>
+        </React.Suspense>
         {/* Newsletter Section */}
         <section className="py-20 px-4 md:px-8 bg-[#3b3b3b] text-[#fbf7f2]">
           <div className="max-w-2xl mx-auto text-center">

@@ -20,7 +20,14 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
-const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  // Lazy load subcomponents for performance
+  const ProductImages = React.lazy(() => import('./ProductDetail/ProductImages'));
+  const ProductInfo = React.lazy(() => import('./ProductDetail/ProductInfo'));
+  const ProductDescription = React.lazy(() => import('./ProductDetail/ProductDescription'));
+  const ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'));
+  const SizeGuide = React.lazy(() => import('./ProductDetail/SizeGuide'));
   // Color mapping for swatches
   const colorMap = {
     'black': '#000000',
@@ -267,43 +274,41 @@ const navigate = useNavigate();
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <ProductImages
-            product={product}
-            selectedColorVariant={selectedColorVariant}
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+        <React.Suspense fallback={<div className="animate-pulse h-32 bg-[#e6ddd2] rounded mb-8" />}> 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <ProductImages
+              product={product}
+              selectedColorVariant={selectedColorVariant}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
+            <ProductInfo
+              product={product}
+              selectedColorVariant={selectedColorVariant}
+              selectedSize={selectedSize}
+              discountedPrice={discountedPrice}
+              allSizes={allSizes}
+              uniqueSizes={uniqueSizes}
+              uniqueColors={uniqueColors}
+              setSelectedSize={setSelectedSize}
+              setSelectedColorVariant={setSelectedColorVariant}
+              setSelectedImage={setSelectedImage}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              isWishlisted={isWishlisted}
+              setIsWishlisted={setIsWishlisted}
+              getColorValue={getColorValue}
+              onSizeGuideOpen={() => setIsSizeGuideOpen(true)}
+              onAddToCart={handleAddToCart}
+            />
+          </div>
+          <ProductDescription product={product} />
+          <ProductReviews />
+          <SizeGuide
+            isOpen={isSizeGuideOpen}
+            onClose={() => setIsSizeGuideOpen(false)}
           />
-
-          <ProductInfo
-            product={product}
-            selectedColorVariant={selectedColorVariant}
-            selectedSize={selectedSize}
-            discountedPrice={discountedPrice}
-            allSizes={allSizes}
-            uniqueSizes={uniqueSizes}
-            uniqueColors={uniqueColors}
-            setSelectedSize={setSelectedSize}
-            setSelectedColorVariant={setSelectedColorVariant}
-            setSelectedImage={setSelectedImage}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            isWishlisted={isWishlisted}
-            setIsWishlisted={setIsWishlisted}
-            getColorValue={getColorValue}
-            onSizeGuideOpen={() => setIsSizeGuideOpen(true)}
-            onAddToCart={handleAddToCart}
-          />
-        </div>
-
-        <ProductDescription product={product} />
-
-        <ProductReviews />
-
-        <SizeGuide
-          isOpen={isSizeGuideOpen}
-          onClose={() => setIsSizeGuideOpen(false)}
-        />
+        </React.Suspense>
       </div>
     </Layout>
   );
