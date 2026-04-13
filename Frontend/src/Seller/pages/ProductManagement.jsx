@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sellerCreateProduct, sellerCreateProductForm, sellerUpdateProduct, sellerUpdateProductForm, sellerDeleteProduct, listCategories } from '../../services/api';
+import { uploadToCloudinary } from '../../services/cloudinary';
 import ProductFormModal from '../components/Products/ProductFormModal';
 import ProductList from '../components/Products/ProductList';
 
@@ -235,13 +236,25 @@ export default function ProductManagement({ seller, products, onRefresh }) {
     setStockInputValue('');
   };
 
-  const handleAddColor = () => {
+  const handleAddColor = async () => {
     if (colorInput.color && colorInput.sizes.length > 0) {
-      // include any _files with the variant so they can be appended to FormData on submit
-      const variant = { ...colorInput };
+      let imageUrls = [];
+      // Upload files to Cloudinary if present
       if (colorInput._files && colorInput._files.length > 0) {
-        variant._files = colorInput._files.slice();
+        try {
+          imageUrls = await Promise.all(colorInput._files.map(file => uploadToCloudinary(file)));
+        } catch (err) {
+          alert('Image upload failed: ' + err.message);
+          return;
+        }
       }
+      // Also include any direct URLs already in images (not blob:)
+      const validUrls = (colorInput.images || []).filter(img => typeof img === 'string' && img.startsWith('http'));
+      const variant = {
+        ...colorInput,
+        images: [...validUrls, ...imageUrls],
+        _files: undefined // Remove _files from the variant object
+      };
       setFormData(prev => ({
         ...prev,
         variants: [...prev.variants, variant],
