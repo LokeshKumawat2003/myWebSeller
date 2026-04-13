@@ -19,8 +19,8 @@ const HeroSlider = () => {
         id: banner._id,
         image: banner.imageUrl,
         title: banner.title || 'Welcome',
-        subtitle: 'Discover amazing products',
-        buttonText: 'Shop Now',
+        // subtitle: 'Discover amazing products',
+        // buttonText: 'Shop Now',
         buttonLink: '/'
       }));
       setSlides(bannerSlides);
@@ -152,18 +152,6 @@ const HeroSlider = () => {
                     <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-medium text-[#fbf7f2] mb-4 leading-tight tracking-[2px]">
                       {slide.title}
                     </h1>
-                    <p className="text-lg md:text-xl text-[#fbf7f2]/90 mb-8 leading-relaxed font-sans">
-                      {slide.subtitle}
-                    </p>
-                    <a
-                      href={slide.buttonLink}
-                      className="inline-flex items-center px-4 py-2 md:px-8 md:py-4 bg-[#9c7c3a] text-[#fbf7f2] text-sm md:text-base font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
-                    >
-                      {slide.buttonText}
-                      <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </a>
                   </div>
                 </div>
               </div>
