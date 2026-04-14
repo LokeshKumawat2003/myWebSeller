@@ -96,6 +96,10 @@ const WishlistPage = () => {
     );
   }
 
+  // Filter out items with missing product
+  const validItems = wishlistItems.filter(item => item.product && item.product._id);
+  const brokenItems = wishlistItems.filter(item => !item.product || !item.product._id);
+
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -107,7 +111,25 @@ const WishlistPage = () => {
           </p>
         </div>
 
-        {wishlistItems.length === 0 ? (
+        {/* Show warning if there are broken items */}
+        {brokenItems.length > 0 && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-700">
+            Some items in your wishlist are no longer available. 
+            {brokenItems.map(item => (
+              <div key={item._id} className="flex items-center gap-2 mt-2">
+                <span>Product not found.</span>
+                <button
+                  onClick={() => handleRemoveFromWishlist(item._id)}
+                  className="text-xs px-2 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {validItems.length === 0 ? (
           /* Empty State */
           <div className="text-center py-16">
             <Heart className="w-16 h-16 text-[#e6ddd2] mx-auto mb-4" />
@@ -134,7 +156,7 @@ const WishlistPage = () => {
         ) : (
           /* Wishlist Items Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {wishlistItems.map((item) => (
+            {validItems.map((item) => (
               <div key={item._id} className="bg-white rounded-xl shadow-sm border border-[#e6ddd2] overflow-hidden group hover:shadow-md transition-shadow">
                 {/* Product Image */}
                 <div className="relative aspect-square overflow-hidden">
