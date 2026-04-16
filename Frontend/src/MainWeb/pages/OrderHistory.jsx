@@ -144,12 +144,13 @@ const OrderHistory = () => {
     );
   }
 
-  if (error) {
+  // Show friendly empty state if no orders, otherwise show error for real API errors
+  if (error && error !== 'No orders found') {
     return (
       <Layout>
         <div className="min-h-screen flex items-center justify-center bg-[#fbf7f2] px-4">
           <div className="text-center max-w-md">
-            <p className="text-red-600 text-base md:text-lg mb-4 font-sans">Failed to load orders</p>
+            <p className="text-red-600 text-base md:text-lg mb-4 font-sans">{error}</p>
             <button
               onClick={fetchOrders}
               className="bg-[#9c7c3a] text-[#fbf7f2] px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-[#8a6a2f] transition-colors font-sans font-medium uppercase tracking-[1px] text-sm md:text-base"
