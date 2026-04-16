@@ -117,7 +117,7 @@ const Home = () => {
           </section>
         </React.Suspense>
         {/* Newsletter Section */}
-        <section className="py-20 px-4 md:px-8 bg-[#3b3b3b] text-[#fbf7f2]">
+        {/* <section className="py-20 px-4 md:px-8 bg-[#3b3b3b] text-[#fbf7f2]">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-serif font-medium mb-6 tracking-[3px]">
               STAY UPDATED
@@ -136,7 +136,7 @@ const Home = () => {
               </button>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </Layout>
   );

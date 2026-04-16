@@ -10,7 +10,7 @@ const Footer = () => {
             <p className="font-sans text-sm leading-relaxed">HOMEGROWN INDIAN BRAND</p>
             <p className="font-sans text-sm leading-relaxed">Over 6 Million Happy Customers</p>
           </div>
-          <div>
+          {/* <div>
             <h3 className="text-lg font-serif font-medium mb-4 text-[#9c7c3a] tracking-[2px]">Categories</h3>
             <ul className="space-y-2">
               <li><a href="/men" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Men</a></li>
@@ -18,11 +18,11 @@ const Footer = () => {
               <li><a href="/kids" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Kids</a></li>
               <li><a href="/sneakers" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Sneakers</a></li>
             </ul>
-          </div>
+          </div> */}
           <div>
             <h3 className="text-lg font-serif font-medium mb-4 text-[#9c7c3a] tracking-[2px]">Support</h3>
             <ul className="space-y-2">
-              <li><a href="/contact" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Contact Us</a></li>
+              <li><a href="/contact-us" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Contact Us</a></li>
               <li><a href="/faq" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">FAQ</a></li>
               <li><a href="/shipping" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Shipping Info</a></li>
             </ul>
@@ -38,13 +38,15 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a href="#" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Facebook</a>
               <a href="#" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Instagram</a>
-              <a href="#" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Twitter</a>
+              {/* <a href="#" className="font-sans text-sm hover:text-[#9c7c3a] transition-colors">Twitter</a> */}
             </div>
           </div>
         </div>
         <div className="mt-12 border-t border-[#e6ddd2] pt-8 text-center">
-          <p className="font-sans text-sm text-[#3b3b3b]">&copy; 2025 The Souled Store. All rights reserved.</p>
-        </div>
+  <p className="font-sans text-sm text-[#3b3b3b]">
+    &copy; {new Date().getFullYear()} The Souled Store. All rights reserved.
+  </p>
+</div>
       </div>
     </footer>
   );

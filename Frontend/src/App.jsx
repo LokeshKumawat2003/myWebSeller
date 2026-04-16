@@ -19,6 +19,7 @@ import Search from './MainWeb/pages/Search';
 import ProductDetail from './MainWeb/pages/ProductDetail';
 import LoginPage from './MainWeb/pages/LoginPage';
 import AuthSuccess from './MainWeb/pages/AuthSuccess';
+import ContactUs from './MainWeb/pages/ContactUs';
 
 function AppContent() {
   return (
@@ -35,6 +36,7 @@ function AppContent() {
       <Route path="/orders" element={<OrderHistory />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/auth/success" element={<AuthSuccess />} />
+      <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/seller-login" element={<SellerLogin />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
