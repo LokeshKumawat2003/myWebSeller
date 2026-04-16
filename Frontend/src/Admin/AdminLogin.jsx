@@ -43,26 +43,31 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen luxury-bg flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#fbf7f2] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="luxury-bg rounded-lg shadow-2xl p-8 luxury-border">
+        {/* Card */}
+        <div className="bg-white rounded-lg shadow-sm p-8 border border-[#e6ddd2]">
+          {/* Header */}
           <div className="text-center mb-8">
             <div className="mb-4 flex justify-center">
               <Logo size="lg" />
             </div>
-            <h1 className="text-3xl font-bold luxury-accent mb-2">kalaqx Admin</h1>
-            <p className="luxury-text-primary font-medium">Administrator Panel</p>
+            <h1 className="text-3xl font-light italic text-[#9c7c3a] mb-2 font-serif">kalaqx Admin</h1>
+            <p className="text-[#666] italic font-serif">Administrator Panel</p>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            <div className="mb-6 p-4 bg-[#e6ddd2] border border-[#9c7c3a] text-[#3b3b3b] rounded-lg text-sm italic font-serif">
               {error}
             </div>
           )}
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Phone */}
             <div>
-              <label className="block luxury-text-primary text-sm font-semibold mb-2">
+              <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">
                 Phone Number
               </label>
               <input
@@ -72,35 +77,38 @@ export default function AdminLogin() {
                 placeholder="Enter admin phone number"
                 required
                 autoComplete="username"
-                className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent transition luxury-bg"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block luxury-text-primary text-sm font-semibold mb-2">
+              <label className="block text-[#3b3b3b] text-sm italic mb-2 font-serif">
                 Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-3 border luxury-border rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-accent transition luxury-bg"
+                className="w-full px-4 py-3 border border-[#e6ddd2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] focus:border-[#9c7c3a] transition bg-white italic font-serif text-[#3b3b3b] placeholder-[#999]"
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full luxury-accent hover:luxury-accent/90 disabled:luxury-bg-secondary text-white font-bold py-3 rounded-lg transition duration-200 mt-6"
+              className="w-full bg-[#9c7c3a] hover:bg-[#8a6a2f] disabled:bg-[#e6ddd2] text-white disabled:text-[#666] font-light italic py-3 rounded-lg transition duration-200 mt-6 font-serif"
             >
-              {loading ? 'Logging in...' : 'Admin Login'}
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
-          <p className="text-center luxury-text-primary text-sm mt-6">
+          {/* Footer */}
+          <p className="text-center text-[#666] text-sm mt-6 italic font-serif">
             Admin access required
           </p>
         </div>
