@@ -5,9 +5,9 @@ module.exports = function(passport) {
   // Only configure Google OAuth if credentials are provided
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+      clientID: process.env.GOOGLE_CLIENT_ID ||"17871227117-1ldqd7k9d7fcjdh2k1ppnif2co1bnft9.apps.googleusercontent.com",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ||"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" ,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || 'https://mywebseller.onrender.com/auth/google/callback',
     }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = profile.emails && profile.emails[0] && profile.emails[0].value;
