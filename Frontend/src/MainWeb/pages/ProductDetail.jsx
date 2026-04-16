@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useToast } from '../../Admin/components/UI';
 import { getProduct, addCartItem, getAuthToken } from '../../services/api';
-import ProductReviews from './ProductDetail/ProductReviews';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -19,6 +18,8 @@ const ProductDetail = () => {
   const navigate = useNavigate();
 
   // Lazy load subcomponents for performance
+  
+const  ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'));
   const ProductImages = React.lazy(() => import('./ProductDetail/ProductImages'));
   const ProductInfo = React.lazy(() => import('./ProductDetail/ProductInfo'));
   const ProductDescription = React.lazy(() => import('./ProductDetail/ProductDescription'));

@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import { getProductReviews, createReview, getAuthToken } from '../../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const ProductReviews = ({ productId }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(3);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
+  const [showAll, setShowAll] = useState(false);
+  const [ratingError, setRatingError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!productId) return;
@@ -34,8 +38,13 @@ console.log('Product ID for reviews:', productId);
     // fetchReviews();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
     setSuccess('');
+    setRatingError('');
+    if (rating === 0) {
+      setRatingError('Please select a star rating.');
+      return;
+    }
+    setSubmitting(true);
     try {
       const token = getAuthToken();
       await createReview({ product: productId, rating, comment }, token);
@@ -64,23 +73,32 @@ console.log('Product ID for reviews:', productId);
           {!showForm ? (
             <button
               className="bg-[#9c7c3a] text-white px-6 py-2 rounded font-serif font-medium hover:bg-[#8a6a2f] transition-colors"
-              onClick={() => setShowForm(true)}
+              onClick={() => {
+                if (!isLoggedIn) {
+                  navigate('/login');
+                } else {
+                  setShowForm(true);
+                }
+              }}
             >
               Write a Review
             </button>
           ) : (
             <form onSubmit={handleSubmit} className="bg-[#fbf7f2] p-6 rounded-lg shadow max-w-xl mx-auto flex flex-col gap-4 mt-4">
-              <div className="flex items-center gap-2">
-                <span className="font-sans text-[#3b3b3b]">Your Rating:</span>
-                {[1,2,3,4,5].map((star) => (
-                  <button
-                    type="button"
-                    key={star}
-                    onClick={() => setRating(star)}
-                  >
-                    <Star className={`w-6 h-6 ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-[#e6ddd2]'}`} />
-                  </button>
-                ))}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-sans text-[#3b3b3b]">Your Rating:</span>
+                  {[1,2,3,4,5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
+                    >
+                      <Star className={`w-6 h-6 ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-[#e6ddd2]'}`} />
+                    </button>
+                  ))}
+                </div>
+                {ratingError && <span className="text-red-600 text-sm font-sans">{ratingError}</span>}
               </div>
               <textarea
                 className="border border-[#e6ddd2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#9c7c3a] font-sans text-[#3b3b3b]"
@@ -120,9 +138,9 @@ console.log('Product ID for reviews:', productId);
         <div className="text-[#3b3b3b] font-sans">No reviews yet. Be the first to review!</div>
       ) : (
         <div className="space-y-8">
-          {reviews.map((review) => (
-            <div key={review._id} className="border-b border-[#e6ddd2] pb-8">
-              <div className="flex items-center space-x-4 mb-4">
+          {(showAll ? reviews : reviews.slice(0, 3)).map((review) => (
+            <div key={review._id} className="border-b border-[#e6ddd2] pb-8 bg-[#fffdfa] rounded-lg px-4 py-3">
+              <div className="flex items-center space-x-4 mb-2">
                 <div className="w-10 h-10 bg-[#e6ddd2] rounded-full flex items-center justify-center">
                   <span className="text-sm font-sans font-medium text-[#3b3b3b]">
                     {review.user?.name ? review.user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
@@ -140,9 +158,29 @@ console.log('Product ID for reviews:', productId);
                   </div>
                 </div>
               </div>
-              <p className="text-[#3b3b3b] font-sans">{review.comment}</p>
+              <p className="text-[#3b3b3b] font-sans ml-14">{review.comment}</p>
             </div>
           ))}
+          {reviews.length > 3 && !showAll && (
+            <div className="text-center mt-4">
+              <button
+                className="px-6 py-2 bg-[#e6ddd2] text-[#9c7c3a] rounded font-serif font-medium hover:bg-[#9c7c3a] hover:text-white transition-colors"
+                onClick={() => setShowAll(true)}
+              >
+                Show All Reviews
+              </button>
+            </div>
+          )}
+          {showAll && reviews.length > 3 && (
+            <div className="text-center mt-2">
+              <button
+                className="px-6 py-2 bg-[#e6ddd2] text-[#9c7c3a] rounded font-serif font-medium hover:bg-[#9c7c3a] hover:text-white transition-colors"
+                onClick={() => setShowAll(false)}
+              >
+                Show Less
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
