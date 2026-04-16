@@ -10,9 +10,16 @@ const passport = require('passport');
 require('./config/passport')(passport);
 
 const app = express();
-// Configure CORS so the frontend can send credentials (cookies, auth)
+// Configure CORS to support multiple origins from comma-separated CLIENT_URL
+const allowedOrigins = process.env.CLIENT_URL.split(',');
 const corsOptions = {
-	origin: process.env.CLIENT_URL,
+	origin: function (origin, callback) {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
 	credentials: true,
 };
 app.use(cors(corsOptions));

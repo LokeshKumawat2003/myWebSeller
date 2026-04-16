@@ -198,7 +198,7 @@ const ProductInfo = ({
 
       {uniqueColors.length > 0 && (
         <div>
-          <h3 className="text-sm font-serif font-medium text-[#9c7c3a] mb-3">Color: <span className="font-sans font-normal text-[#3b3b3b]">{selectedColorVariant?.color}</span></h3>
+          <h3 className="text-sm font-serif font-medium text-[#9c7c3a] mb-3">Colors <span className="font-sans font-normal text-[#3b3b3b]"></span></h3>
           <div className="flex flex-wrap gap-3">
             {uniqueColors.map((color) => {
               // Find the variant for this color
@@ -311,7 +311,7 @@ const ProductInfo = ({
             </div>
             <div>
               <p className="text-sm font-serif font-medium text-[#9c7c3a]">Free Delivery</p>
-              <p className="text-sm text-[#3b3b3b] font-sans">Standard delivery within 3-5 business days</p>
+              <p className="text-sm text-[#3b3b3b] font-sans">Standard delivery within 7-10 business days</p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
@@ -321,8 +321,8 @@ const ProductInfo = ({
               </svg>
             </div>
             <div>
-              <p className="text-sm font-serif font-medium text-[#9c7c3a]">Easy Returns</p>
-              <p className="text-sm text-[#3b3b3b] font-sans">30-day return policy</p>
+              <p className="text-sm font-serif font-medium text-[#9c7c3a]"> Returns</p>
+              <p className="text-sm text-[#3b3b3b] font-sans">2-day return policy</p>
             </div>
           </div>
           <div className="flex items-start space-x-3">
