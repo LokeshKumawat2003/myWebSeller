@@ -124,7 +124,7 @@ const HeroSlider = () => {
 
   return (
     <section
-      className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden group"
+      className="relative h-64 sm:h-80 md:h-[500px] lg:h-[600px] overflow-hidden group"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
@@ -135,24 +135,35 @@ const HeroSlider = () => {
             key={slide.id}
             className={`absolute inset-0 transition-all duration-700 ease-in-out ${
               index === currentSlide
-                ? 'opacity-100 scale-100'
-                : 'opacity-0 scale-105'
+                ? 'opacity-100 scale-100 z-10'
+                : 'opacity-0 scale-105 z-0'
             }`}
           >
             <img
               src={slide.image}
               alt={slide.title}
-              className="w-full h- -webkit-fill-available"
+              className="w-full h-full object-cover object-center md:object-[center_top]"
               loading={index === 0 ? 'eager' : 'lazy'}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent">
-              <div className="h-full flex items-center">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="max-w-lg lg:max-w-xl">
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-medium text-[#fbf7f2] mb-4 leading-tight tracking-[2px]">
-                      {slide.title}
-                    </h1>
-                  </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent flex items-center">
+              <div className="w-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center h-full">
+                <div className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
+                  <h1 className="text-xl sm:text-2xl md:text-5xl lg:text-6xl font-serif font-medium text-[#fbf7f2] mb-2 sm:mb-4 leading-tight tracking-[1px] sm:tracking-[2px]">
+                    {slide.title}
+                  </h1>
+                  {slide.subtitle && (
+                    <p className="hidden sm:block text-base md:text-xl text-[#fbf7f2]/90 mb-4 md:mb-8 leading-relaxed font-sans">
+                      {slide.subtitle}
+                    </p>
+                  )}
+                  {slide.buttonText && (
+                    <a
+                      href={slide.buttonLink || '/'}
+                      className="hidden sm:inline-flex items-center px-4 py-2 md:px-8 md:py-4 bg-[#9c7c3a] text-[#fbf7f2] text-sm md:text-base font-serif font-medium rounded-lg hover:bg-[#8a6a2f] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl tracking-[1px]"
+                    >
+                      {slide.buttonText}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -160,10 +171,12 @@ const HeroSlider = () => {
         ))}
       </div>
 
-      {/* Navigation Arrows */}
+
+
+      {/* Navigation Arrows - always visible on all screens */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-3 transition-all duration-300 opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-2 sm:p-3 transition-all duration-300 opacity-100 transform -translate-x-0 z-20"
         aria-label="Previous slide"
       >
         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +185,7 @@ const HeroSlider = () => {
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-3 transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full p-2 sm:p-3 transition-all duration-300 opacity-100 transform translate-x-0 z-20"
         aria-label="Next slide"
       >
         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,8 +193,8 @@ const HeroSlider = () => {
         </svg>
       </button>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+      {/* Dots Indicator - always visible */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
