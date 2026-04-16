@@ -3,11 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useToast } from '../../Admin/components/UI';
 import { getProduct, addCartItem, getAuthToken } from '../../services/api';
-import ProductImages from './ProductDetail/ProductImages';
-import ProductInfo from './ProductDetail/ProductInfo';
-import ProductDescription from './ProductDetail/ProductDescription';
 import ProductReviews from './ProductDetail/ProductReviews';
-import SizeGuide from './ProductDetail/SizeGuide';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -26,7 +22,6 @@ const ProductDetail = () => {
   const ProductImages = React.lazy(() => import('./ProductDetail/ProductImages'));
   const ProductInfo = React.lazy(() => import('./ProductDetail/ProductInfo'));
   const ProductDescription = React.lazy(() => import('./ProductDetail/ProductDescription'));
-  const ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'));
   const SizeGuide = React.lazy(() => import('./ProductDetail/SizeGuide'));
   // Color mapping for swatches
   const colorMap = {
@@ -112,7 +107,7 @@ const ProductDetail = () => {
         qty: quantity,
         price: discountedPrice
       };
-      
+
 
       await addCartItem(payload, token);
       showSuccess('Item added to cart successfully!');
@@ -127,10 +122,10 @@ const ProductDetail = () => {
     try {
       setLoading(true);
       const productData = await getProduct(id);
-      
+
       // Check if variants are already grouped (have sizes array) or flat
       const isGrouped = productData.variants && productData.variants.length > 0 && productData.variants[0].sizes;
-      
+
       if (!isGrouped) {
         // Group variants by color
         const groupedVariants = productData.variants.reduce((acc, variant) => {
@@ -148,7 +143,7 @@ const ProductDetail = () => {
         }, {});
         productData.variants = Object.values(groupedVariants);
       }
-      
+
       setProduct(productData);
       const colorVariant = productData.variants?.[0];
       setSelectedColorVariant(colorVariant || null);
@@ -193,7 +188,7 @@ const ProductDetail = () => {
         isTrending: false,
         createdAt: "2024-01-15T10:00:00Z"
       };
-      
+
       // Group sample variants (always flat)
       const groupedSampleVariants = sampleProduct.variants.reduce((acc, variant) => {
         const color = variant.color;
@@ -209,7 +204,7 @@ const ProductDetail = () => {
         return acc;
       }, {});
       sampleProduct.variants = Object.values(groupedSampleVariants);
-      
+
       setProduct(sampleProduct);
       const colorVariant = sampleProduct.variants[0];
       setSelectedColorVariant(colorVariant);
@@ -221,7 +216,9 @@ const ProductDetail = () => {
       setLoading(false);
     }
   };
+  const productId = product?.id || product?._id;
 
+  console.log("Product ID for reviews:", productId);
   if (loading) {
     return (
       <Layout>
@@ -274,7 +271,7 @@ const ProductDetail = () => {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <React.Suspense fallback={<div className="animate-pulse h-32 bg-[#e6ddd2] rounded mb-8" />}> 
+        <React.Suspense fallback={<div className="animate-pulse h-32 bg-[#e6ddd2] rounded mb-8" />}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <ProductImages
               product={product}
@@ -303,7 +300,7 @@ const ProductDetail = () => {
             />
           </div>
           <ProductDescription product={product} />
-          <ProductReviews />
+          <ProductReviews productId={productId} />
           <SizeGuide
             isOpen={isSizeGuideOpen}
             onClose={() => setIsSizeGuideOpen(false)}

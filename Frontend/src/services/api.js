@@ -264,6 +264,11 @@ export async function createReview(payload, token) {
   return tryFetch(`${API_URL}/reviews`, { method: 'POST', headers, body: JSON.stringify(payload) })
 }
 
+// Fetch reviews for a product
+export async function getProductReviews(productId) {
+  return tryFetch(`${API_URL}/reviews/product/${productId}`)
+}
+
 // --- Banners & Categories ---
 export async function listBanners() {
   return tryFetch(`${API_URL}/banners`)

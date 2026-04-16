@@ -28,7 +28,7 @@ const Navbar = () => {
       try {
         const data = await getNavigations()
         setNavigations(data)
-        console.log(data)
+        // console.log(data)
       } catch (err) {
         console.error('Failed to fetch navigations:', err)
    
