@@ -200,28 +200,33 @@ const ProductInfo = ({
         <div>
           <h3 className="text-sm font-serif font-medium text-[#9c7c3a] mb-3">Color: <span className="font-sans font-normal text-[#3b3b3b]">{selectedColorVariant?.color}</span></h3>
           <div className="flex flex-wrap gap-3">
-            {uniqueColors.map((color) => (
-              <button
-                key={color}
-                className={`w-12 h-12 rounded-full border-2 transition-all ${
-                  selectedColorVariant?.color === color
-                    ? 'border-[#9c7c3a] ring-2 ring-[#e6ddd2]'
-                    : 'border-[#e6ddd2] hover:border-[#9c7c3a]'
-                } ${getColorValue(color) === '#FFFFFF' ? 'border-[#e6ddd2]' : ''}`}
-                style={{ backgroundColor: getColorValue(color) }}
-                onClick={() => {
-                  const colorVariant = product.variants.find(v => v.color === color);
-                  setSelectedColorVariant(colorVariant);
-                  // Select first available size (with stock > 0)
-                  const availableSize = colorVariant.sizes.find(s => s.stock > 0);
-                  setSelectedSize(availableSize || null);
-                  // Reset quantity when changing colors
-                  setQuantity(1);
-                  setSelectedImage(0);
-                }}
-                title={color}
-              />
-            ))}
+            {uniqueColors.map((color) => {
+              // Find the variant for this color
+              const colorVariant = product.variants.find(v => v.color === color);
+              // Try to get the color value directly from the API variant fields
+              const colorValue = colorVariant?.colorValue || colorVariant?.colorHex || colorVariant?.hex || colorVariant?.hexCode || colorVariant?.color_code || colorVariant?.color_code_hex || color;
+              return (
+                <button
+                  key={color}
+                  className={`w-12 h-12 rounded-full border-2 transition-all ${
+                    selectedColorVariant?.color === color
+                      ? 'border-[#9c7c3a] ring-2 ring-[#e6ddd2]'
+                      : 'border-[#e6ddd2] hover:border-[#9c7c3a]'
+                  } ${colorValue === '#FFFFFF' ? 'border-[#e6ddd2]' : ''}`}
+                  style={{ backgroundColor: colorValue }}
+                  onClick={() => {
+                    setSelectedColorVariant(colorVariant);
+                    // Select first available size (with stock > 0)
+                    const availableSize = colorVariant.sizes.find(s => s.stock > 0);
+                    setSelectedSize(availableSize || null);
+                    // Reset quantity when changing colors
+                    setQuantity(1);
+                    setSelectedImage(0);
+                  }}
+                  title={color}
+                />
+              );
+            })}
           </div>
         </div>
       )}

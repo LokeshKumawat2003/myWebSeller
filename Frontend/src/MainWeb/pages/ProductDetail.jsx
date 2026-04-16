@@ -18,32 +18,16 @@ const ProductDetail = () => {
   const navigate = useNavigate();
 
   // Lazy load subcomponents for performance
-  
-const  ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'));
+
+  const ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'));
   const ProductImages = React.lazy(() => import('./ProductDetail/ProductImages'));
   const ProductInfo = React.lazy(() => import('./ProductDetail/ProductInfo'));
   const ProductDescription = React.lazy(() => import('./ProductDetail/ProductDescription'));
   const SizeGuide = React.lazy(() => import('./ProductDetail/SizeGuide'));
-  // Color mapping for swatches
-  const colorMap = {
-    'black': '#000000',
-    'white': '#FFFFFF',
-    'red': '#FF0000',
-    'blue': '#0000FF',
-    'green': '#00FF00',
-    'yellow': '#FFFF00',
-    'purple': '#800080',
-    'pink': '#FFC0CB',
-    'gray': '#808080',
-    'brown': '#A52A2A',
-    'orange': '#FFA500',
-    'navy': '#000080',
-    'maroon': '#800000',
-    'beige': '#F5F5DC',
-    'cream': '#FFFDD0'
-  };
+  // Color mapping for swatches is now handled by API data only
 
   const getColorValue = (colorName) => {
+    // console.log(colorName, product);
     if (!colorName) return '#CCCCCC';
 
     // If the colorName is already a hex value, use it directly
@@ -59,8 +43,8 @@ const  ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'
       }
     }
 
-    // Fallback to built-in color map
-    return colorMap[colorName.toLowerCase()];
+    // Fallback color if not found in API data
+    return '';
   };
 
   useEffect(() => {
@@ -147,6 +131,7 @@ const  ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'
 
       setProduct(productData);
       const colorVariant = productData.variants?.[0];
+      console.log("Selected color variant on load:", colorVariant);
       setSelectedColorVariant(colorVariant || null);
       // Select first available size (with stock > 0)
       const availableSize = colorVariant?.sizes?.find(s => s.stock > 0);
@@ -154,72 +139,14 @@ const  ProductReviews = React.lazy(() => import('./ProductDetail/ProductReviews'
       setSelectedImage(0);
     } catch (error) {
       console.error('Error fetching product:', error);
-      // For demo purposes, keep the sample data as fallback
-      const sampleProduct = {
-        _id: id,
-        title: "Premium Cotton Shirt",
-        description: "Experience ultimate comfort with our premium cotton shirt. Made from 100% organic cotton, this shirt offers breathability and style that lasts. Perfect for casual outings or office wear.",
-        basePrice: 2300,
-        discount: 10,
-        images: [
-          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=600&fit=crop",
-          "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=600&fit=crop",
-          "https://images.unsplash.com/photo-1506629905607-0b5ab9a9e21a?w=600&h=600&fit=crop"
-        ],
-        seller: {
-          _id: "seller-1",
-          storeName: "Fashion Hub",
-          approved: true,
-          blocked: false
-        },
-        category: {
-          _id: "cat-1",
-          name: "Men's Clothing"
-        },
-        variants: [
-          { size: "S", color: "White", stock: 10 },
-          { size: "M", color: "White", stock: 15 },
-          { size: "L", color: "White", stock: 8 },
-          { size: "XL", color: "White", stock: 5 }
-        ],
-        status: "approved",
-        isBlocked: false,
-        isFeatured: true,
-        isNew: true,
-        isTrending: false,
-        createdAt: "2024-01-15T10:00:00Z"
-      };
-
-      // Group sample variants (always flat)
-      const groupedSampleVariants = sampleProduct.variants.reduce((acc, variant) => {
-        const color = variant.color;
-        if (!acc[color]) {
-          acc[color] = { color, sizes: [], images: variant.images || [] };
-        }
-        acc[color].sizes.push({
-          size: variant.size,
-          price: variant.price || sampleProduct.basePrice,
-          stock: variant.stock,
-          discount: variant.discount || 0
-        });
-        return acc;
-      }, {});
-      sampleProduct.variants = Object.values(groupedSampleVariants);
-
-      setProduct(sampleProduct);
-      const colorVariant = sampleProduct.variants[0];
-      setSelectedColorVariant(colorVariant);
-      // Select first available size (with stock > 0)
-      const availableSize = colorVariant.sizes.find(s => s.stock > 0);
-      setSelectedSize(availableSize || null);
-      setSelectedImage(0);
+      setProduct(null);
     } finally {
       setLoading(false);
     }
   };
   const productId = product?.id || product?._id;
-
-  console.log("Product ID for reviews:", productId);
+console.log("Product selectedColorVariant:", selectedColorVariant);
+  // console.log("Product ID for reviews:", productId);
   if (loading) {
     return (
       <Layout>
