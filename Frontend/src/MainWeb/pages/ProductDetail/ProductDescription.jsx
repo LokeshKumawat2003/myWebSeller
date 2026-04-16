@@ -9,12 +9,12 @@ const ProductDescription = ({ product }) => {
           <p className="text-[#3b3b3b] font-sans leading-relaxed mb-6">
             {product.description}
           </p>
-          <ul className="list-disc list-inside space-y-2 text-[#3b3b3b] font-sans">
+          {/* <ul className="list-disc list-inside space-y-2 text-[#3b3b3b] font-sans">
             <li>Made from premium quality fabric</li>
             <li>Designed for comfort and style</li>
             <li>Perfect for special occasions</li>
             <li>Ethically manufactured</li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     </div>
