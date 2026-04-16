@@ -284,14 +284,14 @@ const ProductInfo = ({
           <ShoppingCart className="w-5 h-5" />
           <span>{!selectedSize ? 'Select Size' : selectedSize.stock === 0 ? 'Out of Stock' : 'Add to Bag'}</span>
         </button>
-        <button
+        {/* <button
           onClick={handleWishlistToggle}
           disabled={wishlistLoading}
           className="w-full border border-[#e6ddd2] text-[#9c7c3a] py-4 px-6 rounded hover:bg-[#e6ddd2] transition-colors flex items-center justify-center space-x-2 font-serif font-medium tracking-[0.5px] disabled:opacity-50"
         >
           <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
           <span>{wishlistLoading ? 'Updating...' : isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>
-        </button>
+        </button> */}
       </div>
 
       {/* Delivery Info */}
