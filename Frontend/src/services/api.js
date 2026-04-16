@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+export const API_URL = import.meta.env.VITE_API_URL 
 
 // Generic fetch helper. Accepts optional fetch `options` (headers, method, body).
 export async function tryFetch(path, options = {}) {
